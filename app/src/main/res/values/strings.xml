@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Delta</string>
+    <string name="description">Beskrivelse</string>
+    <string name="participation">Deltakelse</string>
+    <string name="start_mission">Start oppdrag</string>
+    <string name="post_suggestion">Post forslag</string>
+    <string name="discuss_suggestions">Diskuter forslag</string>
+    <string name="done">Ferdig</string>
+    <string name="comments">Kommentarer</string>
+    <string name="calculating_distance">Beregner distanse...</string>
+</resources>

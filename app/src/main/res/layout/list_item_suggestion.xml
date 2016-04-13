@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="90dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/nyhavna2"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/first_line"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:singleLine="true"
+        android:layout_toEndOf="@id/icon"
+        android:layout_alignParentEnd="true"
+        android:gravity="bottom"
+        android:text="Vedlikehold av gamle bygninger"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/second_line"
+        android:layout_below="@id/first_line"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_toEndOf="@id/icon"
+        android:layout_alignParentEnd="true"
+        android:ellipsize="marquee"
+        android:text="Jeg syntes flere av bygningene på Nyhavna har en viss sjarm..."/>
+
+    <TextView
+        android:id="@+id/third_line"
+        android:layout_below="@id/second_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="5dp"
+        android:singleLine="true"
+        android:layout_toEndOf="@id/icon"
+        android:drawableStart="@drawable/ic_person_gray70_18dp"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:text="testbruker"/>
+
+    <TextView
+        android:id="@+id/fourth_line"
+        android:layout_below="@id/second_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:layout_toEndOf="@id/third_line"
+        android:drawableStart="@drawable/ic_date_gray70_18dp"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:text="29.04.16"/>
+
+</RelativeLayout>

@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:background="@color/list_divider"
+        android:text="21. april"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageView
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_thumbs_up"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="1 bruker var enig i ditt forslag Gløshaugen: Fellesgrill"/>
+
+        <TextView
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="+15"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageView
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/forum"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="Du postet en kommentar til forslaget Gløshaugen: Flere søppeldunker."/>
+
+        <TextView
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="+10"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageView
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/lightbulb"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:paddingStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="Du postet et forslag til prosjektet Gløshaugen: Fellesgrill."/>
+
+        <TextView
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="+25"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageView
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/explore"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:paddingStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="Du fullførte oppdraget i prosjektet Gløshaugen sammen med en venn."/>
+
+        <TextView
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="+75"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:background="@color/list_divider"
+        android:text="20. april"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageView
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_thumbs_up"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="2 brukere var enige i ditt forslag Nyhavna: Promenade langs havna"/>
+
+        <TextView
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="+30"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:background="@color/list_divider"
+        android:text="19. april"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageView
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/forum"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="Du postet en kommentar til forslaget Nyhavna: Vedlikehold av gamle bygninger."/>
+
+        <TextView
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="+25"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageView
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_thumbs_up"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="Du var enig i forslaget Nyhavna: Vedlikehold av gamle bygninger"/>
+
+        <TextView
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="+10"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageView
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/lightbulb"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:paddingStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="Du postet et forslag til prosjektet Nyhavna: Promenade langs havna."/>
+
+        <TextView
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="+25"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageView
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/explore"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:paddingStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="Du fullførte oppdraget i prosjektet Nyhavna."/>
+
+        <TextView
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="+50"/>
+
+    </LinearLayout>
+
+</LinearLayout>

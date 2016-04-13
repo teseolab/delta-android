@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="list_divider">#f4f4f4</color>
+
+    <color name="teal_50">#E0F2F1</color>
+    <color name="teal_100">#B2DFDB</color>
+    <color name="teal_200">#80CBC4</color>
+    <color name="teal_300">#4DB6AC</color>
+    <color name="teal_400">#26A69A</color>
+    <color name="teal_500">#009688</color>
+    <color name="teal_600">#00897B</color>
+    <color name="teal_700">#00796B</color>
+    <color name="teal_800">#00695C</color>
+    <color name="teal_900">#004D40</color>
+
+    <color name="gray_10">#1a1a1a</color>
+    <color name="gray_20">#333333</color>
+    <color name="gray_30">#4d4d4d</color>
+    <color name="gray_40">#666666</color>
+    <color name="gray_50">#808080</color>
+    <color name="gray_60">#999999</color>
+    <color name="gray_70">#b3b3b3</color>
+    <color name="gray_80">#cccccc</color>
+    <color name="gray_90">#e5e5e5</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+
+</resources>

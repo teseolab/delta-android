@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/project_dialog"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:orientation="vertical">
+
+    <!--<ImageView-->
+        <!--android:id="@+id/project_dialog_image"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:paddingTop="20dp"-->
+        <!--android:paddingBottom="20dp"/>-->
+
+    <TextView
+        android:id="@+id/project_dialog_description"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
+
+    <!--<Button-->
+        <!--android:id="@+id/project_dialog_dismiss_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="?android:attr/selectableItemBackground"/>-->
+
+    <!--<Button-->
+        <!--android:id="@+id/project_dialog_more_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="?android:attr/selectableItemBackground"/>-->
+
+</LinearLayout>

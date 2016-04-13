@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginBottom="30dp">
+
+    <ImageView
+        android:id="@+id/icon"
+
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="15dp"
+
+        android:src="@drawable/ic_achievement" />
+
+    <TextView
+        android:id="@+id/secondLine"
+
+        android:layout_width="fill_parent"
+        android:layout_height="42dp"
+
+        android:layout_toRightOf="@id/icon"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+
+        android:ellipsize="marquee"
+        android:text="Fullførte et oppdrag innen en uke etter at det ble opprettet" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+
+        android:layout_toRightOf="@id/icon"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/secondLine"
+
+        android:gravity="bottom"
+        android:text="Tidligfugl"
+        android:textStyle="bold"/>
+
+</RelativeLayout>
