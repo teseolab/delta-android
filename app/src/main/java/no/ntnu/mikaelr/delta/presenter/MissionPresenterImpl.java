@@ -164,9 +164,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         }
     }
 
-    private void taskWasCancelled() {
-        view.showMessage("Oppgave ble avbrutt", Toast.LENGTH_SHORT);
-    }
+    private void taskWasCancelled() {}
 
     private void taskWasFinished() {
 

@@ -2,13 +2,10 @@ package no.ntnu.mikaelr.delta.async_task;
 
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import no.ntnu.mikaelr.delta.util.StatusCode;
+import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.*;
 
 public abstract class PostAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
 
@@ -33,11 +30,19 @@ public abstract class PostAsyncTask extends AsyncTask<Void, Void, Pair<Integer, 
 
         try {
             response = template.exchange(request, HttpMethod.POST, entity, String.class);
-            return new Pair<Integer, ResponseEntity<String>>(0, response); //TODO: Response success code
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_OK, response);
         }
 
-        catch (RestClientException e) {
-            return new Pair<Integer, ResponseEntity<String>>(123, null); //TODO: Error code
+        catch (HttpStatusCodeException e) {
+            return new Pair<Integer, ResponseEntity<String>>(e.getStatusCode().value(), null); //TODO: Handle
+        }
+
+        catch (ResourceAccessException e) {
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.NETWORK_UNREACHABLE, null); //TODO: Handle
+        }
+
+        catch (UnknownHttpStatusCodeException e) {
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_UNKNOWN, null); //TODO: Handle
         }
     }
 

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import no.ntnu.mikaelr.delta.listener.ProjectDialogClickListener;
 import no.ntnu.mikaelr.delta.model.Project;
 
 public class ProjectDialog extends DialogFragment implements DialogInterface.OnClickListener {

@@ -2,6 +2,8 @@ package no.ntnu.mikaelr.delta.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -11,11 +13,13 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.ProjectResponse;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.util.Constants;
+import no.ntnu.mikaelr.delta.util.StatusCode;
 import no.ntnu.mikaelr.delta.view.TaskView;
 import no.ntnu.mikaelr.delta.view.ToolbarUtil;
 import org.json.JSONObject;
@@ -36,6 +40,8 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
     private SparseArray<String> scaleValues = new SparseArray<String>();
 
     ProjectInteractor projectInteractor;
+
+    private final int PROJECT_RESPONSE_DIALOG = 0;
 
     public TaskPresenterImpl(TaskView view) {
         this.view = view;
@@ -218,9 +224,7 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
 
     @Override
     public void onPostProjectResponseSuccess(JSONObject jsonObject) {
-
         goBackToMissionView();
-
     }
 
     private void goBackToMissionView() {
@@ -234,5 +238,20 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
     @Override
     public void onPostProjectResponseError(Integer errorCode) {
 
+        String title = "Ops!";
+        String message;
+
+        if (errorCode == StatusCode.NETWORK_UNREACHABLE) {
+            message = "Kunne ikke sende responsen, siden du mangler tilkobling til Internett.";
+        } else {
+            message = "Det har skjedd en merkelig feil.";
+        }
+
+        DialogFragment dialog = new SimpleDialog();
+        Bundle args = new Bundle();
+        args.putString("title", title);
+        args.putString("message", message);
+        dialog.setArguments(args);
+        dialog.show(context.getSupportFragmentManager(), "tag");
     }
 }

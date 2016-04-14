@@ -37,10 +37,6 @@ public class MapPresenterImpl implements MapPresenter, ProjectInteractorImpl.OnF
     @Override
     public void onMarkerClick(int clickedProjectId) {
         Fragment context = (Fragment) view;
-//        FragmentManager fm = context.getFragmentManager();
-//        ProjectDialog projectDialog = ProjectDialog.newInstance(loadedProjects.get(clickedProjectId));
-//        projectDialog.show(fm, "fragment_project_dialog");
-
         DialogFragment dialogFrag = ProjectDialog.newInstance(loadedProjects.get(clickedProjectId-1));
         dialogFrag.setTargetFragment(context, PROJECT_DIALOG);
         dialogFrag.show(context.getFragmentManager().beginTransaction(), "dialog");
