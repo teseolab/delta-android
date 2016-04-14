@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import no.ntnu.mikaelr.delta.model.Project;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
+import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.view.MissionView;
 import no.ntnu.mikaelr.delta.view.TaskActivity;
 import org.json.JSONArray;
@@ -43,7 +45,9 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     private GoogleApiClient googleApiClient;
 
     private boolean tasksAreLoaded = false;
-    private boolean allTasksAreFinished = false; // TODO: Initialize when state is received from server
+
+    // TODO: Initialize when state is received from server
+    private boolean missionIsCompleted = false;
 
     static final int TASK_REQUEST = 1;
 
@@ -130,7 +134,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     @Override
     public void startLocationUpdates() {
-        if (!allTasksAreFinished) {
+        if (!missionIsCompleted) {
             int permissionCheck = ContextCompat.checkSelfPermission((Context) view, Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                 LocationRequest locationRequest = new LocationRequest();
@@ -168,12 +172,15 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     private void taskWasFinished() {
 
-        if (currentTaskIndex == loadedTasks.size()-1) {
+        missionIsCompleted = currentTaskIndex == loadedTasks.size() - 1;
+
+        if (missionIsCompleted) {
             currentTaskIndex = -1;
             view.setDistance("Gratulerer!");
             view.setHint("Du har fullført dette oppdraget.");
-            allTasksAreFinished = true;
             view.setMyLocationEnabled(false);
+            SharedPrefsUtil.saveMissionCompletionStatus(context, project.getId(), Constants.YES);
+
         } else {
             view.addMarkerForTask(loadedTasks.get(currentTaskIndex));
             currentTaskIndex++;

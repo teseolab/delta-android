@@ -1,5 +1,6 @@
 package no.ntnu.mikaelr.delta.interactor;
 
+import no.ntnu.mikaelr.delta.async_task.MissionIsCompletedAsyncTask;
 import no.ntnu.mikaelr.delta.async_task.PostResponseAsyncTask;
 import no.ntnu.mikaelr.delta.async_task.ProjectsAsyncTask;
 import no.ntnu.mikaelr.delta.async_task.TasksAsyncTask;
@@ -39,4 +40,16 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         String apiCall = "http://129.241.102.204:8080/projects/" + projectResponse.getProjectId() + "/responses";
         new PostResponseAsyncTask(apiCall, projectResponse.toJson(), listener).execute();
     }
+
+    public interface OnGetMissionForProjectIsCompletedByUser {
+        void onGetMissionForProjectIsCompletedByUserSuccess(Boolean result);
+        void onGetMissionForProjectIsCompletedByUserError(Integer errorCode);
+    }
+
+    @Override
+    public void getMissionForProjectIsCompletedByUser(int projectId, int userId, OnGetMissionForProjectIsCompletedByUser listener) {
+        String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/mission/user/" + userId + "/isCompleted";
+        new MissionIsCompletedAsyncTask(apiCall, listener).execute();
+    }
+
 }

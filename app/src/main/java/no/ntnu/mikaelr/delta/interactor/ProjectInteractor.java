@@ -8,4 +8,6 @@ public interface ProjectInteractor {
     void getTasks(int projectId, ProjectInteractorImpl.OnFinishedLoadingTasksListener listener);
 
     void postResponse(ProjectResponse response, ProjectInteractorImpl.OnPostProjectResponseListener listener);
+
+    void getMissionForProjectIsCompletedByUser(int projectId, int userId, ProjectInteractorImpl.OnGetMissionForProjectIsCompletedByUser listener);
 }

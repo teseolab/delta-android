@@ -2,7 +2,6 @@ package no.ntnu.mikaelr.delta.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -24,6 +23,12 @@ public class ProjectActivity extends AppCompatActivity implements ProjectView, V
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, presenter.getProject().getName());
         initializeView();
 
+    }
+
+    @Override
+    protected void onResume() {
+        presenter.setMissionCompletionStatus();
+        super.onResume();
     }
 
     // Initialization methods ------------------------------------------------------------------------------------------

@@ -137,7 +137,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     public void setMapLocationToMarkers() {
         if (map != null) {
             if (markers.size() == 1) {
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), 13F));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), 15.5f));
             } else {
                 map.moveCamera(newLatLngBounds(boundsBuilder.build(), 550));
             }

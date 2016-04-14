@@ -25,7 +25,7 @@ public abstract class PostAsyncTask extends AsyncTask<Void, Void, Pair<Integer, 
         ((SimpleClientHttpRequestFactory) template.getRequestFactory()).setConnectTimeout(1000 * 10);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-type", "application/json; charset=utf-8");
-        headers.set("Cookie", null);
+        headers.set("Cookie", null); //TODO: Set cookie
         HttpEntity<String> entity = new HttpEntity<String>(body, headers);
 
         try {
@@ -34,15 +34,15 @@ public abstract class PostAsyncTask extends AsyncTask<Void, Void, Pair<Integer, 
         }
 
         catch (HttpStatusCodeException e) {
-            return new Pair<Integer, ResponseEntity<String>>(e.getStatusCode().value(), null); //TODO: Handle
+            return new Pair<Integer, ResponseEntity<String>>(e.getStatusCode().value(), null);
         }
 
         catch (ResourceAccessException e) {
-            return new Pair<Integer, ResponseEntity<String>>(StatusCode.NETWORK_UNREACHABLE, null); //TODO: Handle
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.NETWORK_UNREACHABLE, null);
         }
 
         catch (UnknownHttpStatusCodeException e) {
-            return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_UNKNOWN, null); //TODO: Handle
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_UNKNOWN, null);
         }
     }
 
