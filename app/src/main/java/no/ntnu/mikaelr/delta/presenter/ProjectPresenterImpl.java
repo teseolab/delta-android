@@ -72,6 +72,7 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
 
     private void goToSuggestionList() {
         Intent intent = new Intent(context, SuggestionListActivity.class);
+        intent.putExtra("projectId", project.getId());
         context.startActivity(intent);
     }
 

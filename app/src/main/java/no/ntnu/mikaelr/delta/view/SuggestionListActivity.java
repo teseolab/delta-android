@@ -9,8 +9,12 @@ import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.presenter.SuggestionListPresenter;
+import no.ntnu.mikaelr.delta.presenter.SuggestionListPresenterImpl;
 
 public class SuggestionListActivity extends AppCompatActivity implements SuggestionListView, View.OnClickListener {
+
+    private SuggestionListPresenter presenter;
 
     // Lifecycle methods -----------------------------------------------------------------------------------------------
 
@@ -18,14 +22,14 @@ public class SuggestionListActivity extends AppCompatActivity implements Suggest
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suggestion_list);
+        this.presenter = new SuggestionListPresenterImpl(this);
 
         LinearLayout view = (LinearLayout) findViewById(R.id.activity_suggestion_list);
         view.setOnClickListener(this);
 
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Forslag");
 
-//        RelativeLayout suggestion = (RelativeLayout) findViewById(R.id.list_item_suggestion);
-//        suggestion.setOnClickListener(this);
+        presenter.loadSuggestions();
     }
 
     // Activity methods ------------------------------------------------------------------------------------------------

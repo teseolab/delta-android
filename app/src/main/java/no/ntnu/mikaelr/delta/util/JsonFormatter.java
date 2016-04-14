@@ -1,13 +1,14 @@
 package no.ntnu.mikaelr.delta.util;
 
-import no.ntnu.mikaelr.delta.model.Project;
-import no.ntnu.mikaelr.delta.model.Task;
+import no.ntnu.mikaelr.delta.model.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 public class JsonFormatter {
 
@@ -74,6 +75,54 @@ public class JsonFormatter {
         }
 
         return tasks;
+    }
+
+    public static List<Suggestion> formatSuggestions(JSONArray json) {
+
+        List<Suggestion> suggestions = new ArrayList<Suggestion>();
+
+        try {
+
+            for (int i = 0; i < json.length(); i++) {
+
+                JSONObject jsonSuggestion = json.getJSONObject(i);
+
+                Suggestion suggestion = new Suggestion();
+                suggestion.setId(jsonSuggestion.getInt("id"));
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(jsonSuggestion.getLong("date"));
+                suggestion.setDate(calendar.getTime());
+                suggestion.setImageUri(jsonSuggestion.getString("imageUri"));
+                suggestion.setTitle(jsonSuggestion.getString("title"));
+                suggestion.setDetails(jsonSuggestion.getString("details"));
+                suggestion.setAgreements(jsonSuggestion.getInt("agreements"));
+                suggestion.setDisagreements(jsonSuggestion.getInt("disagreements"));
+
+                JSONArray jsonComments = jsonSuggestion.getJSONArray("comments");
+                List<Comment> comments = new ArrayList<Comment>();
+
+                for (int j = 0; j < jsonComments.length(); j++) {
+                    JSONObject jsonComment = jsonComments.getJSONObject(j);
+                    Comment comment = new Comment();
+                    comment.setId(jsonComment.getInt("id"));
+                    calendar.setTimeInMillis(jsonComment.getLong("date"));
+                    comment.setDate(calendar.getTime());
+                    comment.setComment(jsonComment.getString("comment"));
+                    JSONObject jsonUser = jsonComment.getJSONObject("user");
+                    User user = new User(jsonUser.getInt("id"), jsonUser.getString("username"));
+                    comment.setUser(user);
+                    comments.add(comment);
+                }
+
+                suggestion.setComments(comments);
+            }
+        }
+
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return suggestions;
     }
 
 }

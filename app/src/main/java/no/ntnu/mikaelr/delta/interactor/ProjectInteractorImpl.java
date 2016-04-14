@@ -1,9 +1,6 @@
 package no.ntnu.mikaelr.delta.interactor;
 
-import no.ntnu.mikaelr.delta.async_task.MissionIsCompletedAsyncTask;
-import no.ntnu.mikaelr.delta.async_task.PostResponseAsyncTask;
-import no.ntnu.mikaelr.delta.async_task.ProjectsAsyncTask;
-import no.ntnu.mikaelr.delta.async_task.TasksAsyncTask;
+import no.ntnu.mikaelr.delta.async_task.*;
 import no.ntnu.mikaelr.delta.model.ProjectResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,7 +31,6 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         void onPostProjectResponseSuccess(JSONObject jsonObject);
         void onPostProjectResponseError(Integer errorCode);
     }
-
     @Override
     public void postResponse(ProjectResponse projectResponse, OnPostProjectResponseListener listener) {
         String apiCall = "http://129.241.102.204:8080/projects/" + projectResponse.getProjectId() + "/responses";
@@ -45,11 +41,20 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         void onGetMissionForProjectIsCompletedByUserSuccess(Boolean result);
         void onGetMissionForProjectIsCompletedByUserError(Integer errorCode);
     }
-
     @Override
     public void getMissionForProjectIsCompletedByUser(int projectId, int userId, OnGetMissionForProjectIsCompletedByUser listener) {
         String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/mission/user/" + userId + "/isCompleted";
         new MissionIsCompletedAsyncTask(apiCall, listener).execute();
     }
 
+    public interface OnFinishedLoadingSuggestionsListener {
+        void onFinishedLoadingSuggestionsSuccess(JSONArray jsonArray);
+        void onFinishedLoadingSuggestionsError(Integer errorCode);
+    }
+
+    @Override
+    public void getSuggestions(int projectId, OnFinishedLoadingSuggestionsListener listener) {
+        String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/suggestions";
+        new SuggestionsAsyncTask(apiCall, listener).execute();
+    }
 }

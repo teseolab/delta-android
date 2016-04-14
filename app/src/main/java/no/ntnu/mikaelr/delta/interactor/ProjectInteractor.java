@@ -6,6 +6,7 @@ public interface ProjectInteractor {
 
     void getProjects(ProjectInteractorImpl.OnFinishedLoadingProjectsListener listener);
     void getTasks(int projectId, ProjectInteractorImpl.OnFinishedLoadingTasksListener listener);
+    void getSuggestions(int projectId, ProjectInteractorImpl.OnFinishedLoadingSuggestionsListener listener);
 
     void postResponse(ProjectResponse response, ProjectInteractorImpl.OnPostProjectResponseListener listener);
 
