@@ -21,4 +21,6 @@ public interface MissionPresenter {
     void startLocationUpdates();
 
     void onActivityResult(int requestCode, Intent data);
+
+    void onMarkerClick(int clickedTaskId);
 }

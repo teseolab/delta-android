@@ -1,8 +1,11 @@
 package no.ntnu.mikaelr.delta.interactor;
 
+import no.ntnu.mikaelr.delta.async_task.PostResponseAsyncTask;
 import no.ntnu.mikaelr.delta.async_task.ProjectsAsyncTask;
 import no.ntnu.mikaelr.delta.async_task.TasksAsyncTask;
+import no.ntnu.mikaelr.delta.model.ProjectResponse;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class ProjectInteractorImpl implements ProjectInteractor {
 
@@ -22,8 +25,18 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void getTasks(int projectId, OnFinishedLoadingTasksListener listener) {
-        int incrementedProjectId = projectId + 1;
-        String apiCall = "http://129.241.102.204:8080/projects/" + incrementedProjectId + "/tasks";
+        String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/tasks";
         new TasksAsyncTask(apiCall, listener).execute();
+    }
+
+    public interface OnPostProjectResponseListener {
+        void onPostProjectResponseSuccess(JSONObject jsonObject);
+        void onPostProjectResponseError(Integer errorCode);
+    }
+
+    @Override
+    public void postResponse(ProjectResponse projectResponse, OnPostProjectResponseListener listener) {
+        String apiCall = "http://129.241.102.204:8080/projects/" + projectResponse.getProjectId() + "/responses";
+        new PostResponseAsyncTask(apiCall, projectResponse.toJson(), listener).execute();
     }
 }

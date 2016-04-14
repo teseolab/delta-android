@@ -17,9 +17,8 @@ public class TaskActivity extends AppCompatActivity implements TaskView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task);
+        //setContentView(R.layout.activity_task_scale);
         this.presenter = new TaskPresenterImpl(this);
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + presenter.getTask().getId());
     }
 
     @Override

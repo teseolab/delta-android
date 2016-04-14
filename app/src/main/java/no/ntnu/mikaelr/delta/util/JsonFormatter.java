@@ -20,7 +20,7 @@ public class JsonFormatter {
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jsonProject = json.getJSONObject(i);
                 Project project = new Project();
-                project.setId(jsonProject.getInt("id")-1);
+                project.setId(jsonProject.getInt("id"));
                 project.setName(jsonProject.getString("name"));
                 project.setLatitude((float)jsonProject.getDouble("latitude"));
                 project.setLongitude((float)jsonProject.getDouble("longitude"));

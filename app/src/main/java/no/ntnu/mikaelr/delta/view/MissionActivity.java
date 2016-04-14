@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,8 +22,10 @@ import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.MissionPresenter;
 import no.ntnu.mikaelr.delta.presenter.MissionPresenterImpl;
+import no.ntnu.mikaelr.delta.presenter.TestMissionPresenterImpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
@@ -36,6 +39,8 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     private List<Marker> markers = new ArrayList<Marker>();
     private LatLngBounds.Builder boundsBuilder;
 
+    private HashMap<String, Integer> markerIdsAndTaskIds = new HashMap<String, Integer>();
+
     // Activity methods ------------------------------------------------------------------------------------------------
 
     @Override
@@ -46,6 +51,12 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, presenter.getProject().getName()+" oppdrag");
         presenter.connectApiClient();
         initializeMap();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_test_mission, menu);
+        return true;
     }
 
     @Override
@@ -85,7 +96,14 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+        if (item.getItemId() == R.id.action_cheat) {
+            Task currentTask = presenter.getCurrentTask();
+            if (currentTask != null) {
+                addMarkerForTask(currentTask);
+            }
+        } else {
+            finish();
+        }
         return true;
     }
 
@@ -111,6 +129,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
             Marker marker = map.addMarker(options);
             markers.add(marker);
             boundsBuilder.include(marker.getPosition());
+            markerIdsAndTaskIds.put(marker.getId(), task.getId());
         }
     }
 
@@ -150,7 +169,9 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        return false;
+        int clickedTaskId = markerIdsAndTaskIds.get(marker.getId());
+        presenter.onMarkerClick(clickedTaskId);
+        return true;
     }
 
     @Override

@@ -22,8 +22,6 @@ import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
 import no.ntnu.mikaelr.delta.view.MissionView;
 import no.ntnu.mikaelr.delta.view.TaskActivity;
-import no.ntnu.mikaelr.delta.view.TestTask1Activity;
-import no.ntnu.mikaelr.delta.view.TestTask2Activity;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -40,7 +38,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     private List<Task> loadedTasks;
 
-    private int currentTaskListId = 0;
+    private int currentTaskIndex = 0;
 
     private GoogleApiClient googleApiClient;
 
@@ -81,7 +79,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     }
 
     private Location getCurrentTaskLocation() {
-        Task currentTask = loadedTasks.get(currentTaskListId);
+        Task currentTask = loadedTasks.get(this.currentTaskIndex);
         float taskLatitude = currentTask.getLatitude();
         float taskLongitude = currentTask.getLongitude();
         Location taskLocation = new Location("randomProvider");
@@ -104,7 +102,10 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     @Override
     public Task getCurrentTask() {
-        return loadedTasks.get(currentTaskListId);
+        if (currentTaskIndex == -1) {
+            return null;
+        }
+        return loadedTasks.get(currentTaskIndex);
     }
 
     @Override
@@ -154,22 +155,31 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         }
     }
 
+    @Override
+    public void onMarkerClick(int clickedTaskId) {
+        if (currentTaskIndex != -1) {
+            if (clickedTaskId == getCurrentTask().getId()) {
+                goToTask();
+            }
+        }
+    }
+
     private void taskWasCancelled() {
         view.showMessage("Oppgave ble avbrutt", Toast.LENGTH_SHORT);
     }
 
     private void taskWasFinished() {
 
-        if (currentTaskListId == loadedTasks.size()-1) {
-            currentTaskListId = -1;
+        if (currentTaskIndex == loadedTasks.size()-1) {
+            currentTaskIndex = -1;
             view.setDistance("Gratulerer!");
             view.setHint("Du har fullført dette oppdraget.");
             allTasksAreFinished = true;
             view.setMyLocationEnabled(false);
         } else {
-            view.addMarkerForTask(loadedTasks.get(currentTaskListId));
-            currentTaskListId++;
-            view.setHint(loadedTasks.get(currentTaskListId).getHint());
+            view.addMarkerForTask(loadedTasks.get(currentTaskIndex));
+            currentTaskIndex++;
+            view.setHint(loadedTasks.get(currentTaskIndex).getHint());
         }
     }
 
@@ -178,7 +188,6 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     @Override
     public void onFinishedLoadingTasks(JSONArray jsonArray) {
         List<Task> tasks = JsonFormatter.formatTasks(jsonArray);
-        Collections.reverse(tasks);
         tasks.add(0, getDefaultFirstTask());
 
         loadedTasks = tasks;
@@ -186,7 +195,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         addMarkers();
 
         view.setMapLocationToMarkers();
-        view.setHint(tasks.get(currentTaskListId).getHint());
+        view.setHint(tasks.get(currentTaskIndex).getHint());
 
 
         tasksAreLoaded = true;
@@ -197,10 +206,10 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     }
 
     private void addMarkers() {
-        if (currentTaskListId == 0) {
+        if (currentTaskIndex == 0) {
             view.addMarkerForTask(loadedTasks.get(0));
         } else {
-            for (int i = 0; i < currentTaskListId -1; i++) {
+            for (int i = 0; i < currentTaskIndex -1; i++) {
                 view.addMarkerForTask(loadedTasks.get(i));
             }
         }
@@ -243,7 +252,8 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         view.setDistance("Neste punkt: " + String.format("%.0f", distanceToTaskLocation) + " m");
 
         if (userHasFoundTaskLocation(distanceToTaskLocation)) {
-            goToTask();
+            view.addMarkerForTask(getCurrentTask());
+            //goToTask();
         }
 
     }
@@ -254,9 +264,11 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     }
 
     private void goToTask() {
-//        Activity context = (Activity) view;
-//        Intent intent = new Intent(context, TaskActivity.class);
-//        intent.putExtra("task", loadedTasks.get(currentTaskListId));
-//        context.startActivityForResult(intent, TASK_REQUEST);
+        Activity context = (Activity) view;
+        Intent intent = new Intent(context, TaskActivity.class);
+        intent.putExtra("task", loadedTasks.get(currentTaskIndex));
+        intent.putExtra("taskIndex", currentTaskIndex);
+        intent.putExtra("projectId", project.getId());
+        context.startActivityForResult(intent, TASK_REQUEST);
     }
 }

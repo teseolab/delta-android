@@ -2,18 +2,11 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
+        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-d7d195e19d9d88a046ef3570f3162ada1222e645.jar" />
-    </item>
-    <item
-        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="8e673cdfadd8f2d98fdb2fda2285c30f6e449782">
-        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-8a29466d2ae966d9ce9d93b920eea21c113f5bc5.jar" />
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1-95f77bcc3f3bd0724404095ff957197db48b3443.jar" />
     </item>
     <item
         jar="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\8.4.0\jars\classes.jar"
@@ -30,11 +23,11 @@
         <dex dex="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1-43513090b644c49e2ab94f4a66b6c7240bb97613.jar" />
     </item>
     <item
-        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.4.0\jars\classes.jar"
+        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="fef2b3e4b6b1b0e5fe7b69fa137a5fa55a3182ab">
-        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-42e51d81a78fbbdbb9f7349ef1f94aa0bff44c36.jar" />
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-dd9042db7f311d1695b53de2909df193c7375366.jar" />
     </item>
     <item
         jar="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\jars\classes.jar"
@@ -44,11 +37,11 @@
         <dex dex="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\pre-dexed\debug\classes-e9ff475eaa47fee271866286238c03790bd9d6af.jar" />
     </item>
     <item
-        jar="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
+        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.4.0\jars\classes.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\pre-dexed\debug\classes-4de113104caa66b76ed04111062d7c6ded28bd82.jar" />
+        sha1="fef2b3e4b6b1b0e5fe7b69fa137a5fa55a3182ab">
+        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-42e51d81a78fbbdbb9f7349ef1f94aa0bff44c36.jar" />
     </item>
     <item
         jar="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
@@ -58,25 +51,11 @@
         <dex dex="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\pre-dexed\debug\classes-c228e1300d17a9ee565194edaa2c4c0086c217af.jar" />
     </item>
     <item
-        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.4.0\jars\classes.jar"
+        jar="C:\Users\mikaelr\.gradle\caches\modules-2\files-2.1\org.springframework.android\spring-android-core\2.0.0.M3\c7e2c60943248bbce5de6cf552592281ed2296b\spring-android-core-2.0.0.M3.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="04de44f90606c77f3b28cf44861f306290505aac">
-        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-969f8faeea8e4f8a6feadbb67749f89a39c8979d.jar" />
-    </item>
-    <item
-        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
-        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1-95f77bcc3f3bd0724404095ff957197db48b3443.jar" />
-    </item>
-    <item
-        jar="C:\dev-tools\android-sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
-        <dex dex="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\pre-dexed\debug\support-annotations-23.1.1-f728aa740fb2b202003ce05a359cc50d78269168.jar" />
+        sha1="0c7e2c60943248bbce5de6cf552592281ed2296b">
+        <dex dex="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\pre-dexed\debug\spring-android-core-2.0.0.M3-482b9f82f09bb7f76da98ee570b7dd66f5fe4cbf.jar" />
     </item>
     <item
         jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\8.4.0\jars\classes.jar"
@@ -84,6 +63,13 @@
         revision="23.0.2"
         sha1="a8412b654dab86d57bf90683367488211c8a81f1">
         <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-cdf8e522cec3f5abe82060142d48d06cb1c8dc42.jar" />
+    </item>
+    <item
+        jar="C:\dev-tools\android-sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\pre-dexed\debug\support-annotations-23.1.1-f728aa740fb2b202003ce05a359cc50d78269168.jar" />
     </item>
     <item
         jar="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.4.0\jars\classes.jar"
@@ -100,11 +86,39 @@
         <dex dex="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\pre-dexed\debug\classes-597deff0f61eadeb931f78873b9f7df39af35094.jar" />
     </item>
     <item
-        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
+        jar="C:\Users\mikaelr\.gradle\caches\modules-2\files-2.1\org.springframework.android\spring-android-rest-template\2.0.0.M3\204c594c2a47073b30d3cb14ca69ba1066c4e44c\spring-android-rest-template-2.0.0.M3.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
-        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-dd9042db7f311d1695b53de2909df193c7375366.jar" />
+        sha1="204c594c2a47073b30d3cb14ca69ba1066c4e44c">
+        <dex dex="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\pre-dexed\debug\spring-android-rest-template-2.0.0.M3-b74e21522aab3044d4b29c53dbc8b6f8357c6f4f.jar" />
+    </item>
+    <item
+        jar="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="C:\Users\mikaelr\Development\DeltaMock\app\build\intermediates\pre-dexed\debug\classes-4de113104caa66b76ed04111062d7c6ded28bd82.jar" />
+    </item>
+    <item
+        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="04de44f90606c77f3b28cf44861f306290505aac">
+        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-969f8faeea8e4f8a6feadbb67749f89a39c8979d.jar" />
+    </item>
+    <item
+        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8e673cdfadd8f2d98fdb2fda2285c30f6e449782">
+        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-8a29466d2ae966d9ce9d93b920eea21c113f5bc5.jar" />
+    </item>
+    <item
+        jar="C:\Users\mikaelr\Development\Delta\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="C:\Users\mikaelr\Development\Delta\app\build\intermediates\pre-dexed\debug\classes-d7d195e19d9d88a046ef3570f3162ada1222e645.jar" />
     </item>
 
 </items>

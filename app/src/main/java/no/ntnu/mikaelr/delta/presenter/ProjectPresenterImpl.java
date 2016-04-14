@@ -33,7 +33,7 @@ public class ProjectPresenterImpl implements ProjectPresenter {
     }
 
     private void goToMission() {
-        Intent intent = new Intent(context, TestMissionActivity.class);
+        Intent intent = new Intent(context, MissionActivity.class);
         intent.putExtra("projectId", project.getId());
         intent.putExtra("projectName", project.getName());
         intent.putExtra("latitude", project.getLatitude());

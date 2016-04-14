@@ -109,8 +109,7 @@ public class TestMissionPresenterImpl implements TestMissionPresenter, ProjectIn
         if (currentTaskListId == -1) {
             return null;
         }
-        Task task = loadedTasks.get(currentTaskListId);
-        return task;
+        return loadedTasks.get(currentTaskListId);
     }
 
     @Override
