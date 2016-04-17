@@ -1,6 +1,13 @@
 package no.ntnu.mikaelr.delta.model;
 
+import no.ntnu.mikaelr.delta.util.DateFormatter;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -17,8 +24,23 @@ public class Suggestion implements Serializable {
 
     private User user;
     private List<Comment> comments;
+    private Integer projectId;
 
     public Suggestion() {}
+
+    public String toJson() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("title", title);
+            json.put("details", details);
+            json.put("date", DateFormatter.millisFromDate(date));
+            json.put("imageUri", imageUri);
+            json.put("projectId", projectId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
 
     public Integer getId() {
         return id;
@@ -98,5 +120,13 @@ public class Suggestion implements Serializable {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public Integer getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
     }
 }

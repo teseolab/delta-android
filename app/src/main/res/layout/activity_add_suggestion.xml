@@ -13,13 +13,15 @@
         android:padding="15dp">
 
         <EditText
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:inputType="textCapSentences"
-            android:hint="Tittel"/>
+            android:hint="@string/title"/>
 
         <EditText
+            android:id="@+id/details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Ditt forslag her"
@@ -33,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:text="Legg til bilde"/>
+            android:text="@string/add_picture"/>
 
     </LinearLayout>
 

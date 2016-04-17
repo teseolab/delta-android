@@ -2,6 +2,7 @@ package no.ntnu.mikaelr.delta.interactor;
 
 import no.ntnu.mikaelr.delta.async_task.*;
 import no.ntnu.mikaelr.delta.model.ProjectResponse;
+import no.ntnu.mikaelr.delta.model.Suggestion;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -89,6 +90,17 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     public void postDisagreement(int suggestionId, OnPostDisagreementListener listener) {
         String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/disagree";
         new DisagreementAsyncTask(apiCall, listener).execute();
+    }
+
+    public interface OnPostSuggestionListener {
+        void onPostSuggestionSuccess(JSONObject jsonSuggestion);
+        void onPostSuggestionError(int errorCode);
+    }
+
+    @Override
+    public void postSuggestion(Suggestion suggestion, OnPostSuggestionListener listener) {
+        String apiCall = "http://129.241.102.204:8080/suggestions";
+        new AddSuggestionAsyncTask(apiCall, suggestion.toJson(), listener).execute();
     }
 
 }

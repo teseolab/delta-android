@@ -24,4 +24,11 @@ public class DateFormatter {
         return calendar.getTime();
     }
 
+    public static long millisFromDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.getTimeInMillis();
+
+    }
+
 }
