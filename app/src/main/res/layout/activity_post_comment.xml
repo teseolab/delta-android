@@ -6,11 +6,14 @@
 
     <include layout="@layout/toolbar"/>
 
-    <ListView
-        android:id="@+id/suggestion_list"
+    <EditText
+        android:id="@+id/comment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:footerDividersEnabled="false"
-        android:divider="@android:color/transparent"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:hint="@string/your_comment"
+        android:inputType="textMultiLine|textCapSentences"
+        android:lines="7"
+        android:minLines="1"/>
 
 </LinearLayout>

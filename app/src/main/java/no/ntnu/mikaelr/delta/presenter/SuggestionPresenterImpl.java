@@ -1,7 +1,6 @@
 package no.ntnu.mikaelr.delta.presenter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
@@ -10,9 +9,11 @@ import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.presenter.signature.SuggestionPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
+import no.ntnu.mikaelr.delta.view.PostCommentActivity;
 import no.ntnu.mikaelr.delta.view.signature.SuggestionView;
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInteractorImpl.OnFinishedLoadingCommentsListener, ProjectInteractorImpl.OnPostAgreementListener, ProjectInteractorImpl.OnPostDisagreementListener {
@@ -22,6 +23,8 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
     private ProjectInteractor projectInteractor;
 
     private Suggestion suggestion;
+
+    private final int COMMENT_REQUEST = 1;
 
     public SuggestionPresenterImpl(SuggestionView view) {
         this.view = view;
@@ -76,6 +79,26 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
         intent.putExtra("suggestionIndex", context.getIntent().getIntExtra("suggestionIndex", -1));
         context.setResult(Activity.RESULT_OK, intent);
         context.finish();
+    }
+
+    @Override
+    public void goToPostComment() {
+        Intent intent = new Intent(context, PostCommentActivity.class);
+        intent.putExtra("suggestionId", suggestion.getId());
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        context.startActivityForResult(intent, COMMENT_REQUEST);
+    }
+
+    // LISTENERS -------------------------------------------------------------------------------------------------------
+
+    @Override
+    public void onActivityResult(int requestCode, Intent data) {
+        if (requestCode == COMMENT_REQUEST) {
+            @SuppressWarnings("unchecked")
+            ArrayList<Comment> comments = (ArrayList<Comment>) data.getSerializableExtra("comments");
+            view.updateComments(comments);
+            view.hideEmptyListMessage();
+        }
     }
 
     // ASYNC TASK LISTENERS --------------------------------------------------------------------------------------------

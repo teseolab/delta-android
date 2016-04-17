@@ -3,10 +3,12 @@ package no.ntnu.mikaelr.delta.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.adapter.SuggestionListAdapter;
 import no.ntnu.mikaelr.delta.model.Suggestion;
@@ -19,6 +21,7 @@ import java.util.List;
 public class SuggestionListActivity extends AppCompatActivity implements SuggestionListView, AdapterView.OnItemClickListener {
 
     private SuggestionListPresenter presenter;
+    ListView listView;
     SuggestionListAdapter listAdapter;
 
 
@@ -34,11 +37,25 @@ public class SuggestionListActivity extends AppCompatActivity implements Suggest
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Forslag");
 
         listAdapter = new SuggestionListAdapter(this);
-        ListView listView = (ListView) findViewById(R.id.suggestion_list);
+        listView = (ListView) findViewById(R.id.suggestion_list);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(this);
 
         presenter.loadSuggestions();
+    }
+
+    // PRIVATE METHODS -------------------------------------------------------------------------------------------------
+
+    private void addFooterView(String message) {
+
+        View emptyView = getLayoutInflater().inflate(R.layout.list_item_empty, null);
+        TextView textView = (TextView) emptyView.findViewById(R.id.message);
+        textView.setText(message);
+        textView.setTextSize(16);
+        int dp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
+        textView.setPadding(0, dp, 0, 0);
+        listView.addFooterView(emptyView);
+
     }
 
     // ACTIVITY --------------------------------------------------------------------------------------------------------
@@ -54,6 +71,11 @@ public class SuggestionListActivity extends AppCompatActivity implements Suggest
     @Override
     public void updateList(List<Suggestion> suggestions) {
         listAdapter.updateList(suggestions);
+    }
+
+    @Override
+    public void setEmptyListMessage(String message) {
+        addFooterView(message);
     }
 
     // LISTENERS -------------------------------------------------------------------------------------------------------

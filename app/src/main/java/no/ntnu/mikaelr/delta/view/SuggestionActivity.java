@@ -1,7 +1,10 @@
 package no.ntnu.mikaelr.delta.view;
 
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -22,6 +25,7 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
 
     private CommentListAdapter listAdapter;
     private ListView listView;
+    private View emptyView;
 
     TextView agreements;
     TextView disagreements;
@@ -63,6 +67,10 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
         TextView details = (TextView) header.findViewById(R.id.details);
         agreements = (TextView) header.findViewById(R.id.agreements);
         disagreements = (TextView) header.findViewById(R.id.disagreements);
+        AppCompatButton commentButton = (AppCompatButton) header.findViewById(R.id.add_comment_button);
+        ColorStateList csl = ColorStateList.valueOf(0xff80CBC4); // TODO: Replace with color resource
+        commentButton.setSupportBackgroundTintList(csl);
+        commentButton.setOnClickListener(this);
 
         Suggestion suggestion = presenter.getSuggestion();
 
@@ -87,9 +95,10 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
 
     private void addFooterView(String message) {
 
-        View emptyView = getLayoutInflater().inflate(R.layout.list_item_empty, null);
+        emptyView = getLayoutInflater().inflate(R.layout.list_item_empty, null);
         TextView textView = (TextView) emptyView.findViewById(R.id.message);
         textView.setText(message);
+        textView.setPadding(20, 40, 20, 40);
         listView.addFooterView(emptyView);
 
     }
@@ -162,6 +171,13 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
     }
 
     @Override
+    public void hideEmptyListMessage() {
+        listView.removeFooterView(emptyView);
+    }
+
+    // LISTENERS -------------------------------------------------------------------------------------------------------
+
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -178,8 +194,17 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
                     presenter.postDisagreement();
                 }
                 break;
-
+            case R.id.add_comment_button:
+                presenter.goToPostComment();
+                break;
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            presenter.onActivityResult(requestCode, data);
+        }
     }
 }

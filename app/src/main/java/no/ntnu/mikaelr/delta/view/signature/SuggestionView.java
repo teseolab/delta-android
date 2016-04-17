@@ -15,4 +15,5 @@ public interface SuggestionView {
     void setSelectedButtonThumbsDown();
 
     void setEmptyListMessage(String message);
+    void hideEmptyListMessage();
 }

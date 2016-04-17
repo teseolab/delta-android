@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -110,9 +111,9 @@ public class JsonFormatter {
         return suggestions;
     }
 
-    public static List<Comment> formatComments(JSONArray json) {
+    public static ArrayList<Comment> formatComments(JSONArray json) {
 
-        List<Comment> comments = new ArrayList<Comment>();
+        ArrayList<Comment> comments = new ArrayList<Comment>();
 
         try {
 

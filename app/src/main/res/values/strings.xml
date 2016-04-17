@@ -11,4 +11,6 @@
     <string name="your_response_here">Din tilbakemelding her</string>
     <string name="title">Tittel</string>
     <string name="add_picture">Legg til bilde</string>
+    <string name="write_comment">Skriv kommentar</string>
+    <string name="your_comment">Din kommentar</string>
 </resources>

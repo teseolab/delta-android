@@ -1,8 +1,9 @@
 package no.ntnu.mikaelr.delta.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Comment {
+public class Comment implements Serializable {
 
     private Integer id;
     private Date date;

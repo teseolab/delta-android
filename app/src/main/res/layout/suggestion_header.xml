@@ -112,4 +112,14 @@
         android:paddingEnd="15dp"
         android:background="@color/list_divider"/>
 
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/add_comment_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/white"
+        android:text="@string/write_comment"/>
+
 </LinearLayout>

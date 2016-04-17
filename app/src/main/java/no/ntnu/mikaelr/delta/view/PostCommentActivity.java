@@ -11,36 +11,33 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.presenter.AddSuggestionPresenterImpl;
+import no.ntnu.mikaelr.delta.presenter.PostCommentPresenterImpl;
 import no.ntnu.mikaelr.delta.presenter.signature.AddSuggestionPresenter;
+import no.ntnu.mikaelr.delta.presenter.signature.PostCommentPresenter;
 
-public class AddSuggestionActivity extends AppCompatActivity {
+public class PostCommentActivity extends AppCompatActivity {
 
-    private AddSuggestionPresenter presenter;
+    private PostCommentPresenter presenter;
 
-    private EditText title;
-    private EditText details;
+    private EditText comment;
 
     // LIFECYCLE -------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_suggestion);
-        this.presenter = new AddSuggestionPresenterImpl(this);
+        setContentView(R.layout.activity_post_comment);
+        this.presenter = new PostCommentPresenterImpl(this);
 
         initializeView();
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Nytt forslag");
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Ny kommentar");
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
 
     private void initializeView() {
-        title = (EditText) findViewById(R.id.title);
-        title.requestFocus();
-        details = (EditText) findViewById(R.id.details);
-        AppCompatButton v = (AppCompatButton) findViewById(R.id.add_image_button);
-        ColorStateList csl = ColorStateList.valueOf(0xff26A69A);
-        v.setSupportBackgroundTintList(csl);
+        comment = (EditText) findViewById(R.id.comment);
+        comment.requestFocus();
 
         // Makes the keyboard appear
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -58,15 +55,15 @@ public class AddSuggestionActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_task_done) {
-            String title = this.title.getText().toString();
-            String details = this.details.getText().toString();
-            presenter.onDoneClick(title, details);
+            String commentText = this.comment.getText().toString();
+            presenter.onDoneClick(commentText);
         } else {
             finish();
         }
 
+        // Makes the keyboard disappear
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(title.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(comment.getWindowToken(), 0);
 
         return true;
     }

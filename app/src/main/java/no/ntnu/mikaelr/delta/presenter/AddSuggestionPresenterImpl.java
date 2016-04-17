@@ -1,6 +1,5 @@
 package no.ntnu.mikaelr.delta.presenter;
 
-import android.app.Activity;
 import android.content.Intent;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
@@ -15,12 +14,13 @@ import java.util.Calendar;
 public class AddSuggestionPresenterImpl implements AddSuggestionPresenter, ProjectInteractorImpl.OnPostSuggestionListener {
 
     private AddSuggestionActivity view;
-
     private ProjectInteractor interactor;
+    private int projectId;
 
     public AddSuggestionPresenterImpl(AddSuggestionActivity view) {
         this.view = view;
         this.interactor = new ProjectInteractorImpl();
+        this.projectId = view.getIntent().getIntExtra("projectId", -1);
     }
 
     // INTERFACE METHODS
@@ -31,8 +31,8 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter, Proje
         suggestion.setTitle(title);
         suggestion.setDetails(details);
         suggestion.setDate(Calendar.getInstance().getTime());
-        suggestion.setImageUri("no image");
-        suggestion.setProjectId(1); // TODO: Set real id
+        suggestion.setImageUri("no image"); // TODO: Image
+        suggestion.setProjectId(projectId);
         interactor.postSuggestion(suggestion, this);
     }
 
@@ -40,9 +40,11 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter, Proje
 
     @Override
     public void onPostSuggestionSuccess(JSONObject jsonSuggestion) {
-        Intent intent = new Intent(view, SuggestionListActivity.class);
-        intent.putExtra("projectId", 1); // TODO: Set real id
-        view.startActivity(intent);
+        if (projectId != -1) {
+            Intent intent = new Intent(view, SuggestionListActivity.class);
+            intent.putExtra("projectId", projectId);
+            view.startActivity(intent);
+        }
     }
 
     @Override

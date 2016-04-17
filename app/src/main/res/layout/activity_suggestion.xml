@@ -10,17 +10,9 @@
     <ListView
         android:id="@+id/comment_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:listSelector="@android:color/transparent"
         android:footerDividersEnabled="false"
-        android:divider="#fff"
-        android:dividerHeight="1px"/>
-
-    <TextView
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"/>
-
+        android:divider="@color/white"/>
 
 </LinearLayout>

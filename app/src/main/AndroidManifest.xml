@@ -36,6 +36,9 @@
         <activity android:name=".view.AddSuggestionActivity"
                   android:screenOrientation="portrait"/>
 
+        <activity android:name=".view.PostCommentActivity"
+                  android:screenOrientation="portrait"/>
+
 
 
         <activity android:name=".view.TestMissionActivity"

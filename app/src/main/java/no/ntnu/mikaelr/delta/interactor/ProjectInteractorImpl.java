@@ -103,4 +103,16 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         new AddSuggestionAsyncTask(apiCall, suggestion.toJson(), listener).execute();
     }
 
+    public interface OnPostCommentListener {
+        void onPostCommentSuccess(JSONArray jsonArray);
+        void onPostCommentError(int errorCode);
+    }
+
+    @Override
+    public void postComment(String comment, int suggestionId, OnPostCommentListener listener) {
+        String apiCall = "http://129.241.102.204:8080/suggestions/+" + suggestionId + "/comments";
+
+        new PostCommentAsyncTask(apiCall, comment, listener).execute();
+    }
+
 }
