@@ -16,5 +16,11 @@
         android:divider="#fff"
         android:dividerHeight="1px"/>
 
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+
 
 </LinearLayout>

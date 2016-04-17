@@ -84,11 +84,14 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
     public void onFinishedLoadingCommentsSuccess(JSONArray jsonArray) {
         List<Comment> comments = JsonFormatter.formatComments(jsonArray);
         view.updateComments(comments);
+        if (comments.size() == 0) {
+            view.setEmptyListMessage("Det er ingen kommentarer enda. Bli den første til å skrive noe!");
+        }
     }
 
     @Override
     public void onFinishedLoadingCommentsError(Integer errorCode) {
-
+        view.setEmptyListMessage("Kunne ikke laste inn kommentarer :(");
     }
 
     @Override

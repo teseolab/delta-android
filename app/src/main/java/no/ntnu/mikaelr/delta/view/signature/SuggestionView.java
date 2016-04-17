@@ -13,4 +13,6 @@ public interface SuggestionView {
     void updateAgreements();
     void setSelectedButtonThumbsUp();
     void setSelectedButtonThumbsDown();
+
+    void setEmptyListMessage(String message);
 }

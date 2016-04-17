@@ -35,15 +35,24 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
         this.presenter = new SuggestionPresenterImpl(this);
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Forslag");
 
-        initializeList();
-        initializeHeader();
+        initializeListAdapter();
+        addHeaderView();
 
         presenter.loadComments(presenter.getSuggestion().getId());
     }
 
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+        listView = (ListView) findViewById(R.id.comment_list);
+//        TextView emptyView = (TextView) findViewById(R.id.empty_view);
+//        emptyView.setText("Det er ingen kommentarer enda.");
+//        listView.setEmptyView(emptyView);
+    }
+
     // PRIVATE METHODS -------------------------------------------------------------------------------------------------
 
-    private void initializeHeader() {
+    private void addHeaderView() {
 
         LinearLayout header = (LinearLayout) getLayoutInflater().inflate(R.layout.suggestion_header, null);
 
@@ -62,13 +71,12 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
         date.setText(DateFormatter.format(suggestion.getDate(), "dd.MM.yy"));
         title.setText(suggestion.getTitle());
         details.setText(suggestion.getDetails());
-        agreements.setText(suggestion.getAgreements() + " bukere er enige");
-        disagreements.setText(suggestion.getDisagreements() + " brukere er uenige");
+        updateAgreements();
 
         if (presenter.userAgrees()) {
-            agreements.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_achievement, 0, 0);
+            agreements.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_thumbs_up_selected, 0, 0);
         } else if (presenter.userDisagrees()) {
-            disagreements.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_achievement, 0, 0);
+            disagreements.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_thumbs_down_selected, 0, 0);
         }
 
         agreements.setOnClickListener(this);
@@ -77,9 +85,17 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
         listView.addHeaderView(header);
     }
 
-    private void initializeList() {
+    private void addFooterView(String message) {
+
+        View emptyView = getLayoutInflater().inflate(R.layout.list_item_empty, null);
+        TextView textView = (TextView) emptyView.findViewById(R.id.message);
+        textView.setText(message);
+        listView.addFooterView(emptyView);
+
+    }
+
+    private void initializeListAdapter() {
         listAdapter = new CommentListAdapter(this);
-        listView = (ListView) findViewById(R.id.comment_list);
         listView.setAdapter(listAdapter);
     }
 
@@ -111,20 +127,38 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
 
     @Override
     public void updateAgreements() {
-        agreements.setText(presenter.getSuggestion().getAgreements() + " brukere er enige");
-        disagreements.setText(presenter.getSuggestion().getDisagreements() + " brukere er uenige");
+        String agreeText, disagreeText;
+
+        Integer numberOfAgreements = presenter.getSuggestion().getAgreements();
+        Integer numberOfDisagreements = presenter.getSuggestion().getDisagreements();
+
+        if (numberOfAgreements == 0) agreeText = "Ingen er enige";
+        else if (numberOfAgreements == 1) agreeText = "1 bruker er enig";
+        else agreeText = numberOfAgreements + " brukere er enige";
+
+        if (numberOfDisagreements == 0) disagreeText = "Ingen er uenige";
+        else if (numberOfDisagreements == 1) disagreeText = "1 bruker er uenig";
+        else disagreeText = numberOfDisagreements + " brukere er uenige";
+
+        this.agreements.setText(agreeText);
+        this.disagreements.setText(disagreeText);
     }
 
     @Override
     public void setSelectedButtonThumbsUp() {
         disagreements.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_thumbs_down, 0, 0);
-        agreements.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_achievement, 0, 0);
+        agreements.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_thumbs_up_selected, 0, 0);
     }
 
     @Override
     public void setSelectedButtonThumbsDown() {
-        disagreements.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_achievement, 0, 0);
+        disagreements.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_thumbs_down_selected, 0, 0);
         agreements.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_thumbs_up, 0, 0);
+    }
+
+    @Override
+    public void setEmptyListMessage(String message) {
+        addFooterView(message);
     }
 
     @Override
