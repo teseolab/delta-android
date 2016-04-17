@@ -7,8 +7,9 @@ import android.view.MenuItem;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import no.ntnu.mikaelr.delta.R;
-import no.ntnu.mikaelr.delta.presenter.TaskPresenter;
+import no.ntnu.mikaelr.delta.presenter.signature.TaskPresenter;
 import no.ntnu.mikaelr.delta.presenter.TaskPresenterImpl;
+import no.ntnu.mikaelr.delta.view.signature.TaskView;
 
 public class TestTask1Activity extends AppCompatActivity implements TaskView, SeekBar.OnSeekBarChangeListener {
 

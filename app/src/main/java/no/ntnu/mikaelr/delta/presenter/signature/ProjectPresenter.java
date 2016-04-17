@@ -1,4 +1,4 @@
-package no.ntnu.mikaelr.delta.presenter;
+package no.ntnu.mikaelr.delta.presenter.signature;
 
 import android.view.View;
 import no.ntnu.mikaelr.delta.model.Project;

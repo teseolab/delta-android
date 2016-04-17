@@ -15,8 +15,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.model.Project;
-import no.ntnu.mikaelr.delta.presenter.MapPresenter;
+import no.ntnu.mikaelr.delta.presenter.signature.MapPresenter;
 import no.ntnu.mikaelr.delta.presenter.MapPresenterImpl;
+import no.ntnu.mikaelr.delta.view.signature.MapFragView;
 
 import java.util.HashMap;
 

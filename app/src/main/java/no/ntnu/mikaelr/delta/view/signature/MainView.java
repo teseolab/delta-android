@@ -1,4 +1,4 @@
-package no.ntnu.mikaelr.delta.view;
+package no.ntnu.mikaelr.delta.view.signature;
 
 import no.ntnu.mikaelr.delta.model.Project;
 

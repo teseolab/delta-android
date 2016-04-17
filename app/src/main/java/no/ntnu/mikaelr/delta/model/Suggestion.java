@@ -1,9 +1,10 @@
 package no.ntnu.mikaelr.delta.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Suggestion {
+public class Suggestion implements Serializable {
 
     private Integer id;
     private Date date;
@@ -12,9 +13,12 @@ public class Suggestion {
     private String details;
     private Integer agreements;
     private Integer disagreements;
+    private String agrees;
 
     private User user;
     private List<Comment> comments;
+
+    public Suggestion() {}
 
     public Integer getId() {
         return id;
@@ -70,6 +74,14 @@ public class Suggestion {
 
     public void setDisagreements(Integer disagreements) {
         this.disagreements = disagreements;
+    }
+
+    public String getAgrees() {
+        return agrees;
+    }
+
+    public void setAgrees(String agrees) {
+        this.agrees = agrees;
     }
 
     public User getUser() {

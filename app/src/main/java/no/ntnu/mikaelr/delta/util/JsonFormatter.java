@@ -89,32 +89,17 @@ public class JsonFormatter {
 
                 Suggestion suggestion = new Suggestion();
                 suggestion.setId(jsonSuggestion.getInt("id"));
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(jsonSuggestion.getLong("date"));
-                suggestion.setDate(calendar.getTime());
+                suggestion.setDate(DateFormatter.dateFromMillis(jsonSuggestion.getLong("date")));
+                JSONObject jsonUser = jsonSuggestion.getJSONObject("user");
+                User user = new User(jsonUser.getInt("id"), jsonUser.getString("username"));
+                suggestion.setUser(user);
                 suggestion.setImageUri(jsonSuggestion.getString("imageUri"));
                 suggestion.setTitle(jsonSuggestion.getString("title"));
                 suggestion.setDetails(jsonSuggestion.getString("details"));
                 suggestion.setAgreements(jsonSuggestion.getInt("agreements"));
                 suggestion.setDisagreements(jsonSuggestion.getInt("disagreements"));
-
-                JSONArray jsonComments = jsonSuggestion.getJSONArray("comments");
-                List<Comment> comments = new ArrayList<Comment>();
-
-                for (int j = 0; j < jsonComments.length(); j++) {
-                    JSONObject jsonComment = jsonComments.getJSONObject(j);
-                    Comment comment = new Comment();
-                    comment.setId(jsonComment.getInt("id"));
-                    calendar.setTimeInMillis(jsonComment.getLong("date"));
-                    comment.setDate(calendar.getTime());
-                    comment.setComment(jsonComment.getString("comment"));
-                    JSONObject jsonUser = jsonComment.getJSONObject("user");
-                    User user = new User(jsonUser.getInt("id"), jsonUser.getString("username"));
-                    comment.setUser(user);
-                    comments.add(comment);
-                }
-
-                suggestion.setComments(comments);
+                suggestion.setAgrees(jsonSuggestion.getString("agrees"));
+                suggestions.add(suggestion);
             }
         }
 
@@ -123,6 +108,34 @@ public class JsonFormatter {
         }
 
         return suggestions;
+    }
+
+    public static List<Comment> formatComments(JSONArray json) {
+
+        List<Comment> comments = new ArrayList<Comment>();
+
+        try {
+
+            for (int i = 0; i < json.length(); i++) {
+
+                JSONObject jsonComment = json.getJSONObject(i);
+
+                Comment comment = new Comment();
+                comment.setId(jsonComment.getInt("id"));
+                comment.setDate(DateFormatter.dateFromMillis(jsonComment.getLong("date")));
+                comment.setComment(jsonComment.getString("comment"));
+                JSONObject jsonUser = jsonComment.getJSONObject("user");
+                User user = new User(jsonUser.getInt("id"), jsonUser.getString("username"));
+                comment.setUser(user);
+                comments.add(comment);
+            }
+        }
+
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return comments;
     }
 
 }

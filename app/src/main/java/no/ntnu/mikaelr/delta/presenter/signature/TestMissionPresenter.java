@@ -1,16 +1,15 @@
-package no.ntnu.mikaelr.delta.presenter;
+package no.ntnu.mikaelr.delta.presenter.signature;
 
 import android.content.Intent;
 import no.ntnu.mikaelr.delta.model.Project;
 import no.ntnu.mikaelr.delta.model.Task;
 
-import java.util.List;
-
-public interface MissionPresenter {
+public interface TestMissionPresenter {
 
     void loadTasks();
     Project getProject();
     Task getCurrentTask();
+    int getCurrentTaskListId();
 
     void connectApiClient();
     void disconnectApiClient();
@@ -22,5 +21,5 @@ public interface MissionPresenter {
 
     void onActivityResult(int requestCode, Intent data);
 
-    void onMarkerClick(int clickedTaskId);
+    void onMarkerClick(int taskId);
 }

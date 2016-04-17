@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import no.ntnu.mikaelr.delta.R;
@@ -13,10 +11,12 @@ import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Project;
+import no.ntnu.mikaelr.delta.presenter.signature.ProjectPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.util.StatusCode;
 import no.ntnu.mikaelr.delta.view.*;
+import no.ntnu.mikaelr.delta.view.signature.ProjectView;
 
 public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractorImpl.OnGetMissionForProjectIsCompletedByUser {
 

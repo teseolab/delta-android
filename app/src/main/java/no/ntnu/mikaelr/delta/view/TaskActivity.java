@@ -5,8 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import no.ntnu.mikaelr.delta.R;
-import no.ntnu.mikaelr.delta.presenter.TaskPresenter;
+import no.ntnu.mikaelr.delta.presenter.signature.TaskPresenter;
 import no.ntnu.mikaelr.delta.presenter.TaskPresenterImpl;
+import no.ntnu.mikaelr.delta.view.signature.TaskView;
 
 public class TaskActivity extends AppCompatActivity implements TaskView {
 

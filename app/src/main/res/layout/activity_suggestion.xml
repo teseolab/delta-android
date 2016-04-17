@@ -7,133 +7,14 @@
 
     <include layout="@layout/toolbar"/>
 
-    <ScrollView
+    <ListView
+        android:id="@+id/comment_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:listSelector="@android:color/transparent"
+        android:footerDividersEnabled="false"
+        android:divider="#fff"
+        android:dividerHeight="1px"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/nyhavna2_hires"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="15dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="10dp"
-                        android:drawableStart="@drawable/ic_person_gray70_18dp"
-                        android:drawablePadding="5dp"
-                        android:gravity="center_vertical"
-                        android:text="testbruker"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_date_gray70_18dp"
-                        android:drawablePadding="5dp"
-                        android:gravity="center_vertical"
-                        android:text="29.04.16"/>
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="10dp"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:text="Vedlikehold av gamle bygninger"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Jeg syntes flere av bygningene på Nyhavna har en viss sjarm over seg, og som burde bevares. Det er derfor trist å se at flere bygninger er i dårlig stand. Det burde brukes mer ressurser på å holde disse bygningene vedlike."/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:paddingTop="10dp"
-                android:paddingBottom="20dp">
-
-                <Space
-                    android:layout_weight="0.5"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/start_mission_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:text="8 er enige"
-                    android:drawablePadding="10dp"
-                    android:drawableTop="@drawable/ic_thumbs_up"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:clickable="true"/>
-
-                <TextView
-                    android:id="@+id/browse_suggestions_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:text="2 er uenige"
-                    android:drawablePadding="10dp"
-                    android:drawableTop="@drawable/ic_thumbs_down"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:clickable="true"/>
-
-                <Space
-                    android:layout_weight="0.5"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/comments"
-                android:textStyle="bold"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/list_divider"/>
-
-            <include layout="@layout/list_item_comment"/>
-            <include layout="@layout/list_item_comment"/>
-            <include layout="@layout/list_item_comment"/>
-            <include layout="@layout/list_item_comment"/>
-            <include layout="@layout/list_item_comment"/>
-            <include layout="@layout/list_item_comment"/>
-            <include layout="@layout/list_item_comment"/>
-
-        </LinearLayout>
-
-    </ScrollView>
 
 </LinearLayout>

@@ -6,8 +6,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import no.ntnu.mikaelr.delta.R;
-import no.ntnu.mikaelr.delta.presenter.ProjectPresenter;
+import no.ntnu.mikaelr.delta.presenter.signature.ProjectPresenter;
 import no.ntnu.mikaelr.delta.presenter.ProjectPresenterImpl;
+import no.ntnu.mikaelr.delta.view.signature.ProjectView;
 
 public class ProjectActivity extends AppCompatActivity implements ProjectView, View.OnClickListener {
 

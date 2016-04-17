@@ -1,8 +1,8 @@
-package no.ntnu.mikaelr.delta.view;
+package no.ntnu.mikaelr.delta.view.signature;
 
 import no.ntnu.mikaelr.delta.model.Task;
 
-public interface MissionView {
+public interface TestMissionView {
 
     void addMarkerForTask(Task task);
     void setHint(CharSequence hint);

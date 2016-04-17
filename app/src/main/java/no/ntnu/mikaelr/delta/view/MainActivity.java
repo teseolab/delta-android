@@ -11,16 +11,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.interactor.LoginInteractor;
+import no.ntnu.mikaelr.delta.interactor.LoginInteractorImpl;
 import no.ntnu.mikaelr.delta.listener.ProjectDialogClickListener;
-import no.ntnu.mikaelr.delta.presenter.MainPresenter;
+import no.ntnu.mikaelr.delta.presenter.signature.MainPresenter;
 import no.ntnu.mikaelr.delta.presenter.MainPresenterImpl;
+import no.ntnu.mikaelr.delta.view.signature.MainView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainView, AdapterView.OnItemClickListener,
-        DrawerLayout.DrawerListener, ProjectDialogClickListener {
+        DrawerLayout.DrawerListener, ProjectDialogClickListener, LoginInteractorImpl.OnLoginListener {
 
     private MainPresenter presenter;
 
@@ -60,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
         getSupportFragmentManager().beginTransaction().add(R.id.content_frame, mapFragment).commit();
         ToolbarUtil.setTitle(this, "Delta");
+
+        LoginInteractor loginInteractor = new LoginInteractorImpl();
+        loginInteractor.login("Mikael", "123", this);
     }
 
     // Initialization methods ------------------------------------------------------------------------------------------
@@ -155,5 +162,15 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     @Override
     public void onProjectDialogNegativeButtonClick() {
 
+    }
+
+    @Override
+    public void onLoginSuccess() {
+        Toast.makeText(this, "Ble logged inn", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onLoginError(int errorCode) {
+        Toast.makeText(this, "Innlogging feilet", Toast.LENGTH_LONG).show();
     }
 }

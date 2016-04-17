@@ -4,20 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import no.ntnu.mikaelr.delta.fragment.ProjectDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Project;
+import no.ntnu.mikaelr.delta.presenter.signature.MapPresenter;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
-import no.ntnu.mikaelr.delta.view.MapFragView;
+import no.ntnu.mikaelr.delta.view.signature.MapFragView;
 import no.ntnu.mikaelr.delta.view.ProjectActivity;
 import org.json.JSONArray;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MapPresenterImpl implements MapPresenter, ProjectInteractorImpl.OnFinishedLoadingProjectsListener {

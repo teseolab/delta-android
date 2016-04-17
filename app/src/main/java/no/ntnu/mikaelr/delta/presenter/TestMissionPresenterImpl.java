@@ -20,16 +20,15 @@ import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Project;
 import no.ntnu.mikaelr.delta.model.Task;
+import no.ntnu.mikaelr.delta.presenter.signature.TestMissionPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
-import no.ntnu.mikaelr.delta.view.MissionView;
-import no.ntnu.mikaelr.delta.view.TaskActivity;
+import no.ntnu.mikaelr.delta.view.signature.MissionView;
 import no.ntnu.mikaelr.delta.view.TestTask1Activity;
 import no.ntnu.mikaelr.delta.view.TestTask2Activity;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class TestMissionPresenterImpl implements TestMissionPresenter, ProjectInteractorImpl.OnFinishedLoadingTasksListener,

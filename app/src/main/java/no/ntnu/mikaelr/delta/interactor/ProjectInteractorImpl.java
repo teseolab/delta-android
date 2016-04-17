@@ -57,4 +57,38 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/suggestions";
         new SuggestionsAsyncTask(apiCall, listener).execute();
     }
+
+    public interface OnFinishedLoadingCommentsListener {
+        void onFinishedLoadingCommentsSuccess(JSONArray jsonArray);
+        void onFinishedLoadingCommentsError(Integer errorCode);
+    }
+
+    @Override
+    public void getComments(int suggestionId, OnFinishedLoadingCommentsListener listener) {
+        String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/comments";
+        new CommentsAsyncTask(apiCall, listener).execute();
+    }
+
+    public interface OnPostAgreementListener {
+        void onPostAgreementSuccess(int agreements, int disagreements);
+        void onPostAgreementError(Integer errorCode);
+    }
+
+    @Override
+    public void postAgreement(int suggestionId, OnPostAgreementListener listener) {
+        String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/agree";
+        new AgreementAsyncTask(apiCall, listener).execute();
+    }
+
+    public interface OnPostDisagreementListener {
+        void onPostDisagreementSuccess(int agreements, int disagreements);
+        void onPostDisagreementError(Integer errorCode);
+    }
+
+    @Override
+    public void postDisagreement(int suggestionId, OnPostDisagreementListener listener) {
+        String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/disagree";
+        new DisagreementAsyncTask(apiCall, listener).execute();
+    }
+
 }

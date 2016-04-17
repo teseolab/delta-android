@@ -1,4 +1,4 @@
-package no.ntnu.mikaelr.delta.presenter;
+package no.ntnu.mikaelr.delta.presenter.signature;
 
 import android.content.Intent;
 

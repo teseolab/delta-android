@@ -18,14 +18,14 @@ import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.ProjectResponse;
 import no.ntnu.mikaelr.delta.model.Task;
+import no.ntnu.mikaelr.delta.presenter.signature.TaskPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.StatusCode;
-import no.ntnu.mikaelr.delta.view.TaskView;
+import no.ntnu.mikaelr.delta.view.signature.TaskView;
 import no.ntnu.mikaelr.delta.view.ToolbarUtil;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChangeListener, ProjectInteractorImpl.OnPostProjectResponseListener {
 

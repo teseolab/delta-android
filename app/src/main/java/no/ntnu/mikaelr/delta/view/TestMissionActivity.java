@@ -20,10 +20,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.model.Task;
-import no.ntnu.mikaelr.delta.presenter.MissionPresenter;
-import no.ntnu.mikaelr.delta.presenter.MissionPresenterImpl;
-import no.ntnu.mikaelr.delta.presenter.TestMissionPresenter;
+import no.ntnu.mikaelr.delta.presenter.signature.TestMissionPresenter;
 import no.ntnu.mikaelr.delta.presenter.TestMissionPresenterImpl;
+import no.ntnu.mikaelr.delta.view.signature.MissionView;
 
 import java.util.ArrayList;
 import java.util.HashMap;

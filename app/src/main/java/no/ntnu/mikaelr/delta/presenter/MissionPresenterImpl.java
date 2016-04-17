@@ -4,14 +4,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.*;
@@ -19,15 +17,15 @@ import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Project;
 import no.ntnu.mikaelr.delta.model.Task;
+import no.ntnu.mikaelr.delta.presenter.signature.MissionPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
 import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
-import no.ntnu.mikaelr.delta.view.MissionView;
+import no.ntnu.mikaelr.delta.view.signature.MissionView;
 import no.ntnu.mikaelr.delta.view.TaskActivity;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MissionPresenterImpl implements MissionPresenter, ProjectInteractorImpl.OnFinishedLoadingTasksListener,
