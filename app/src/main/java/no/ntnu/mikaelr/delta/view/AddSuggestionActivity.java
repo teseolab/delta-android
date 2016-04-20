@@ -65,6 +65,7 @@ public class AddSuggestionActivity extends AppCompatActivity {
             finish();
         }
 
+        // Makes the keyboard disappear
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(title.getWindowToken(), 0);
 

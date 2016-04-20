@@ -16,4 +16,7 @@
     <string name="username">Brukernavn</string>
     <string name="password">Passord</string>
     <string name="log_in">Logg inn</string>
+    <string name="register">Registrer</string>
+    <string name="repeat_password">Gjenta passord</string>
+    <string name="register_code">Registreringskode</string>
 </resources>

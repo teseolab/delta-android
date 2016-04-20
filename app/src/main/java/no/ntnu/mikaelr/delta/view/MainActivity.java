@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerList;
 
-    List<Fragment> fragments;
+    private List<Fragment> fragments;
 
     private MapFragment mapFragment;
     private ProfileFragment profileFragment;
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         fragments.add(topListFragment);
         fragments.add(activityLog);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.content_frame, mapFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mapFragment).commit();
         ToolbarUtil.setTitle(this, "Delta");
 
     }
@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         drawerList.setOnItemClickListener(this);
         drawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.list_item_drawer, presenter.getDrawerMenuItems()));
+        drawerList.setItemChecked(0, true);
     }
 
     // Activity methods ------------------------------------------------------------------------------------------------

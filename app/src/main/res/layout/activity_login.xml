@@ -13,8 +13,8 @@
         android:padding="50dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"
             android:layout_marginBottom="20dp"
             android:src="@drawable/app_icon_big"/>
@@ -31,6 +31,7 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:singleLine="true"
             android:hint="@string/password"
             android:inputType="textPassword"/>
@@ -39,8 +40,52 @@
             android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:textColor="@color/white"
             android:text="@string/log_in"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="goToRegister"
+                android:clickable="true"
+                android:textSize="13sp"
+                android:text="Er du ikke en "/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="goToRegister"
+                android:clickable="true"
+                android:textSize="13sp"
+                android:textColor="@color/teal_400"
+                android:textStyle="bold"
+                android:text="Deltaker"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="goToRegister"
+                android:clickable="true"
+                android:textSize="13sp"
+                android:text="\?"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="goToRegister"
+            android:clickable="true"
+            android:textSize="13sp"
+            android:layout_gravity="center"
+            android:text="Trykk her for å registrere deg."/>
 
     </LinearLayout>
 
