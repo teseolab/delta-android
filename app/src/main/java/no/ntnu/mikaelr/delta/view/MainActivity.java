@@ -1,5 +1,6 @@
 package no.ntnu.mikaelr.delta.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -18,13 +19,14 @@ import no.ntnu.mikaelr.delta.interactor.LoginInteractorImpl;
 import no.ntnu.mikaelr.delta.listener.ProjectDialogClickListener;
 import no.ntnu.mikaelr.delta.presenter.signature.MainPresenter;
 import no.ntnu.mikaelr.delta.presenter.MainPresenterImpl;
+import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.view.signature.MainView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainView, AdapterView.OnItemClickListener,
-        DrawerLayout.DrawerListener, ProjectDialogClickListener, LoginInteractorImpl.OnLoginListener {
+        DrawerLayout.DrawerListener, ProjectDialogClickListener {
 
     private MainPresenter presenter;
 
@@ -65,8 +67,6 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         getSupportFragmentManager().beginTransaction().add(R.id.content_frame, mapFragment).commit();
         ToolbarUtil.setTitle(this, "Delta");
 
-        LoginInteractor loginInteractor = new LoginInteractorImpl();
-        loginInteractor.login("Mikael", "123", this);
     }
 
     // Initialization methods ------------------------------------------------------------------------------------------
@@ -130,6 +130,12 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
             showOrAddFragment(activityLog);
             ToolbarUtil.setTitle(this, "Min aktivitet");
         }
+        else if (clickedDrawerMenuPosition == 4) {
+            SharedPrefsUtil.getInstance().setCookie("");
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     }
 
     private void showOrAddFragment(Fragment f) {
@@ -164,13 +170,4 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     }
 
-    @Override
-    public void onLoginSuccess() {
-        Toast.makeText(this, "Ble logged inn", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onLoginError(int errorCode) {
-        Toast.makeText(this, "Innlogging feilet", Toast.LENGTH_LONG).show();
-    }
 }

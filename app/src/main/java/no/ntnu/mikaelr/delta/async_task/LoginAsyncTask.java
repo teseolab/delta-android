@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.support.v4.util.Pair;
 import no.ntnu.mikaelr.delta.interactor.LoginInteractorImpl;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
+import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.util.StatusCode;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +20,7 @@ import org.springframework.web.client.UnknownHttpStatusCodeException;
 import java.security.Principal;
 import java.util.List;
 
-public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
+public class LoginAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
 
     private LoginInteractorImpl.OnLoginListener listener;
 
@@ -35,7 +36,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
     }
 
     @Override
-    protected Integer doInBackground(Void... params) {
+    protected Pair<Integer, ResponseEntity<String>> doInBackground(Void... params) {
 
         RestTemplate template = new RestTemplate();
         ((SimpleClientHttpRequestFactory) template.getRequestFactory()).setConnectTimeout(1000 * 10);
@@ -50,29 +51,29 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
         HttpEntity<?> entity = new HttpEntity<Object>(body, headers);
 
         try {
-            template.exchange(request, HttpMethod.POST, entity, String.class);
-            return StatusCode.HTTP_OK;
+            ResponseEntity<String> response = template.exchange(request, HttpMethod.POST, entity, String.class);
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_OK, response);
         }
 
         catch (HttpStatusCodeException e) {
-            return e.getStatusCode().value();
+            return new Pair<Integer, ResponseEntity<String>>(e.getStatusCode().value(), null);
         }
 
         catch (ResourceAccessException e) {
-            return StatusCode.NETWORK_UNREACHABLE;
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.NETWORK_UNREACHABLE, null);
         }
 
         catch (UnknownHttpStatusCodeException e) {
-            return StatusCode.HTTP_UNKNOWN;
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_UNKNOWN, null);
         }
     }
 
     @Override
-    protected void onPostExecute(Integer result) {
-        if (result == StatusCode.HTTP_OK) {
-            listener.onLoginSuccess();
+    protected void onPostExecute(Pair<Integer, ResponseEntity<String>> result) {
+        if (result.first == StatusCode.HTTP_OK) {
+            listener.onLoginSuccess(result.second.getHeaders().get("Set-Cookie").get(0));
         } else {
-            listener.onLoginError(result);
+            listener.onLoginError(result.first);
         }
     }
 

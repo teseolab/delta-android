@@ -15,7 +15,7 @@ public interface ProjectInteractor {
     void postDisagreement(int suggestionId, ProjectInteractorImpl.OnPostDisagreementListener listener);
     void postSuggestion(Suggestion suggestion, ProjectInteractorImpl.OnPostSuggestionListener listener);
 
-    void getMissionForProjectIsCompletedByUser(int projectId, int userId, ProjectInteractorImpl.OnGetMissionForProjectIsCompletedByUser listener);
+    void getMissionForProjectIsCompletedByUser(int projectId, ProjectInteractorImpl.OnGetMissionForProjectIsCompletedByUser listener);
 
     void postComment(String comment, int suggestionId, ProjectInteractorImpl.OnPostCommentListener listener);
 }

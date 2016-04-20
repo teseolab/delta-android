@@ -95,7 +95,7 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
         } else if (missionCompletedPreference.equals(Constants.NO)) {
             missionIsCompleted = false;
         } else if (missionCompletedPreference.equals(Constants.NA)) {
-            projectInteractor.getMissionForProjectIsCompletedByUser(project.getId(), 1, this); //TODO: User id
+            projectInteractor.getMissionForProjectIsCompletedByUser(project.getId(), this);
         }
     }
 
@@ -120,12 +120,12 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
     public void onGetMissionForProjectIsCompletedByUserSuccess(Boolean missionIsCompleted) {
         this.missionIsCompleted = missionIsCompleted;
         String yesOrNo = missionIsCompleted ? Constants.YES : Constants.NO;
-        SharedPrefsUtil.saveMissionCompletionStatus(context, project.getId(), yesOrNo);
+        SharedPrefsUtil.getInstance().saveMissionCompletionStatus(project.getId(), yesOrNo);
     }
 
     @Override
     public void onGetMissionForProjectIsCompletedByUserError(Integer errorCode) {
-        SharedPrefsUtil.saveMissionCompletionStatus(context, project.getId(), Constants.NO);
+        SharedPrefsUtil.getInstance().saveMissionCompletionStatus(project.getId(), Constants.NO);
         String title = "Ops!";
         String message = (errorCode == StatusCode.NETWORK_UNREACHABLE ? "Kunne ikke sende responsen, siden du mangler tilkobling til Internett." : "Det har skjedd en merkelig feil.");
         SimpleDialog.createAndShow(context.getSupportFragmentManager(), title, message);

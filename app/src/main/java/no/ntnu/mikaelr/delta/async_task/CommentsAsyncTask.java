@@ -34,7 +34,6 @@ public class CommentsAsyncTask extends AsyncTask<Void, Void, Pair<Integer, Respo
         ((SimpleClientHttpRequestFactory) template.getRequestFactory()).setConnectTimeout(1000 * 10);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-type", "application/json; charset=utf-8");
-        headers.set("Cookie", null); //TODO: Set cookie
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         try {

@@ -3,7 +3,10 @@ package no.ntnu.mikaelr.delta.async_task;
 import android.os.AsyncTask;
 import android.util.Pair;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
+import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.util.StatusCode;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -27,9 +30,13 @@ public class DisagreementAsyncTask extends AsyncTask<Void, Void, Pair<Integer, R
 
         RestTemplate template = new RestTemplate();
         ((SimpleClientHttpRequestFactory) template.getRequestFactory()).setConnectTimeout(1000 * 10);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", SharedPrefsUtil.getInstance().getCookie());
+
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         try {
-            ResponseEntity<String> result = template.exchange(request, HttpMethod.POST, null, String.class);
+            ResponseEntity<String> result = template.exchange(request, HttpMethod.POST, entity, String.class);
             return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_OK, result);
         }
 

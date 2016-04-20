@@ -17,7 +17,7 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public List<String> getDrawerMenuItems() {
-        return new ArrayList<String>(Arrays.asList("Prosjekter", "Profil", "Toppliste", "Min aktivitet"));
+        return new ArrayList<String>(Arrays.asList("Prosjekter", "Profil", "Toppliste", "Min aktivitet", "Logg ut"));
     }
 
 }

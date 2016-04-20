@@ -46,7 +46,7 @@ public class TestMissionPresenterImpl implements TestMissionPresenter, ProjectIn
     private GoogleApiClient googleApiClient;
 
     private boolean tasksAreLoaded = false;
-    private boolean allTasksAreFinished = false; // TODO: Initialize when state is received from server
+    private boolean allTasksAreFinished = false;
 
     static final int TASK_REQUEST = 1;
 

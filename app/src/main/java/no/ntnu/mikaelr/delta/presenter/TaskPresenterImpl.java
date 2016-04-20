@@ -164,12 +164,7 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
 
     @Override
     public void onTaskDoneClick() {
-
-        // TODO: Validate input, post response, notify MissionView
-
-        postResponse();
-
-
+        postResponse(); // TODO: Validate input
     }
 
     private void postResponse() {

@@ -44,7 +44,6 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     private boolean tasksAreLoaded = false;
 
-    // TODO: Initialize when state is received from server
     private boolean missionIsCompleted = false;
 
     static final int TASK_REQUEST = 1;
@@ -137,7 +136,6 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                 LocationRequest locationRequest = new LocationRequest();
                 locationRequest.setInterval(2000);
-                //mLocationRequest.setFastestInterval(5000);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             }
@@ -177,7 +175,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             view.setDistance("Gratulerer!");
             view.setHint("Du har fullført dette oppdraget.");
             view.setMyLocationEnabled(false);
-            SharedPrefsUtil.saveMissionCompletionStatus(context, project.getId(), Constants.YES);
+            SharedPrefsUtil.getInstance().saveMissionCompletionStatus(project.getId(), Constants.YES);
 
         } else {
             view.addMarkerForTask(loadedTasks.get(currentTaskIndex));

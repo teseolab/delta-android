@@ -5,7 +5,7 @@ import no.ntnu.mikaelr.delta.async_task.LoginAsyncTask;
 public class LoginInteractorImpl implements LoginInteractor {
 
     public interface OnLoginListener {
-        void onLoginSuccess();
+        void onLoginSuccess(String cookie);
         void onLoginError(int errorCode);
     }
 

@@ -43,8 +43,8 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         void onGetMissionForProjectIsCompletedByUserError(Integer errorCode);
     }
     @Override
-    public void getMissionForProjectIsCompletedByUser(int projectId, int userId, OnGetMissionForProjectIsCompletedByUser listener) {
-        String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/mission/user/" + userId + "/isCompleted";
+    public void getMissionForProjectIsCompletedByUser(int projectId, OnGetMissionForProjectIsCompletedByUser listener) {
+        String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/mission/isCompleted";
         new MissionIsCompletedAsyncTask(apiCall, listener).execute();
     }
 
@@ -110,7 +110,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void postComment(String comment, int suggestionId, OnPostCommentListener listener) {
-        String apiCall = "http://129.241.102.204:8080/suggestions/+" + suggestionId + "/comments";
+        String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/comments";
 
         new PostCommentAsyncTask(apiCall, comment, listener).execute();
     }

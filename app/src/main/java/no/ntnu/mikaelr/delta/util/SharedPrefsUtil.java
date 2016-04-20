@@ -1,15 +1,36 @@
 package no.ntnu.mikaelr.delta.util;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class SharedPrefsUtil extends Application {
+public class SharedPrefsUtil {
 
-    public static void saveMissionCompletionStatus(Activity context, int projectId, String value) {
-        SharedPreferences preferences = context.getSharedPreferences("no.ntnu.mikaelr.delta", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
+    private static SharedPrefsUtil instance;
+    private static SharedPreferences sharedPreferences;
+
+    public static SharedPrefsUtil getInstance() {
+        if (instance == null) {
+            instance = new SharedPrefsUtil();
+        }
+        return instance;
+    }
+
+    public static void initSharedPreferences(Context context) {
+        sharedPreferences = context.getSharedPreferences("no.ntnu.mikaelr.delta", Context.MODE_PRIVATE);
+    }
+
+    public void setCookie(String cookie) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Cookie", cookie);
+        editor.apply();
+    }
+
+    public String getCookie() {
+        return sharedPreferences.getString("Cookie", "");
+    }
+
+    public void saveMissionCompletionStatus(int projectId, String value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("PROJECT_" + projectId + "_MISSION_COMPLETED", value);
         editor.apply();
     }

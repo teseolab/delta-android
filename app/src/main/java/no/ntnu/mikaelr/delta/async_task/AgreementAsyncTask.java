@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Pair;
 import no.ntnu.mikaelr.delta.interactor.LoginInteractorImpl;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
+import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.util.StatusCode;
 import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -29,9 +30,13 @@ public class AgreementAsyncTask extends AsyncTask<Void, Void, Pair<Integer, Resp
 
         RestTemplate template = new RestTemplate();
         ((SimpleClientHttpRequestFactory) template.getRequestFactory()).setConnectTimeout(1000 * 10);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", SharedPrefsUtil.getInstance().getCookie());
+
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         try {
-            ResponseEntity<String> response = template.exchange(request, HttpMethod.POST, null, String.class);
+            ResponseEntity<String> response = template.exchange(request, HttpMethod.POST, entity, String.class);
             return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_OK, response);
         }
 

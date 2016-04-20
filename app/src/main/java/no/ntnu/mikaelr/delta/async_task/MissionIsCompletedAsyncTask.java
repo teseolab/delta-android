@@ -3,6 +3,7 @@ package no.ntnu.mikaelr.delta.async_task;
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
+import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.util.StatusCode;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -32,7 +33,7 @@ public class MissionIsCompletedAsyncTask extends AsyncTask<Void, Void, Pair<Inte
         ((SimpleClientHttpRequestFactory) template.getRequestFactory()).setConnectTimeout(1000 * 10);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-type", "text/html");
-        headers.set("Cookie", null); //TODO: Set cookie
+        headers.set("Cookie", SharedPrefsUtil.getInstance().getCookie());
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         try {
@@ -41,15 +42,15 @@ public class MissionIsCompletedAsyncTask extends AsyncTask<Void, Void, Pair<Inte
         }
 
         catch (HttpStatusCodeException e) {
-            return new Pair<Integer, ResponseEntity<String>>(e.getStatusCode().value(), null); //TODO: Handle
+            return new Pair<Integer, ResponseEntity<String>>(e.getStatusCode().value(), null);
         }
 
         catch (ResourceAccessException e) {
-            return new Pair<Integer, ResponseEntity<String>>(StatusCode.NETWORK_UNREACHABLE, null); //TODO: Handle
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.NETWORK_UNREACHABLE, null);
         }
 
         catch (UnknownHttpStatusCodeException e) {
-            return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_UNKNOWN, null); //TODO: Handle
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_UNKNOWN, null);
         }
 
     }
