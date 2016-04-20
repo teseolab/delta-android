@@ -222,9 +222,9 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         defaultFirstTask.setLatitude(project.getLatitude());
         defaultFirstTask.setLongitude(project.getLongitude());
         defaultFirstTask.setTaskType(Task.TaskType.FIRST_TASK);
-        defaultFirstTask.setHint("Gå til det markerte punktet på kartet for å starte oppdraget.");
+        defaultFirstTask.setHint("Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget.");
         ArrayList<String> description = new ArrayList<String>(1);
-        description.add("Yey! Du er nå klar for å starte oppdraget. Følg veibeskrivelsen for å finne første stopp.");
+        description.add("Yey! Du er nå klar for å starte oppdraget. Følg beskrivelsen på neste side for å komme i gang.");
         defaultFirstTask.setDescriptions(description);
         return defaultFirstTask;
     }

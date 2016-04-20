@@ -3,6 +3,7 @@ package no.ntnu.mikaelr.delta.async_task;
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
+import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.util.StatusCode;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +36,7 @@ public class SuggestionsAsyncTask extends AsyncTask<Void, Void, Pair<Integer, Re
         ((SimpleClientHttpRequestFactory) template.getRequestFactory()).setConnectTimeout(1000 * 10);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-type", "application/json; charset=utf-8");
+        headers.set("Cookie", SharedPrefsUtil.getInstance().getCookie());
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         try {

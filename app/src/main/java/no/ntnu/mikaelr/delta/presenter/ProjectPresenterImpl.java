@@ -49,20 +49,20 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
     }
 
     private void goToMission() {
-        if (missionIsCompleted != null) {
-            if (missionIsCompleted) {
-                String title = "Heisann!";
-                String message = "Du har allerede fullført dette oppdraget. Hva med å heller poste et forslag?";
-                SimpleDialog.createAndShow(context.getSupportFragmentManager(), title, message);
-            } else {
+//        if (missionIsCompleted != null) {
+//            if (missionIsCompleted) {
+//                String title = "Heisann!";
+//                String message = "Du har allerede fullført dette oppdraget. Hva med å heller poste et forslag?";
+//                SimpleDialog.createAndShow(context.getSupportFragmentManager(), title, message);
+//            } else {
                 Intent intent = new Intent(context, MissionActivity.class);
                 intent.putExtra("projectId", project.getId());
                 intent.putExtra("projectName", project.getName());
                 intent.putExtra("latitude", project.getLatitude());
                 intent.putExtra("longitude", project.getLongitude());
                 context.startActivity(intent);
-            }
-        }
+//            }
+//        }
     }
 
     private void goToAddSuggestion() {

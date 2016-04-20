@@ -12,13 +12,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 import no.ntnu.mikaelr.delta.R;
-import no.ntnu.mikaelr.delta.interactor.LoginInteractor;
-import no.ntnu.mikaelr.delta.interactor.LoginInteractorImpl;
 import no.ntnu.mikaelr.delta.listener.ProjectDialogClickListener;
-import no.ntnu.mikaelr.delta.presenter.signature.MainPresenter;
 import no.ntnu.mikaelr.delta.presenter.MainPresenterImpl;
+import no.ntnu.mikaelr.delta.presenter.signature.MainPresenter;
 import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.view.signature.MainView;
 

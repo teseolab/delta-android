@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                                       xmlns:app="http://schemas.android.com/apk/res-auto"
+                                       android:id="@+id/toolbar"
+                                       android:layout_width="match_parent"
+                                       android:layout_height="wrap_content"
+                                       android:minHeight="?attr/actionBarSize"
+                                       android:background="@color/teal_400"
+                                       app:titleTextColor="@android:color/white"
+                                       android:fitsSystemWindows="true"/>
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/mission_map"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
-    <include layout="@layout/toolbar"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:tools="http://schemas.android.com/tools"
-                  android:id="@+id/mission_map"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  tools:context=".MissionActivity"
-                  android:name="com.google.android.gms.maps.SupportMapFragment"/>
-
-    </RelativeLayout>
+              android:layout_height="wrap_content"
+              android:layout_below="@id/toolbar"
+              tools:context=".MissionActivity"
+              android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="bottom"
-        android:layout_weight="0.3">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
 
         <TextView
             android:id="@+id/distance_textview"
@@ -39,16 +39,15 @@
         <TextView
             android:id="@+id/hint_textview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/distance_textview"
             android:background="@color/teal_400"
             android:gravity="center"
-            android:padding="10dp"
-            android:textColor="@android:color/white"
-            android:text="kjsafsf kjlsadh jksdf jklsadf jksdfjk sdfa"/>
+            android:padding="20dp"
+            android:textSize="15sp"
+            android:text="@string/loading_mission"
+            android:textColor="@android:color/white"/>
 
     </RelativeLayout>
 
-
-
-</LinearLayout>
+</RelativeLayout>

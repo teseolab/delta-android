@@ -48,17 +48,6 @@
         <activity android:name=".view.PostCommentActivity"
                   android:screenOrientation="portrait"/>
 
-
-
-        <activity android:name=".view.TestMissionActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".view.TestTask1Activity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".view.TestTask2Activity"
-                  android:screenOrientation="portrait"/>
-
-
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBr0_DF-1WBVia68xXvTopREuDpHmYtXlk"/>
