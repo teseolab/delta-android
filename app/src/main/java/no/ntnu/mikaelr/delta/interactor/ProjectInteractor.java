@@ -9,8 +9,10 @@ public interface ProjectInteractor {
     void getTasks(int projectId, ProjectInteractorImpl.OnFinishedLoadingTasksListener listener);
     void getSuggestions(int projectId, ProjectInteractorImpl.OnFinishedLoadingSuggestionsListener listener);
     void getComments(int suggestionId, ProjectInteractorImpl.OnFinishedLoadingCommentsListener listener);
+    void getTopList(ProjectInteractorImpl.OnFinishedLoadingTopList listener);
 
     void postResponse(ProjectResponse response, ProjectInteractorImpl.OnPostProjectResponseListener listener);
+    void postFinishedMission(int projectId, ProjectInteractorImpl.OnPostFinishedMission listener);
     void postAgreement(int suggestionId, ProjectInteractorImpl.OnPostAgreementListener listener);
     void postDisagreement(int suggestionId, ProjectInteractorImpl.OnPostDisagreementListener listener);
     void postSuggestion(Suggestion suggestion, ProjectInteractorImpl.OnPostSuggestionListener listener);

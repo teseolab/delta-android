@@ -6,6 +6,7 @@
               android:padding="15dp">
 
     <TextView
+        android:id="@+id/position"
         android:layout_width="0dp"
         android:layout_height="70dp"
         android:layout_weight="0.05"
@@ -16,8 +17,8 @@
         android:text="#1"/>
 
     <ImageView
-        android:id="@+id/icon"
-        android:layout_weight="0.08"
+        android:id="@+id/avatar"
+        android:layout_weight="0.1"
         android:layout_width="0dp"
         android:layout_height="70dp"
         android:layout_marginEnd="15dp"
@@ -25,7 +26,8 @@
         android:scaleType="fitCenter"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_weight="0.12"
+        android:layout_width="0dp"
         android:layout_height="70dp"
         android:orientation="vertical"
         android:gravity="center_vertical">
@@ -80,6 +82,7 @@
             android:text="3"/>
 
         <TextView
+            android:id="@+id/comments_posted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="5dp"

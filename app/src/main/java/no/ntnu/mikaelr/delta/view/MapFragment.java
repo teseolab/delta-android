@@ -3,6 +3,7 @@ package no.ntnu.mikaelr.delta.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +101,8 @@ public class MapFragment extends Fragment implements MapFragView, OnMapReadyCall
 
     @Override
     public void setMapLocationToMarkers() {
-        if (map != null) map.moveCamera(newLatLngBounds(boundsBuilder.build(), 550));
+        int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
+        if (map != null) map.moveCamera(newLatLngBounds(boundsBuilder.build(), padding));
     }
 
     @Override

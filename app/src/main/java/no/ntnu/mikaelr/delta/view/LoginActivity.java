@@ -42,9 +42,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, View.
             initializeButton();
             setUsernameFromRegistration();
 
-            // Makes the keyboard appear
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
     }
 

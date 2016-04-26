@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MissionPresenterImpl implements MissionPresenter, ProjectInteractorImpl.OnFinishedLoadingTasksListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ProjectInteractorImpl.OnPostFinishedMission {
 
     private MissionView view;
     private Activity context;
@@ -171,6 +171,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         missionIsCompleted = currentTaskIndex == loadedTasks.size() - 1;
 
         if (missionIsCompleted) {
+            interactor.postFinishedMission(project.getId(), this);
             currentTaskIndex = -1;
             view.setDistance("Gratulerer!");
             view.setHint("Du har fullført dette oppdraget.");
@@ -185,26 +186,6 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     }
 
     // Listeners -------------------------------------------------------------------------------------------------------
-
-    @Override
-    public void onFinishedLoadingTasks(JSONArray jsonArray) {
-        List<Task> tasks = JsonFormatter.formatTasks(jsonArray);
-        tasks.add(0, getDefaultFirstTask());
-
-        loadedTasks = tasks;
-
-        addMarkers();
-
-        view.setMapLocationToMarkers();
-        view.setHint(tasks.get(currentTaskIndex).getHint());
-
-
-        tasksAreLoaded = true;
-
-        if (googleApiClient.isConnected()) {
-            startLocationUpdates();
-        }
-    }
 
     private void addMarkers() {
         if (currentTaskIndex == 0) {
@@ -271,5 +252,37 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         intent.putExtra("taskIndex", currentTaskIndex);
         intent.putExtra("projectId", project.getId());
         context.startActivityForResult(intent, TASK_REQUEST);
+    }
+
+    // ASYNC TASK LISTENERS --------------------------------------------------------------------------------------------
+
+    @Override
+    public void onFinishedLoadingTasks(JSONArray jsonArray) {
+        List<Task> tasks = JsonFormatter.formatTasks(jsonArray);
+        tasks.add(0, getDefaultFirstTask());
+
+        loadedTasks = tasks;
+
+        addMarkers();
+
+        view.setMapLocationToMarkers();
+        view.setHint(tasks.get(currentTaskIndex).getHint());
+
+
+        tasksAreLoaded = true;
+
+        if (googleApiClient.isConnected()) {
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onPostFinishedMissionSuccess() {
+        // TODO: ?
+    }
+
+    @Override
+    public void onPostFinishedMissionError(int errorCode) {
+        // TODO: ?
     }
 }
