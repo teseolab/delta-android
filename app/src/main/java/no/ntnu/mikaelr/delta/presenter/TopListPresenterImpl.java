@@ -34,7 +34,7 @@ public class TopListPresenterImpl implements TopListPresenter, ProjectInteractor
 
     @Override
     public void onLoadTopListSuccess(JSONArray jsonArray) {
-        topList = HighscoreUser.fromJson(jsonArray);
+        topList = HighscoreUser.fromJsonArray(jsonArray);
         view.updateList(topList);
     }
 

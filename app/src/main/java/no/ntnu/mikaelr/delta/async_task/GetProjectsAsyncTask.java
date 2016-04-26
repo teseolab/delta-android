@@ -3,11 +3,11 @@ package no.ntnu.mikaelr.delta.async_task;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import org.json.JSONArray;
 
-public class TasksAsyncTask extends JsonAsyncTask {
+public class GetProjectsAsyncTask extends JsonAsyncTask {
 
-    private ProjectInteractorImpl.OnFinishedLoadingTasksListener listener;
+    private ProjectInteractorImpl.OnFinishedLoadingProjectsListener listener;
 
-    public TasksAsyncTask(String request, ProjectInteractorImpl.OnFinishedLoadingTasksListener listener) {
+    public GetProjectsAsyncTask(String request, ProjectInteractorImpl.OnFinishedLoadingProjectsListener listener) {
         super(request);
         this.listener = listener;
     }
@@ -17,7 +17,7 @@ public class TasksAsyncTask extends JsonAsyncTask {
 
         JSONArray jsonArray = super.parseToJson(result);
         if (jsonArray != null) {
-            listener.onFinishedLoadingTasks(jsonArray);
+            listener.onFinishedLoadingProjects(jsonArray);
         }
     }
 

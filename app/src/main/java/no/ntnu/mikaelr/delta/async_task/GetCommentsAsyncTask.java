@@ -16,12 +16,12 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
-public class CommentsAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
+public class GetCommentsAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
 
     private String request;
     private ProjectInteractorImpl.OnFinishedLoadingCommentsListener listener;
 
-    public CommentsAsyncTask(String request, ProjectInteractorImpl.OnFinishedLoadingCommentsListener listener) {
+    public GetCommentsAsyncTask(String request, ProjectInteractorImpl.OnFinishedLoadingCommentsListener listener) {
         this.request = request;
         this.listener = listener;
     }

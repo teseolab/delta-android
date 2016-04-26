@@ -16,28 +16,35 @@ public class HighscoreUser {
     private int numberOfSuggestions;
     private int numberOfComments;
 
-    public static List<HighscoreUser> fromJson(JSONArray jsonArray) {
+    public static List<HighscoreUser> fromJsonArray(JSONArray jsonArray) {
 
         List<HighscoreUser> users = new ArrayList<HighscoreUser>();
 
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
-
                 JSONObject jsonUser = jsonArray.getJSONObject(i);
-                HighscoreUser user = new HighscoreUser();
-                user.setId(jsonUser.getInt("id"));
-                user.setUsername(jsonUser.getString("username"));
-                user.setScore(jsonUser.getInt("score"));
-                user.setNumberOfMissions(jsonUser.getInt("numberOfMissions"));
-                user.setNumberOfSuggestions(jsonUser.getInt("numberOfSuggestions"));
-                user.setNumberOfComments(jsonUser.getInt("numberOfComments"));
+                HighscoreUser user = fromJsonObject(jsonUser);
                 users.add(user);
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return users;
+    }
+
+    public static HighscoreUser fromJsonObject(JSONObject jsonObject) {
+        HighscoreUser user = new HighscoreUser();
+        try {
+            user.setId(jsonObject.getInt("id"));
+            user.setUsername(jsonObject.getString("username"));
+            user.setScore(jsonObject.getInt("score"));
+            user.setNumberOfMissions(jsonObject.getInt("numberOfMissions"));
+            user.setNumberOfSuggestions(jsonObject.getInt("numberOfSuggestions"));
+            user.setNumberOfComments(jsonObject.getInt("numberOfComments"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     public int getId() {

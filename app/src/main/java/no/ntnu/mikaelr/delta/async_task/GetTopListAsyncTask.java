@@ -3,10 +3,9 @@ package no.ntnu.mikaelr.delta.async_task;
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
-import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.util.StatusCode;
+import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,16 +16,13 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
-public class AddSuggestionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
-
-    private ProjectInteractorImpl.OnPostSuggestionListener listener;
+public class GetTopListAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
 
     private String request;
-    private String body;
+    private ProjectInteractorImpl.OnFinishedLoadingTopList listener;
 
-    public AddSuggestionAsyncTask(String request, String body, ProjectInteractorImpl.OnPostSuggestionListener listener) {
+    public GetTopListAsyncTask(String request, ProjectInteractorImpl.OnFinishedLoadingTopList listener) {
         this.request = request;
-        this.body = body;
         this.listener = listener;
     }
 
@@ -38,11 +34,10 @@ public class AddSuggestionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, 
         ((SimpleClientHttpRequestFactory) template.getRequestFactory()).setConnectTimeout(1000 * 10);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-type", "application/json; charset=utf-8");
-        headers.set("Cookie", SharedPrefsUtil.getInstance().getCookie());
-        HttpEntity<String> entity = new HttpEntity<String>(body, headers);
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         try {
-            response = template.exchange(request, HttpMethod.POST, entity, String.class);
+            response = template.exchange(request, HttpMethod.GET, entity, String.class);
             return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_OK, response);
         }
 
@@ -64,14 +59,14 @@ public class AddSuggestionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, 
 
         if (result.first == StatusCode.HTTP_OK) {
             try {
-                JSONObject response = new JSONObject(result.second.getBody());
-                listener.onPostSuggestionSuccess(response);
+                JSONArray response = new JSONArray(result.second.getBody());
+                listener.onLoadTopListSuccess(response);
             } catch (JSONException e) {
-                listener.onPostSuggestionError(StatusCode.JSON_PARSE_EXCEPTION);
+                listener.onLoadTopListError(StatusCode.JSON_PARSE_EXCEPTION);
             }
         }
         else {
-            listener.onPostSuggestionError(result.first);
+            listener.onLoadTopListError(result.first);
         }
     }
 

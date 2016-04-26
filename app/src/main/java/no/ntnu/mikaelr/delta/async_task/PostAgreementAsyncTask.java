@@ -15,12 +15,12 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
-public class AgreementAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
+public class PostAgreementAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
 
     private String request;
     private ProjectInteractorImpl.OnPostAgreementListener listener;
 
-    public AgreementAsyncTask(String request, ProjectInteractorImpl.OnPostAgreementListener listener) {
+    public PostAgreementAsyncTask(String request, ProjectInteractorImpl.OnPostAgreementListener listener) {
         this.request = request;
         this.listener = listener;
     }

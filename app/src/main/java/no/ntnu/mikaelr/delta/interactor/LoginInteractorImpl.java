@@ -1,7 +1,7 @@
 package no.ntnu.mikaelr.delta.interactor;
 
 import no.ntnu.mikaelr.delta.async_task.LoginAsyncTask;
-import no.ntnu.mikaelr.delta.async_task.RegisterAsyncTask;
+import no.ntnu.mikaelr.delta.async_task.PostUserAsyncTask;
 
 public class LoginInteractorImpl implements LoginInteractor {
 
@@ -22,7 +22,7 @@ public class LoginInteractorImpl implements LoginInteractor {
 
     public void register(String username, String password, String registerCode, OnRegisterListener listener) {
         String apiCall = "http://129.241.102.204:8080/users";
-        new RegisterAsyncTask(apiCall, username, password, registerCode, listener).execute();
+        new PostUserAsyncTask(apiCall, username, password, registerCode, listener).execute();
     }
 
 }

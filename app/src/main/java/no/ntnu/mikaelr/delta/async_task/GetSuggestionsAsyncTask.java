@@ -7,6 +7,7 @@ import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.util.StatusCode;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,12 +18,12 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
-public class FinishedMissionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
+public class GetSuggestionsAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
 
     private String request;
-    private ProjectInteractorImpl.OnPostFinishedMission listener;
+    private ProjectInteractorImpl.OnFinishedLoadingSuggestionsListener listener;
 
-    public FinishedMissionAsyncTask(String request, ProjectInteractorImpl.OnPostFinishedMission listener) {
+    public GetSuggestionsAsyncTask(String request, ProjectInteractorImpl.OnFinishedLoadingSuggestionsListener listener) {
         this.request = request;
         this.listener = listener;
     }
@@ -39,7 +40,7 @@ public class FinishedMissionAsyncTask extends AsyncTask<Void, Void, Pair<Integer
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         try {
-            response = template.exchange(request, HttpMethod.POST, entity, String.class);
+            response = template.exchange(request, HttpMethod.GET, entity, String.class);
             return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_OK, response);
         }
 
@@ -60,10 +61,15 @@ public class FinishedMissionAsyncTask extends AsyncTask<Void, Void, Pair<Integer
     protected void onPostExecute(Pair<Integer, ResponseEntity<String>> result) {
 
         if (result.first == StatusCode.HTTP_OK) {
-            listener.onPostFinishedMissionSuccess();
+            try {
+                JSONArray response = new JSONArray(result.second.getBody());
+                listener.onFinishedLoadingSuggestionsSuccess(response);
+            } catch (JSONException e) {
+                listener.onFinishedLoadingSuggestionsError(StatusCode.JSON_PARSE_EXCEPTION);
+            }
         }
         else {
-            listener.onPostFinishedMissionError(result.first);
+            listener.onFinishedLoadingSuggestionsError(result.first);
         }
     }
 
