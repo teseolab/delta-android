@@ -1,15 +1,11 @@
 package no.ntnu.mikaelr.delta.model;
 
+import no.ntnu.mikaelr.delta.util.TaskType;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Task implements Serializable {
-
-    public enum TaskType {
-        SCALE_TASK,
-        TEXT_TASK,
-        FIRST_TASK
-    }
 
     private Integer id;
     private TaskType taskType;

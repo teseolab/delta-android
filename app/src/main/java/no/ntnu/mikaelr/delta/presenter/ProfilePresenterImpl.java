@@ -23,7 +23,7 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
 
     @Override
     public void loadProfile() {
-        interactor.getUser(0, this);
+        interactor.getMe(this);
     }
 
     // ASYNC TASK LISTENER ---------------------------------------------------------------------------------------------

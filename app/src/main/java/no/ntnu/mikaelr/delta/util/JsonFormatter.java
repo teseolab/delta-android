@@ -51,10 +51,10 @@ public class JsonFormatter {
                 task.setId(jsonTask.getInt("id"));
 
                 String taskTypeString = jsonTask.getString("taskType");
-                if (taskTypeString.equals(Task.TaskType.SCALE_TASK.name())) {
-                    task.setTaskType(Task.TaskType.SCALE_TASK);
-                } else if (taskTypeString.equals(Task.TaskType.TEXT_TASK.name())) {
-                    task.setTaskType(Task.TaskType.TEXT_TASK);
+                if (taskTypeString.equals(TaskType.SCALE_TASK.name())) {
+                    task.setTaskType(TaskType.SCALE_TASK);
+                } else if (taskTypeString.equals(TaskType.TEXT_TASK.name())) {
+                    task.setTaskType(TaskType.TEXT_TASK);
                 }
 
                 task.setLatitude((float) jsonTask.getDouble("latitude"));

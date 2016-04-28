@@ -24,12 +24,12 @@ public class TopListFragment extends Fragment implements TopListView {
         View view = inflater.inflate(R.layout.fragment_top_list, container, false);
 
         TopListPresenter presenter = new TopListPresenterImpl(this);
-        presenter.loadTopList();
-
-        listAdapter = new TopListAdapter(getActivity());
 
         ListView topList = (ListView) view.findViewById(R.id.top_list);
+        listAdapter = new TopListAdapter(getActivity());
         topList.setAdapter(listAdapter);
+
+        presenter.loadTopList();
 
         return view;
     }

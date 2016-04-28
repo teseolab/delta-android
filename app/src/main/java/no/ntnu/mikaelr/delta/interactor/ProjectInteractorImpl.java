@@ -99,10 +99,22 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     }
 
     @Override
-    public void getUser(int userId, OnGetUserListener listener) {
-        String apiCall = "http://129.241.102.204:8080/users/" + userId;
+    public void getMe(OnGetUserListener listener) {
+        String apiCall = "http://129.241.102.204:8080/users/me";
         new GetUserAsyncTask(apiCall, listener).execute();
     }
+
+    public interface OnGetLogRecordsListener {
+        void onGetLogRecordsSuccess(JSONArray jsonArray);
+        void onGetLogRecordsError(int errorCode);
+    }
+
+    @Override
+    public void getLogRecords(ProjectInteractorImpl.OnGetLogRecordsListener listener) {
+        String apiCall = "http://129.241.102.204:8080/users/me/logRecords";
+        new GetLogRecordsAsyncTask(apiCall, listener).execute();
+    }
+
     public interface OnPostAgreementListener {
         void onPostAgreementSuccess(int agreements, int disagreements);
         void onPostAgreementError(Integer errorCode);
@@ -143,6 +155,4 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/comments";
         new PostCommentAsyncTask(apiCall, comment, listener).execute();
     }
-
-
 }

@@ -21,6 +21,7 @@ import no.ntnu.mikaelr.delta.presenter.signature.MissionPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
 import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
+import no.ntnu.mikaelr.delta.util.TaskType;
 import no.ntnu.mikaelr.delta.view.signature.MissionView;
 import no.ntnu.mikaelr.delta.view.TaskActivity;
 import org.json.JSONArray;
@@ -202,7 +203,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         defaultFirstTask.setId(project.getId());
         defaultFirstTask.setLatitude(project.getLatitude());
         defaultFirstTask.setLongitude(project.getLongitude());
-        defaultFirstTask.setTaskType(Task.TaskType.FIRST_TASK);
+        defaultFirstTask.setTaskType(TaskType.FIRST_TASK);
         defaultFirstTask.setHint("Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget.");
         ArrayList<String> description = new ArrayList<String>(1);
         description.add("Yey! Du er nå klar for å starte oppdraget. Følg beskrivelsen på neste side for å komme i gang.");

@@ -31,12 +31,12 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerList;
 
-    private List<Fragment> fragments;
+//    private List<Fragment> fragments;
 
     private MapFragment mapFragment;
     private ProfileFragment profileFragment;
     private TopListFragment topListFragment;
-    private ActivityLog activityLog;
+    private ActivityLogFragment activityLogFragment;
 
     private int clickedDrawerMenuPosition;
 
@@ -53,13 +53,13 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         mapFragment = new MapFragment();
         profileFragment = new ProfileFragment();
         topListFragment = new TopListFragment();
-        activityLog = new ActivityLog();
+        activityLogFragment = new ActivityLogFragment();
 
-        fragments = new ArrayList<Fragment>();
-        fragments.add(mapFragment);
-        fragments.add(profileFragment);
-        fragments.add(topListFragment);
-        fragments.add(activityLog);
+//        fragments = new ArrayList<Fragment>();
+//        fragments.add(mapFragment);
+//        fragments.add(profileFragment);
+//        fragments.add(topListFragment);
+//        fragments.add(activityLogFragment);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mapFragment).commit();
         ToolbarUtil.setTitle(this, "Delta");
@@ -111,21 +111,21 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     @Override
     public void onDrawerClosed(View drawerView) {
         if (clickedDrawerMenuPosition == 0) {
-            showOrAddFragment(mapFragment);
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mapFragment).commit();
             ToolbarUtil.setTitle(this, "Delta");
         }
 
         else if (clickedDrawerMenuPosition == 1) {
-            showOrAddFragment(profileFragment);
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, profileFragment).commit();
             ToolbarUtil.setTitle(this, "Profil");
         }
 
         else if (clickedDrawerMenuPosition == 2) {
-            showOrAddFragment(topListFragment);
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, topListFragment).commit();
             ToolbarUtil.setTitle(this, "Toppliste");
         }
         else if (clickedDrawerMenuPosition == 3) {
-            showOrAddFragment(activityLog);
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, activityLogFragment).commit();
             ToolbarUtil.setTitle(this, "Min aktivitet");
         }
         else if (clickedDrawerMenuPosition == 4) {
@@ -136,22 +136,22 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         }
     }
 
-    private void showOrAddFragment(Fragment f) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        for (Fragment fragment : fragments) {
-            if (fragment.equals(f)) {
-                if (fragment.isAdded()) {
-                    ft.show(fragment);
-                }
-                else {
-                    ft.add(R.id.content_frame, fragment);
-                }
-            } else if (fragment.isVisible()) {
-                ft.hide(fragment);
-            }
-        }
-        ft.commit();
-    }
+//    private void showOrAddFragment(Fragment f) {
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        for (Fragment fragment : fragments) {
+//            if (fragment.equals(f)) {
+//                if (fragment.isAdded()) {
+//                    ft.show(fragment);
+//                }
+//                else {
+//                    ft.add(R.id.content_frame, fragment);
+//                }
+//            } else if (fragment.isVisible()) {
+//                ft.hide(fragment);
+//            }
+//        }
+//        ft.commit();
+//    }
 
     @Override
     public void onDrawerStateChanged(int newState) {
