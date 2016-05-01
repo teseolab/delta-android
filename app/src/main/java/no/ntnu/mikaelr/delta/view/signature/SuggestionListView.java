@@ -9,4 +9,5 @@ public interface SuggestionListView {
     void updateList(List<Suggestion> suggestions);
     void setEmptyListMessage(String message);
 
+    void hideProgressSpinner();
 }

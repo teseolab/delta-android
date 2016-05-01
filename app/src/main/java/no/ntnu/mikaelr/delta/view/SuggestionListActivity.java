@@ -7,8 +7,10 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.adapter.SuggestionListAdapter;
 import no.ntnu.mikaelr.delta.model.Suggestion;
@@ -35,6 +37,10 @@ public class SuggestionListActivity extends AppCompatActivity implements Suggest
         this.presenter = new SuggestionListPresenterImpl(this);
 
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Forslag");
+
+        LinearLayout progressSpinnerView = (LinearLayout) findViewById(R.id.progress_spinner_view);
+        CircularProgressView progressSpinner = (CircularProgressView) progressSpinnerView.findViewById(R.id.progress_spinner);
+        progressSpinner.startAnimation();
 
         listAdapter = new SuggestionListAdapter(this);
         listView = (ListView) findViewById(R.id.suggestion_list);
@@ -76,6 +82,14 @@ public class SuggestionListActivity extends AppCompatActivity implements Suggest
     @Override
     public void setEmptyListMessage(String message) {
         addFooterView(message);
+    }
+
+    @Override
+    public void hideProgressSpinner() {
+        LinearLayout progressSpinnerView = (LinearLayout) findViewById(R.id.progress_spinner_view);
+        CircularProgressView progressSpinner = (CircularProgressView) progressSpinnerView.findViewById(R.id.progress_spinner);
+        progressSpinnerView.setVisibility(View.GONE);
+        progressSpinner.setVisibility(View.GONE); // This will also stop the animation
     }
 
     // LISTENERS -------------------------------------------------------------------------------------------------------

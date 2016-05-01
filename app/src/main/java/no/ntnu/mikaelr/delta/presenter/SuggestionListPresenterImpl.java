@@ -73,6 +73,7 @@ public class SuggestionListPresenterImpl implements SuggestionListPresenter, Pro
     public void onFinishedLoadingSuggestionsSuccess(JSONArray jsonArray) {
         suggestions = JsonFormatter.formatSuggestions(jsonArray);
         view.updateList(suggestions);
+        view.hideProgressSpinner();
         if (suggestions.size() == 0) {
             view.setEmptyListMessage("Ingen forslag til dette prosjektet enda. Bli den første til å poste et!");
         }
@@ -81,5 +82,6 @@ public class SuggestionListPresenterImpl implements SuggestionListPresenter, Pro
     @Override
     public void onFinishedLoadingSuggestionsError(Integer errorCode) {
         view.setEmptyListMessage("Kunne ikke laste inn forslag :(");
+        view.hideProgressSpinner();
     }
 }
