@@ -1,6 +1,7 @@
 package no.ntnu.mikaelr.delta.interactor;
 
 import no.ntnu.mikaelr.delta.async_task.LoginAsyncTask;
+import no.ntnu.mikaelr.delta.async_task.PostImageAsyncTask;
 import no.ntnu.mikaelr.delta.async_task.PostUserAsyncTask;
 
 public class LoginInteractorImpl implements LoginInteractor {

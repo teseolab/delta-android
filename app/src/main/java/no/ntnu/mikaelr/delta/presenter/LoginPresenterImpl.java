@@ -5,6 +5,7 @@ import android.content.Intent;
 import no.ntnu.mikaelr.delta.interactor.LoginInteractor;
 import no.ntnu.mikaelr.delta.interactor.LoginInteractorImpl;
 import no.ntnu.mikaelr.delta.presenter.signature.LoginPresenter;
+import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.view.MainActivity;
 import no.ntnu.mikaelr.delta.view.signature.LoginView;
@@ -31,7 +32,9 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractorImpl.O
     @Override
     public void goToMainActivity() {
         Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
+        context.finish();
     }
 
     // ASYNC TASK LISTENERS --------------------------------------------------------------------------------------------
@@ -39,11 +42,12 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractorImpl.O
     @Override
     public void onLoginSuccess(String cookie) {
         SharedPrefsUtil.getInstance().setCookie(cookie);
+        view.enableLoginButton(true);
         goToMainActivity();
     }
 
     @Override
     public void onLoginError(int errorCode) {
-        view.showMessage("Feil brukernavn eller passord");
+        view.showMessage(ErrorMessage.WRONG_USERNAME_OR_PASSWORD);
     }
 }

@@ -32,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView,
         loginButton.setSupportBackgroundTintList(csl);
         loginButton.setOnClickListener(this);
 
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Registrer ny bruker");
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Registrer bruker");
 
         // Makes the keyboard appear
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

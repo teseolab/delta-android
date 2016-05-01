@@ -5,12 +5,16 @@ import no.ntnu.mikaelr.delta.model.Suggestion;
 
 public interface SuggestionPresenter {
 
-    void loadComments(int suggestionId);
+    void loadComments();
+
     Suggestion getSuggestion();
     boolean userAgrees();
+
     boolean userDisagrees();
+    boolean hasImage();
 
     void postAgreement();
+
     void postDisagreement();
 
     void onFinished();

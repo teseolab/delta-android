@@ -22,6 +22,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, View.
 
     private EditText username;
     private EditText password;
+    private AppCompatButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, View.
     // PRIVATE METHODS -------------------------------------------------------------------------------------------------
 
     private void initializeButton() {
-        AppCompatButton loginButton = (AppCompatButton) findViewById(R.id.login);
+        loginButton = (AppCompatButton) findViewById(R.id.login);
         ColorStateList csl = ColorStateList.valueOf(0xff26A69A);
         loginButton.setSupportBackgroundTintList(csl);
         loginButton.setOnClickListener(this);
@@ -65,14 +66,29 @@ public class LoginActivity extends AppCompatActivity implements LoginView, View.
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void enableLoginButton(boolean enabled) {
+        loginButton.setEnabled(enabled);
+        if (!enabled) {
+            loginButton.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loginButton.setEnabled(true);
+                }
+            }, 4000);
+        }
+    }
+
 
     // LISTENERS -------------------------------------------------------------------------------------------------------
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.login) {
+            enableLoginButton(false);
             presenter.login(username.getText().toString(), password.getText().toString());
 
             // Makes the keyboard disappear
