@@ -9,4 +9,7 @@ public class Constants {
     public static final String NO = "NO";
     public static final String NA = "NA";
 
+    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    public static final int CHOOSE_IMAGE_ACTIVITY_REQUEST_CODE = 200;
+
 }

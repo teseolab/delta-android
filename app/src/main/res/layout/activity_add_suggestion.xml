@@ -24,11 +24,18 @@
             android:id="@+id/details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ditt forslag her"
+            android:hint="@string/your_suggestion"
             android:inputType="textMultiLine|textCapSentences"
             android:lines="5"
             android:minLines="1"
             android:ems="10"/>
+        
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            android:scaleType="centerCrop"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/add_image_button"

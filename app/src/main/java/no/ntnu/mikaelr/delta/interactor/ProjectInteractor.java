@@ -22,4 +22,9 @@ public interface ProjectInteractor {
     void getMissionForProjectIsCompletedByUser(int projectId, ProjectInteractorImpl.OnGetMissionForProjectIsCompletedByUser listener);
 
     void postComment(String comment, int suggestionId, ProjectInteractorImpl.OnPostCommentListener listener);
+
+    void uploadImage(byte[] byteArray, ProjectInteractorImpl.OnPostImageListener listener);
+    void getImage(String imageUri, ProjectInteractorImpl.OnGetImageListener listener);
+
+    void putAvatar(String avatarUri, ProjectInteractorImpl.OnPutAvatarListener listener);
 }

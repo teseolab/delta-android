@@ -1,5 +1,6 @@
 package no.ntnu.mikaelr.delta.view;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,9 +14,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
 import no.ntnu.mikaelr.delta.listener.ProjectDialogClickListener;
 import no.ntnu.mikaelr.delta.presenter.MainPresenterImpl;
 import no.ntnu.mikaelr.delta.presenter.signature.MainPresenter;
+import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.view.signature.MainView;
 
@@ -23,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainView, AdapterView.OnItemClickListener,
-        DrawerLayout.DrawerListener, ProjectDialogClickListener {
+        DrawerLayout.DrawerListener, ProjectDialogClickListener, AddImageDialog.AddImageDialogListener {
 
     private MainPresenter presenter;
 
@@ -131,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         else if (clickedDrawerMenuPosition == 4) {
             SharedPrefsUtil.getInstance().setCookie("");
             Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
     }
@@ -168,4 +170,26 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     }
 
+    // TODO: 30.04.2016
+    // The dialog to add image is designed to be attached to Activities.
+    // So even when the dialog is created in ProfileFragment
+    // the Activity the Fragment is attached to (this) must be the callback listener.
+    // Can a Dialog be made that can be attached to both Activities and Fragments?
+
+    @Override
+    public void onTakePhotoClicked(Dialog dialog) {
+        dialog.dismiss();
+        profileFragment.openCamera();
+    }
+
+    @Override
+    public void onSelectPhotoClicked(Dialog dialog) {
+        dialog.dismiss();
+        profileFragment.openGallery();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

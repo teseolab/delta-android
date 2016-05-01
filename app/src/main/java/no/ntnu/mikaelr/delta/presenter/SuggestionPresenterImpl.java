@@ -2,6 +2,7 @@ package no.ntnu.mikaelr.delta.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Comment;
@@ -43,9 +44,14 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
     // INTERFACE -------------------------------------------------------------------------------------------------------
 
     @Override
-    public void loadComments(int suggestionId) {
+    public void loadComments() {
         projectInteractor.getComments(suggestion.getId(), this);
     }
+
+//    @Override
+//    public void loadImage() {
+//        projectInteractor.getImage(suggestion.getImageUri(), this);
+//    }
 
     @Override
     public Suggestion getSuggestion() {
@@ -60,6 +66,11 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
     @Override
     public boolean userDisagrees() {
         return suggestion.getAgrees().equals(Constants.NO);
+    }
+
+    @Override
+    public boolean hasImage() {
+        return !suggestion.getImageUri().equals("");
     }
 
     @Override
@@ -139,11 +150,23 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
 
     @Override
     public void onPostAgreementError(Integer errorCode) {
-        System.out.println("POST AGREEMENT ERROR");
+        // TODO: Error handling
+        System.out.println("POST AGREEMENT ERROR " + errorCode);
     }
 
     @Override
     public void onPostDisagreementError(Integer errorCode) {
-        System.out.println("POST DISAGREEMENT ERROR");
+        // TODO: Error handling
+        System.out.println("POST DISAGREEMENT ERROR " + errorCode);
     }
+
+//    @Override
+//    public void onGetImageSuccess(Bitmap image) {
+//        view.updateImage(image);
+//    }
+//
+//    @Override
+//    public void onGetImageError(int errorCode) {
+//        System.out.println("SUGGESTION IMAGE ERROR " + errorCode);
+//    }
 }

@@ -1,5 +1,7 @@
 package no.ntnu.mikaelr.delta.view;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,13 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
 import no.ntnu.mikaelr.delta.model.HighscoreUser;
 import no.ntnu.mikaelr.delta.presenter.ProfilePresenterImpl;
 import no.ntnu.mikaelr.delta.presenter.signature.ProfilePresenter;
+import no.ntnu.mikaelr.delta.util.CircleTransform;
+import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.view.signature.ProfileView;
 
-public class ProfileFragment extends Fragment implements ProfileView {
+public class ProfileFragment extends Fragment implements ProfileView, View.OnClickListener {
+
+    private ProfilePresenter presenter;
 
     private ImageView avatar;
     private TextView username;
@@ -26,9 +35,10 @@ public class ProfileFragment extends Fragment implements ProfileView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        ProfilePresenter presenter = new ProfilePresenterImpl(this);
+        presenter = new ProfilePresenterImpl(this);
 
         avatar = (ImageView) view.findViewById(R.id.avatar);
+        avatar.setOnClickListener(this);
         username = (TextView) view.findViewById(R.id.username);
         score = (TextView) view.findViewById(R.id.score);
         missionsCompleted = (TextView) view.findViewById(R.id.missions_completed);
@@ -44,11 +54,61 @@ public class ProfileFragment extends Fragment implements ProfileView {
 
     @Override
     public void updateView(HighscoreUser user) {
-        avatar.setImageResource(R.drawable.mikael_delta_profile_picture); // TODO: Get from user
+        Picasso.with(getActivity()).load(user.getAvatarUri()).error(R.drawable.default_avatar).transform(new CircleTransform()).into(avatar);
         username.setText(user.getUsername());
         score.setText("Poeng: " + user.getScore());
         missionsCompleted.setText(Integer.toString(user.getNumberOfMissions()));
         suggestionsPosted.setText(Integer.toString(user.getNumberOfSuggestions()));
         commentsPosted.setText(Integer.toString(user.getNumberOfComments()));
+    }
+
+    @Override
+    public void setAvatar(Uri avatarUri) {
+        Picasso.with(getActivity()).load(avatarUri).transform(new CircleTransform()).into(avatar);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    // ON CLICK LISTENER
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.avatar) {
+            AddImageDialog.newInstance().show(getFragmentManager(), "tag");
+        }
+    }
+
+    // DIALOG LISTENER
+
+//    @Override
+//    public void onTakePhotoClicked(Dialog dialog) {
+//        dialog.dismiss();
+//        presenter.openCamera(Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//    }
+//
+//    @Override
+//    public void onSelectPhotoClicked(Dialog dialog) {
+//        dialog.dismiss();
+//        presenter.openGallery(Constants.CHOOSE_IMAGE_ACTIVITY_REQUEST_CODE);
+//    }
+
+    // Called from MainActivity
+    public void openCamera() {
+        presenter.openCamera(Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    // Called from MainActivity
+    public void openGallery() {
+        presenter.openGallery(Constants.CHOOSE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    // INTENT RESULT ---------------------------------------------------------------------------------------------------
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        presenter.onCropResult(resultCode, data);
     }
 }

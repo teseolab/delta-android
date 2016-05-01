@@ -7,13 +7,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.adapter.CommentListAdapter;
+import no.ntnu.mikaelr.delta.fragment.ImageViewerDialog;
 import no.ntnu.mikaelr.delta.model.Comment;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.presenter.SuggestionPresenterImpl;
 import no.ntnu.mikaelr.delta.presenter.signature.SuggestionPresenter;
+import no.ntnu.mikaelr.delta.util.BlurBuilder;
 import no.ntnu.mikaelr.delta.util.DateFormatter;
 import no.ntnu.mikaelr.delta.view.signature.SuggestionView;
 
@@ -23,26 +29,33 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
 
     private SuggestionPresenter presenter;
 
+    private View contentView;
+
     private CommentListAdapter listAdapter;
     private ListView listView;
     private View emptyView;
 
-    TextView agreements;
-    TextView disagreements;
+    private ImageView image;
+    private TextView agreements;
+    private TextView disagreements;
 
     // LIFECYCLE -------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_suggestion);
+        contentView = getLayoutInflater().inflate(R.layout.activity_suggestion, null);
+        setContentView(contentView);
         this.presenter = new SuggestionPresenterImpl(this);
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Forslag");
 
         initializeListAdapter();
         addHeaderView();
 
-        presenter.loadComments(presenter.getSuggestion().getId());
+//        if (presenter.hasImage()) {
+//            presenter.loadImage();
+//        }
+        presenter.loadComments();
     }
 
     @Override
@@ -60,7 +73,8 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
 
         LinearLayout header = (LinearLayout) getLayoutInflater().inflate(R.layout.suggestion_header, null);
 
-        ImageView image = (ImageView) header.findViewById(R.id.image);
+        image = (ImageView) header.findViewById(R.id.image);
+        image.setOnClickListener(this);
         TextView username = (TextView) header.findViewById(R.id.username);
         TextView date = (TextView) header.findViewById(R.id.date);
         TextView title = (TextView) header.findViewById(R.id.title);
@@ -73,8 +87,11 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
         commentButton.setOnClickListener(this);
 
         Suggestion suggestion = presenter.getSuggestion();
+        String imageUri = suggestion.getImageUri();
 
-        image.setImageResource(R.drawable.nyhavna2_hires);
+        if (!imageUri.equals("")) {
+            Picasso.with(this).load(imageUri).into(image);
+        }
         username.setText(suggestion.getUser().getUsername());
         date.setText(DateFormatter.format(suggestion.getDate(), "dd.MM.yy"));
         title.setText(suggestion.getTitle());
@@ -197,6 +214,9 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
             case R.id.add_comment_button:
                 presenter.goToPostComment();
                 break;
+            case R.id.image:
+                ImageViewerDialog.newInstance(presenter.getSuggestion().getImageUri()).show(getSupportFragmentManager(), "tag");
+                break;
         }
 
     }
@@ -207,4 +227,5 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
             presenter.onActivityResult(requestCode, data);
         }
     }
+
 }

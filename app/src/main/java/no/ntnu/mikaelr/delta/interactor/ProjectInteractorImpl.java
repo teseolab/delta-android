@@ -1,5 +1,6 @@
 package no.ntnu.mikaelr.delta.interactor;
 
+import android.graphics.Bitmap;
 import no.ntnu.mikaelr.delta.async_task.*;
 import no.ntnu.mikaelr.delta.model.ProjectResponse;
 import no.ntnu.mikaelr.delta.model.Suggestion;
@@ -154,5 +155,37 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     public void postComment(String comment, int suggestionId, OnPostCommentListener listener) {
         String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/comments";
         new PostCommentAsyncTask(apiCall, comment, listener).execute();
+    }
+
+    public interface OnPostImageListener {
+        void onPostImageSuccess(String uri);
+        void onPostImageError(int errorCode);
+    }
+
+    @Override
+    public void uploadImage(byte[] byteArray, OnPostImageListener listener) {
+        String apiCall = "http://129.241.102.204:8080/images/upload";
+        new PostImageAsyncTask(apiCall, byteArray, listener).execute();
+    }
+
+    public interface OnGetImageListener {
+        void onGetImageSuccess(Bitmap image);
+        void onGetImageError(int errorCode);
+    }
+
+    @Override
+    public void getImage(String imageUri, OnGetImageListener listener) {
+        new GetImageAsyncTask(imageUri, listener).execute();
+    }
+
+    public interface OnPutAvatarListener {
+        void onPutAvatarSuccess();
+        void onPutAvatarError(int errorCode);
+    }
+
+    @Override
+    public void putAvatar(String avatarUri, OnPutAvatarListener listener) {
+        String apiCall = "http://129.241.102.204:8080/users/me/avatar";
+        new PutAvatarAsyncTask(apiCall, avatarUri, listener).execute();
     }
 }

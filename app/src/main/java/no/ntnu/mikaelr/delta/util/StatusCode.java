@@ -6,6 +6,7 @@ public class StatusCode {
 
     public static final int NETWORK_UNREACHABLE = 1;
     public static final int JSON_PARSE_EXCEPTION = 2;
+    public static final int IMAGE_DECODE_FAILED = 3;
 
     public static final int HTTP_UNKNOWN = 600;
 
