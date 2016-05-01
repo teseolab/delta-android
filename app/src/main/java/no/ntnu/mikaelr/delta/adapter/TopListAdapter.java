@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.model.HighscoreUser;
+import no.ntnu.mikaelr.delta.util.CircleTransform;
 
 import java.util.Collections;
 import java.util.List;
@@ -80,7 +82,7 @@ public class TopListAdapter extends BaseAdapter {
 
         int listPosition = position + 1;
         viewHolder.position.setText("#" + listPosition);
-        viewHolder.avatar.setImageResource(R.drawable.mikael_delta_profile_picture); // TODO: From user
+        Picasso.with(context).load(user.getAvatarUri()).transform(new CircleTransform()).into(viewHolder.avatar);
         viewHolder.username.setText(user.getUsername());
         viewHolder.score.setText(user.getScore() + " poeng");
         viewHolder.missionsCompleted.setText(Integer.toString(user.getNumberOfMissions()));
