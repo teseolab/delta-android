@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.model.Comment;
 import no.ntnu.mikaelr.delta.model.Suggestion;
+import no.ntnu.mikaelr.delta.util.CircleTransform;
 import no.ntnu.mikaelr.delta.util.DateFormatter;
 
 import java.util.Collections;
@@ -71,7 +73,13 @@ public class CommentListAdapter extends BaseAdapter {
 
         Comment comment = comments.get(position);
 
-        viewHolder.thumbnail.setImageResource(R.drawable.mikael_delta_profile_picture);
+        String avatarUri = comment.getUser().getAvatarUri();
+        if (avatarUri != null) {
+            Picasso.with(context).load(avatarUri.replace(".jpg", "_thumbnail.jpg")).transform(new CircleTransform()).error(R.drawable.no_avatar).into(viewHolder.thumbnail);
+        } else {
+            viewHolder.thumbnail.setImageResource(R.drawable.no_avatar);
+        }
+
         viewHolder.usernameAndDate.setText(comment.getUser().getUsername() + " @ " + DateFormatter.format(comment.getDate(), "dd.MM.yy"));
         viewHolder.comment.setText(comment.getComment());
 

@@ -11,6 +11,7 @@ public class HighscoreUser {
 
     private int id;
     private String username;
+    private String avatarUri;
     private int score;
     private int numberOfMissions;
     private int numberOfSuggestions;
@@ -37,6 +38,7 @@ public class HighscoreUser {
         try {
             user.setId(jsonObject.getInt("id"));
             user.setUsername(jsonObject.getString("username"));
+            user.setAvatarUri(jsonObject.getString("avatarUri"));
             user.setScore(jsonObject.getInt("score"));
             user.setNumberOfMissions(jsonObject.getInt("numberOfMissions"));
             user.setNumberOfSuggestions(jsonObject.getInt("numberOfSuggestions"));
@@ -61,6 +63,14 @@ public class HighscoreUser {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getAvatarUri() {
+        return avatarUri;
+    }
+
+    public void setAvatarUri(String avatarUri) {
+        this.avatarUri = avatarUri;
     }
 
     public int getScore() {

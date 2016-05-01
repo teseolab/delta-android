@@ -9,10 +9,12 @@ public class User implements Serializable {
 
     private int id;
     private String username;
+    private String avatarUri;
 
-    public User(int id, String username) {
+    public User(int id, String username, String avatarUri) {
         this.id = id;
         this.username = username;
+        this.avatarUri = avatarUri;
     }
 
     public static String userOut(String username, String password, String registerCode) {
@@ -30,7 +32,7 @@ public class User implements Serializable {
     public static User userIn(String json) {
         try {
             JSONObject jsonUser = new JSONObject(json);
-            return new User(jsonUser.getInt("id"), jsonUser.getString("username"));
+            return new User(jsonUser.getInt("id"), jsonUser.getString("username"), jsonUser.getString("avatarUri"));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -51,5 +53,13 @@ public class User implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getAvatarUri() {
+        return avatarUri;
+    }
+
+    public void setAvatarUri(String avatarUri) {
+        this.avatarUri = avatarUri;
     }
 }

@@ -92,7 +92,11 @@ public class JsonFormatter {
                 suggestion.setId(jsonSuggestion.getInt("id"));
                 suggestion.setDate(DateFormatter.dateFromMillis(jsonSuggestion.getLong("date")));
                 JSONObject jsonUser = jsonSuggestion.getJSONObject("user");
-                User user = new User(jsonUser.getInt("id"), jsonUser.getString("username"));
+                String avatarUri = jsonUser.getString("avatarUri");
+                if (avatarUri.equals("null") || avatarUri.equals("")){
+                    avatarUri = null;
+                }
+                User user = new User(jsonUser.getInt("id"), jsonUser.getString("username"), avatarUri);
                 suggestion.setUser(user);
                 suggestion.setImageUri(jsonSuggestion.getString("imageUri"));
                 suggestion.setTitle(jsonSuggestion.getString("title"));
@@ -126,7 +130,11 @@ public class JsonFormatter {
                 comment.setDate(DateFormatter.dateFromMillis(jsonComment.getLong("date")));
                 comment.setComment(jsonComment.getString("comment"));
                 JSONObject jsonUser = jsonComment.getJSONObject("user");
-                User user = new User(jsonUser.getInt("id"), jsonUser.getString("username"));
+                String avatarUri = jsonUser.getString("avatarUri");
+                if (avatarUri.equals("null") || avatarUri.equals("")){
+                    avatarUri = null;
+                }
+                User user = new User(jsonUser.getInt("id"), jsonUser.getString("username"), avatarUri);
                 comment.setUser(user);
                 comments.add(comment);
             }
