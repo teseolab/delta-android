@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.util.DateFormatter;
@@ -74,7 +75,9 @@ public class SuggestionListAdapter extends BaseAdapter {
 
         Suggestion suggestion = suggestions.get(position);
 
-        viewHolder.thumbnail.setImageResource(R.drawable.nyhavna2);
+        if (!suggestion.getImageUri().equals("")) {
+            Picasso.with(context).load(suggestion.getImageUri().replace(".jpg", "_thumbnail.jpg")).error(R.drawable.no_image).into(viewHolder.thumbnail);
+        }
         viewHolder.title.setText(suggestion.getTitle());
         viewHolder.details.setText(suggestion.getDetails());
         viewHolder.username.setText(suggestion.getUser().getUsername());
