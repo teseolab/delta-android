@@ -40,15 +40,25 @@ public class MapFragment extends Fragment implements MapFragView, OnMapReadyCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_map, container, false);
+        if (view == null) {
+            view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        presenter = new MapPresenterImpl(this);
+            presenter = new MapPresenterImpl(this);
 
-        mapView = (MapView) view.findViewById(R.id.map);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+            mapView = (MapView) view.findViewById(R.id.map);
+            mapView.onCreate(savedInstanceState);
+            mapView.getMapAsync(this);
+        }
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (view.getParent() != null) {
+            ((ViewGroup)view.getParent()).removeView(view);
+        }
+        super.onDestroyView();
     }
 
     @Override

@@ -6,7 +6,7 @@ public interface MainPresenter {
 
 //    void onMarkerClick(int clickedProjectId);
 //
-    List<String> getDrawerMenuItems();
+//    List<String> getDrawerMenuItems();
 //
 //    void loadProjects();
 //

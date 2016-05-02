@@ -4,10 +4,12 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,23 +20,21 @@ import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
 import no.ntnu.mikaelr.delta.listener.ProjectDialogClickListener;
 import no.ntnu.mikaelr.delta.presenter.MainPresenterImpl;
 import no.ntnu.mikaelr.delta.presenter.signature.MainPresenter;
-import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.view.signature.MainView;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainView, AdapterView.OnItemClickListener,
-        DrawerLayout.DrawerListener, ProjectDialogClickListener, AddImageDialog.AddImageDialogListener {
-
-    private MainPresenter presenter;
+        DrawerLayout.DrawerListener, ProjectDialogClickListener, AddImageDialog.AddImageDialogListener,
+        FragmentManager.OnBackStackChangedListener {
 
     private DrawerLayout drawerView;
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerList;
 
-//    private List<Fragment> fragments;
+    private FragmentManager fragmentManager;
 
     private MapFragment mapFragment;
     private ProfileFragment profileFragment;
@@ -43,30 +43,41 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     private int clickedDrawerMenuPosition;
 
+    private final String MENU_ITEM_MAIN = "Delta";
+    private final String MENU_ITEM_PROFILE = "Profil";
+    private final String MENU_ITEM_TOP_LIST = "Toppliste";
+    private final String MENU_ITEM_ACTIVITY_LOG = "Min aktivitet";
+    private final String MENU_ITEM_LOG_OUT = "Logg ut";
+
+    private final SparseArray<String> menuItemMap = new SparseArray<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        presenter = new MainPresenterImpl(this);
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_menu_white_24dp, MENU_ITEM_MAIN);
 
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_menu_white_24dp, getString(R.string.app_name));
+        menuItemMap.put(0, MENU_ITEM_MAIN);
+        menuItemMap.put(1, MENU_ITEM_PROFILE);
+        menuItemMap.put(2, MENU_ITEM_TOP_LIST);
+        menuItemMap.put(3, MENU_ITEM_ACTIVITY_LOG);
+        menuItemMap.put(4, MENU_ITEM_LOG_OUT);
+
         initializeNavigationDrawer();
+
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.addOnBackStackChangedListener(this);
 
         mapFragment = new MapFragment();
         profileFragment = new ProfileFragment();
         topListFragment = new TopListFragment();
         activityLogFragment = new ActivityLogFragment();
 
-//        fragments = new ArrayList<Fragment>();
-//        fragments.add(mapFragment);
-//        fragments.add(profileFragment);
-//        fragments.add(topListFragment);
-//        fragments.add(activityLogFragment);
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mapFragment).commit();
-        ToolbarUtil.setTitle(this, "Delta");
-
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.content_frame, mapFragment, MENU_ITEM_MAIN)
+                .commit();
     }
 
     // Initialization methods ------------------------------------------------------------------------------------------
@@ -79,8 +90,15 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
         drawerList = (ListView) findViewById(R.id.drawer_menu);
         drawerList.setOnItemClickListener(this);
-        drawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.list_item_drawer, presenter.getDrawerMenuItems()));
+
+        List<String> menuItems = Arrays.asList(
+                menuItemMap.get(0),
+                menuItemMap.get(1),
+                menuItemMap.get(2),
+                menuItemMap.get(3),
+                menuItemMap.get(4));
+
+        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item_drawer, menuItems));
         drawerList.setItemChecked(0, true);
     }
 
@@ -91,10 +109,14 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
+
+
     // Drawer menu listener --------------------------------------------------------------------------------------------
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String title = menuItemMap.get(position);
+        ToolbarUtil.setTitle(this, title);
         clickedDrawerMenuPosition = position;
         drawerView.closeDrawer(drawerList);
     }
@@ -113,24 +135,51 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     @Override
     public void onDrawerClosed(View drawerView) {
+
         if (clickedDrawerMenuPosition == 0) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mapFragment).commit();
-            ToolbarUtil.setTitle(this, "Delta");
+            Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
+            if (!(visibleFragment instanceof MapFragment)) {
+                fragmentManager.beginTransaction().remove(visibleFragment).commit();
+                fragmentManager.popBackStack();
+            }
         }
 
         else if (clickedDrawerMenuPosition == 1) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, profileFragment).commit();
-            ToolbarUtil.setTitle(this, "Profil");
+            Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
+            if (!(visibleFragment instanceof ProfileFragment)) {
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.content_frame, profileFragment, MENU_ITEM_PROFILE);
+                if (visibleFragment instanceof MapFragment) {
+                    transaction.addToBackStack("Main");
+                }
+                transaction.commit();
+            }
         }
 
         else if (clickedDrawerMenuPosition == 2) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, topListFragment).commit();
-            ToolbarUtil.setTitle(this, "Toppliste");
+            Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
+            if (!(visibleFragment instanceof TopListFragment)) {
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.content_frame, topListFragment, MENU_ITEM_TOP_LIST);
+                if (visibleFragment instanceof MapFragment) {
+                    transaction.addToBackStack("Main");
+                }
+                transaction.commit();
+            }
         }
+
         else if (clickedDrawerMenuPosition == 3) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, activityLogFragment).commit();
-            ToolbarUtil.setTitle(this, "Min aktivitet");
+            Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
+            if (!(visibleFragment instanceof ActivityLogFragment)) {
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.content_frame, activityLogFragment, MENU_ITEM_ACTIVITY_LOG);
+                if (visibleFragment instanceof MapFragment) {
+                    transaction.addToBackStack("Main");
+                }
+                transaction.commit();
+            }
         }
+
         else if (clickedDrawerMenuPosition == 4) {
             SharedPrefsUtil.getInstance().setCookie("");
             Intent intent = new Intent(this, LoginActivity.class);
@@ -191,5 +240,22 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
+        if (!(visibleFragment instanceof MapFragment)) {
+            fragmentManager.beginTransaction().remove(visibleFragment).commit();
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
+        String fragmentTag = visibleFragment.getTag();
+        drawerList.setItemChecked(menuItemMap.indexOfValue(fragmentTag), true);
+        ToolbarUtil.setTitle(this, fragmentTag);
     }
 }
