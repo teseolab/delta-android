@@ -7,9 +7,9 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import android.widget.LinearLayout;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -112,7 +112,8 @@ public class MapFragment extends Fragment implements MapFragView, OnMapReadyCall
     @Override
     public void setMapLocationToMarkers() {
         int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
-        if (map != null) map.moveCamera(newLatLngBounds(boundsBuilder.build(), padding));
+//        if (map != null) map.moveCamera(newLatLngBounds(boundsBuilder.build(), padding));
+        if (map != null) map.animateCamera(newLatLngBounds(boundsBuilder.build(), padding));
     }
 
     @Override

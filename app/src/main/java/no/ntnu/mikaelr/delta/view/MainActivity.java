@@ -38,8 +38,6 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     private MapFragment mapFragment;
     private ProfileFragment profileFragment;
-    private TopListFragment topListFragment;
-    private ActivityLogFragment activityLogFragment;
 
     private int clickedDrawerMenuPosition;
 
@@ -70,14 +68,12 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         fragmentManager.addOnBackStackChangedListener(this);
 
         mapFragment = new MapFragment();
-        profileFragment = new ProfileFragment();
-        topListFragment = new TopListFragment();
-        activityLogFragment = new ActivityLogFragment();
 
         fragmentManager
                 .beginTransaction()
                 .replace(R.id.content_frame, mapFragment, MENU_ITEM_MAIN)
                 .commit();
+
     }
 
     // Initialization methods ------------------------------------------------------------------------------------------
@@ -147,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         else if (clickedDrawerMenuPosition == 1) {
             Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
             if (!(visibleFragment instanceof ProfileFragment)) {
+                profileFragment = new ProfileFragment();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.content_frame, profileFragment, MENU_ITEM_PROFILE);
                 if (visibleFragment instanceof MapFragment) {
@@ -160,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
             Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
             if (!(visibleFragment instanceof TopListFragment)) {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.content_frame, topListFragment, MENU_ITEM_TOP_LIST);
+                transaction.replace(R.id.content_frame, new TopListFragment(), MENU_ITEM_TOP_LIST);
                 if (visibleFragment instanceof MapFragment) {
                     transaction.addToBackStack("Main");
                 }
@@ -172,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
             Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
             if (!(visibleFragment instanceof ActivityLogFragment)) {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.content_frame, activityLogFragment, MENU_ITEM_ACTIVITY_LOG);
+                transaction.replace(R.id.content_frame, new ActivityLogFragment(), MENU_ITEM_ACTIVITY_LOG);
                 if (visibleFragment instanceof MapFragment) {
                     transaction.addToBackStack("Main");
                 }
@@ -219,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
     // TODO: 30.04.2016
     // The dialog to add image is designed to be attached to Activities.
     // So even when the dialog is created in ProfileFragment
@@ -236,6 +234,8 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         dialog.dismiss();
         profileFragment.openGallery();
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

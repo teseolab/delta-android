@@ -6,7 +6,7 @@
 
     <include layout="@layout/toolbar"/>
 
-    <include layout="@layout/progess_spinner"/>
+    <include layout="@layout/progress_spinner"/>
 
     <ListView
         android:id="@+id/suggestion_list"
