@@ -1,25 +1,23 @@
 package no.ntnu.mikaelr.delta.view;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 import no.ntnu.mikaelr.delta.R;
-import no.ntnu.mikaelr.delta.presenter.AddSuggestionPresenterImpl;
 import no.ntnu.mikaelr.delta.presenter.PostCommentPresenterImpl;
-import no.ntnu.mikaelr.delta.presenter.signature.AddSuggestionPresenter;
 import no.ntnu.mikaelr.delta.presenter.signature.PostCommentPresenter;
+import no.ntnu.mikaelr.delta.view.signature.PostCommentView;
 
-public class PostCommentActivity extends AppCompatActivity {
+public class PostCommentActivity extends AppCompatActivity implements PostCommentView {
 
     private PostCommentPresenter presenter;
-
     private EditText comment;
+    private boolean commentIsBeingPosted = false;
 
     // LIFECYCLE -------------------------------------------------------------------------------------------------------
 
@@ -50,11 +48,19 @@ public class PostCommentActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem doneButton = menu.findItem(R.id.action_task_done);
+        ToolbarUtil.showSpinner(doneButton, commentIsBeingPosted);
+        return true;
+    }
+
     // ACTIVITY METHODS ------------------------------------------------------------------------------------------------
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_task_done) {
+            showSpinner(true);
             String commentText = this.comment.getText().toString();
             presenter.onDoneClick(commentText);
         } else {
@@ -66,6 +72,17 @@ public class PostCommentActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(comment.getWindowToken(), 0);
 
         return true;
+    }
+
+    @Override
+    public void showSpinner(boolean showSpinner) {
+        commentIsBeingPosted = showSpinner;
+        supportInvalidateOptionsMenu();
+    }
+
+    @Override
+    public void showMessage(String message, int length) {
+        Toast.makeText(this, message, length).show();
     }
 
 }

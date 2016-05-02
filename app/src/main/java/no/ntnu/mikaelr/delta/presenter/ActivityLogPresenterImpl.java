@@ -4,6 +4,7 @@ import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.LogRecord;
 import no.ntnu.mikaelr.delta.presenter.signature.ActivityLogPresenter;
+import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.view.signature.ActivityLogView;
 import org.json.JSONArray;
 
@@ -34,10 +35,13 @@ public class ActivityLogPresenterImpl implements ActivityLogPresenter, ProjectIn
     public void onGetLogRecordsSuccess(JSONArray jsonArray) {
         logRecords = LogRecord.fromJsonArray(jsonArray);
         view.updateView(logRecords);
+        if (logRecords.size() == 0) {
+            view.setEmptyListMessage(ErrorMessage.NO_ACTIVITIES_IN_LOG);
+        }
     }
 
     @Override
     public void onGetLogRecordsError(int errorCode) {
-        // TODO: Handle
+        view.setEmptyListMessage(ErrorMessage.COULD_NOT_LOAD_ACTIVITY_LOG);
     }
 }

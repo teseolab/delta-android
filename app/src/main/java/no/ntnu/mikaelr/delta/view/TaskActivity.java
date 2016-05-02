@@ -13,6 +13,8 @@ public class TaskActivity extends AppCompatActivity implements TaskView {
 
     private TaskPresenter presenter;
 
+    private boolean responseIsBeingPosted = false;
+
     // Activity methods ------------------------------------------------------------------------------------------------
 
     @Override
@@ -29,13 +31,27 @@ public class TaskActivity extends AppCompatActivity implements TaskView {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem doneButton = menu.findItem(R.id.action_task_done);
+        ToolbarUtil.showSpinner(doneButton, responseIsBeingPosted);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_task_done) {
+            showSpinner(true);
             presenter.onTaskDoneClick();
         } else {
             presenter.onTaskCancelClick();
         }
         return true;
+    }
+
+    @Override
+    public void showSpinner(boolean showSpinner) {
+        responseIsBeingPosted = showSpinner;
+        supportInvalidateOptionsMenu();
     }
 
 }

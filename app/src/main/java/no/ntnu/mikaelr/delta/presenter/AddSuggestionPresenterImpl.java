@@ -10,6 +10,7 @@ import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.presenter.signature.AddSuggestionPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
+import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.ImageHandler;
 import no.ntnu.mikaelr.delta.view.SuggestionListActivity;
 import no.ntnu.mikaelr.delta.view.signature.AddSuggestionView;
@@ -113,7 +114,8 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter, Proje
 
     @Override
     public void onPostSuggestionError(int errorCode) {
-        System.out.println("Post suggestion failed with error code " + errorCode);
+        view.showSpinner(false);
+        view.showMessage(ErrorMessage.COULD_NOT_POST_SUGGESTION);
     }
 
     @Override

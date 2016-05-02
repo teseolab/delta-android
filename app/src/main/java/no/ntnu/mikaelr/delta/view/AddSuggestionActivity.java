@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
-import no.ntnu.mikaelr.delta.fragment.ImageViewerDialog;
 import no.ntnu.mikaelr.delta.presenter.AddSuggestionPresenterImpl;
 import no.ntnu.mikaelr.delta.presenter.signature.AddSuggestionPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
@@ -31,6 +30,8 @@ public class AddSuggestionActivity extends AppCompatActivity implements AddSugge
     private EditText details;
     private ImageView image;
     private AppCompatButton addImageButton;
+
+    private boolean suggestionIsPosting = false;
 
     // LIFECYCLE -------------------------------------------------------------------------------------------------------
 
@@ -71,8 +72,16 @@ public class AddSuggestionActivity extends AppCompatActivity implements AddSugge
     // ACTIVITY METHODS ------------------------------------------------------------------------------------------------
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem doneButton = menu.findItem(R.id.action_task_done);
+        ToolbarUtil.showSpinner(doneButton, suggestionIsPosting);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_task_done) {
+            showSpinner(true);
             String title = this.title.getText().toString();
             String details = this.details.getText().toString();
             presenter.onDoneClick(title, details);
@@ -140,6 +149,12 @@ public class AddSuggestionActivity extends AppCompatActivity implements AddSugge
     @Override
     public void setButtonText(String text) {
         addImageButton.setText(text);
+    }
+
+    @Override
+    public void showSpinner(boolean showSpinner) {
+        suggestionIsPosting = showSpinner;
+        supportInvalidateOptionsMenu();
     }
 
     @Override

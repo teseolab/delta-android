@@ -2,10 +2,12 @@ package no.ntnu.mikaelr.delta.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.Toast;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Comment;
 import no.ntnu.mikaelr.delta.presenter.signature.PostCommentPresenter;
+import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
 import no.ntnu.mikaelr.delta.view.PostCommentActivity;
 import org.json.JSONArray;
@@ -31,13 +33,6 @@ public class PostCommentPresenterImpl implements PostCommentPresenter, ProjectIn
     public void onDoneClick(String comment) {
         if (suggestionId != -1) {
             interactor.postComment(comment, suggestionId, this);
-//            JSONObject jsonComment = new JSONObject();
-//            try {
-//                jsonComment.put("comment", comment);
-//                interactor.postComment(jsonComment.toString(), suggestionId, this);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
         }
     }
 
@@ -54,6 +49,8 @@ public class PostCommentPresenterImpl implements PostCommentPresenter, ProjectIn
 
     @Override
     public void onPostCommentError(int errorCode) {
-
+        view.showSpinner(false);
+        view.showMessage(ErrorMessage.COULD_NOT_POST_COMMENT, Toast.LENGTH_LONG);
+        System.out.println(ErrorMessage.COULD_NOT_POST_COMMENT + ". Error " + errorCode);
     }
 }

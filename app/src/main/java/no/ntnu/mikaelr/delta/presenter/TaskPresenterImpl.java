@@ -233,6 +233,8 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
     @Override
     public void onPostProjectResponseError(Integer errorCode) {
 
+        view.showSpinner(false);
+
         String title = "Ops!";
         String message;
 

@@ -10,5 +10,6 @@ public interface AddSuggestionView {
     void setSuggestionImage(Bitmap bitmap);
     void setButtonText(String text);
 
+    void showSpinner(boolean showSpinner);
     void showMessage(String message);
 }
