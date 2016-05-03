@@ -15,10 +15,10 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/dora"/>
+                android:scaleType="centerCrop"/>
 
             <!-- task_scale.xml will be inflated here -->
 

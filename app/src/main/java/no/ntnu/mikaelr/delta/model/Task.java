@@ -9,6 +9,7 @@ public class Task implements Serializable {
 
     private Integer id;
     private TaskType taskType;
+    private String imageUri;
     private float latitude;
     private float longitude;
     private String hint;
@@ -28,6 +29,14 @@ public class Task implements Serializable {
 
     public void setTaskType(TaskType taskType) {
         this.taskType = taskType;
+    }
+
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 
     public float getLatitude() {

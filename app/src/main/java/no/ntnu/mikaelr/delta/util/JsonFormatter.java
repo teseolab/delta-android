@@ -27,6 +27,7 @@ public class JsonFormatter {
                 project.setLatitude((float)jsonProject.getDouble("latitude"));
                 project.setLongitude((float)jsonProject.getDouble("longitude"));
                 project.setDescription(jsonProject.getString("description"));
+                project.setImageUri(jsonProject.getString("imageUri"));
                 projects.add(project);
             }
         }
@@ -49,7 +50,6 @@ public class JsonFormatter {
                 Task task = new Task();
 
                 task.setId(jsonTask.getInt("id"));
-
                 String taskTypeString = jsonTask.getString("taskType");
                 if (taskTypeString.equals(TaskType.SCALE_TASK.name())) {
                     task.setTaskType(TaskType.SCALE_TASK);
@@ -57,6 +57,11 @@ public class JsonFormatter {
                     task.setTaskType(TaskType.TEXT_TASK);
                 }
 
+                String imageUri = jsonTask.getString("imageUri");
+                if (imageUri.equals("null") || imageUri.equals("")){
+                    imageUri = null;
+                }
+                task.setImageUri(imageUri);
                 task.setLatitude((float) jsonTask.getDouble("latitude"));
                 task.setLongitude((float) jsonTask.getDouble("longitude"));
                 task.setHint(jsonTask.getString("hint"));

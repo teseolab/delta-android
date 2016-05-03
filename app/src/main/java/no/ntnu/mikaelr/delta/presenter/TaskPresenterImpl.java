@@ -8,10 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.widget.*;
+import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
@@ -61,6 +59,7 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
         scaleValues.put(4, "Helt enig");
     }
 
+    // TODO: Move to view
     private void initializeView() {
 
         switch (task.getTaskType()) {
@@ -78,6 +77,7 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
         }
     }
 
+    // TODO: Move to view
     private void initializeScaleTaskView() {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.activity_task_scale, null);
@@ -86,6 +86,14 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
         ToolbarUtil.initializeToolbar(context, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex);
 
         LinearLayout parentLayout = (LinearLayout) view.findViewById(R.id.parent_layout_task_scale);
+
+        ImageView image = (ImageView) parentLayout.findViewById(R.id.image);
+        String imageUri = task.getImageUri();
+        if (imageUri != null) {
+            Picasso.with(context).load(imageUri).into(image);
+        } else {
+            image.setVisibility(View.GONE);
+        }
 
         for (String taskDescription : task.getDescriptions()) {
 
@@ -105,9 +113,19 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
         }
     }
 
+    // TODO: Move to view
     private void initializeTextTaskView() {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.activity_task_text, null);
+
+        ImageView image = (ImageView) view.findViewById(R.id.image);
+        String imageUri = task.getImageUri();
+        if (imageUri != null) {
+            Picasso.with(context).load(imageUri).into(image);
+        } else {
+            image.setVisibility(View.GONE);
+        }
+
         TextView textTaskTextView = (TextView) view.findViewById(R.id.text_task_text);
         textTaskTextView.setText(task.getDescriptions().get(0));
         context.setContentView(view);
@@ -115,6 +133,7 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
         ToolbarUtil.initializeToolbar(context, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex);
     }
 
+    // TODO: Move to view
     private void initializeFirstTaskView() {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.activity_task_first, null);
@@ -125,6 +144,7 @@ public class TaskPresenterImpl implements TaskPresenter, SeekBar.OnSeekBarChange
         ToolbarUtil.initializeToolbar(context, R.drawable.ic_close_white_24dp, "Klar, ferdig, gå!");
     }
 
+    // TODO: Move to view
     private void setSeekBarText(SeekBar seekBar, int progress) {
         View parent = (View) seekBar.getParent();
         TextView textView = (TextView) parent.findViewById(R.id.seekbar_text);

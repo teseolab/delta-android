@@ -52,6 +52,7 @@ public class MapPresenterImpl implements MapPresenter, ProjectInteractorImpl.OnF
         intent.putExtra("id", project.getId());
         intent.putExtra("name", project.getName());
         intent.putExtra("description", project.getDescription());
+        intent.putExtra("imageUri", project.getImageUri());
         intent.putExtra("latitude", project.getLatitude());
         intent.putExtra("longitude", project.getLongitude());
         context.getActivity().startActivity(intent);

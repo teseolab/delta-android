@@ -45,6 +45,7 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
         project.setId(intent.getIntExtra("id", -1));
         project.setName(intent.getStringExtra("name"));
         project.setDescription(intent.getStringExtra("description"));
+        project.setImageUri(intent.getStringExtra("imageUri"));
         project.setLatitude(intent.getFloatExtra("latitude", -1));
         project.setLongitude(intent.getFloatExtra("longitude", -1));
         return project;

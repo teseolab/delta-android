@@ -7,7 +7,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.presenter.signature.ProjectPresenter;
@@ -39,6 +41,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectView, V
     // Initialization methods ------------------------------------------------------------------------------------------
 
     private void initializeView() {
+        ImageView image = (ImageView) findViewById(R.id.project_image);
         TextView description = (TextView) findViewById(R.id.project_description);
         TextView startMissionButton = (TextView) findViewById(R.id.start_mission_button);
         TextView postSuggestionButton = (TextView) findViewById(R.id.post_suggestion_button);
@@ -48,6 +51,10 @@ public class ProjectActivity extends AppCompatActivity implements ProjectView, V
         postSuggestionButton.setOnClickListener(this);
         browseSuggestionsButton.setOnClickListener(this);
 
+        String imageUri = presenter.getProject().getImageUri();
+        if (!imageUri.equals("")) {
+            Picasso.with(this).load(imageUri).into(image);
+        }
         description.setText(presenter.getProject().getDescription());
     }
 
