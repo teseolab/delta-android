@@ -10,4 +10,6 @@ public interface ProjectPresenter {
     Project getProject();
 
     void setMissionCompletionStatus();
+
+    void onActivityResult(int requestCode);
 }

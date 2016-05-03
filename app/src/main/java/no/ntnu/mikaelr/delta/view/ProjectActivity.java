@@ -1,11 +1,15 @@
 package no.ntnu.mikaelr.delta.view;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.presenter.signature.ProjectPresenter;
 import no.ntnu.mikaelr.delta.presenter.ProjectPresenterImpl;
 import no.ntnu.mikaelr.delta.view.signature.ProjectView;
@@ -28,8 +32,8 @@ public class ProjectActivity extends AppCompatActivity implements ProjectView, V
 
     @Override
     protected void onResume() {
-        presenter.setMissionCompletionStatus();
         super.onResume();
+        presenter.setMissionCompletionStatus();
     }
 
     // Initialization methods ------------------------------------------------------------------------------------------
@@ -49,6 +53,13 @@ public class ProjectActivity extends AppCompatActivity implements ProjectView, V
 
     // Interface methods -----------------------------------------------------------------------------------------------
 
+    @Override
+    public void showDialog(String title, String message) {
+        SimpleDialog dialog = SimpleDialog.newInstance(title, message);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(dialog, null);
+        transaction.commitAllowingStateLoss();
+    }
 
     // Activity methods ------------------------------------------------------------------------------------------------
 
@@ -58,8 +69,16 @@ public class ProjectActivity extends AppCompatActivity implements ProjectView, V
         return true;
     }
 
-    // Listeners -------------------------------------------------------------------------------------------------------
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            presenter.onActivityResult(requestCode);
+        }
+    }
 
+
+    // Listeners -------------------------------------------------------------------------------------------------------
 
     @Override
     public void onClick(View v) {

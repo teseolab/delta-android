@@ -10,18 +10,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.*;
+import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Project;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.signature.MissionPresenter;
-import no.ntnu.mikaelr.delta.util.Constants;
-import no.ntnu.mikaelr.delta.util.JsonFormatter;
-import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
-import no.ntnu.mikaelr.delta.util.TaskType;
+import no.ntnu.mikaelr.delta.util.*;
 import no.ntnu.mikaelr.delta.view.signature.MissionView;
 import no.ntnu.mikaelr.delta.view.TaskActivity;
 import org.json.JSONArray;
@@ -33,9 +32,10 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ProjectInteractorImpl.OnPostFinishedMission {
 
     private MissionView view;
-    private Activity context;
+    private AppCompatActivity context;
     private ProjectInteractor interactor;
     private Project project;
+    private PhraseGenerator phraseGenerator;
 
     private List<Task> loadedTasks;
 
@@ -51,9 +51,10 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     public MissionPresenterImpl(MissionView view) {
         this.view = view;
-        this.context = (Activity) view;
+        this.context = (AppCompatActivity) view;
         this.interactor = new ProjectInteractorImpl();
         this.project = getProjectFromIntent();
+        this.phraseGenerator = new PhraseGenerator();
 
         initializeGoogleApiClient();
     }
@@ -108,6 +109,11 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             return null;
         }
         return loadedTasks.get(currentTaskIndex);
+    }
+
+    @Override
+    public int getCurrentTaskIndex() {
+        return currentTaskIndex;
     }
 
     @Override
@@ -172,17 +178,26 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         missionIsCompleted = currentTaskIndex == loadedTasks.size() - 1;
 
         if (missionIsCompleted) {
-            interactor.postFinishedMission(project.getId(), this);
             currentTaskIndex = -1;
-            view.setDistance("Gratulerer!");
-            view.setHint("Du har fullført dette oppdraget.");
-            view.setMyLocationEnabled(false);
+            interactor.postFinishedMission(project.getId(), this);
             SharedPrefsUtil.getInstance().saveMissionCompletionStatus(project.getId(), Constants.YES);
 
+            context.setResult(Activity.RESULT_OK);
+            context.finish();
+
+//            view.showDialog("Gratulerer!", "Du har fullført dette oppdraget. Du kan nå poste forslag og diskutere andres forslag.");
         } else {
-            view.addMarkerForTask(loadedTasks.get(currentTaskIndex));
+            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(currentTaskIndex));
             currentTaskIndex++;
-            view.setHint(loadedTasks.get(currentTaskIndex).getHint());
+            String title;
+            if (currentTaskIndex == 1) {
+                title = "Første oppgave ...";
+            } else {
+                title = phraseGenerator.encouragement()+"!";
+            }
+            String hint = loadedTasks.get(currentTaskIndex).getHint();
+            view.showDialog(title, hint);
+            view.setHint(hint);
         }
     }
 
@@ -190,10 +205,10 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     private void addMarkers() {
         if (currentTaskIndex == 0) {
-            view.addMarkerForTask(loadedTasks.get(0));
+            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(0));
         } else {
             for (int i = 0; i < currentTaskIndex -1; i++) {
-                view.addMarkerForTask(loadedTasks.get(i));
+                view.addMarkerForTask(currentTaskIndex, loadedTasks.get(i));
             }
         }
     }
@@ -235,7 +250,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         view.setDistance("Neste punkt: " + String.format("%.0f", distanceToTaskLocation) + " m");
 
         if (userHasFoundTaskLocation(distanceToTaskLocation)) {
-            view.addMarkerForTask(getCurrentTask());
+            view.addMarkerForTask(currentTaskIndex, getCurrentTask());
             //goToTask();
         }
 

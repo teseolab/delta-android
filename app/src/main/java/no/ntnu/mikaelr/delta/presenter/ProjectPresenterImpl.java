@@ -24,9 +24,11 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
     private AppCompatActivity context;
     private Project project;
 
-    ProjectInteractor projectInteractor;
+    private ProjectInteractor projectInteractor;
 
-    Boolean missionIsCompleted;
+    private Boolean missionIsCompleted;
+
+    private int MISSION_REQUEST = 0;
 
     public ProjectPresenterImpl(ProjectView view) {
         this.view = view;
@@ -60,7 +62,7 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
                 intent.putExtra("projectName", project.getName());
                 intent.putExtra("latitude", project.getLatitude());
                 intent.putExtra("longitude", project.getLongitude());
-                context.startActivity(intent);
+                context.startActivityForResult(intent, MISSION_REQUEST);
 //            }
 //        }
     }
@@ -96,6 +98,13 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
             missionIsCompleted = false;
         } else if (missionCompletedPreference.equals(Constants.NA)) {
             projectInteractor.getMissionForProjectIsCompletedByUser(project.getId(), this);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode) {
+        if (requestCode == MISSION_REQUEST) {
+            view.showDialog("Gratulerer!", "Du har fullført dette oppdraget. Hva med å poste et forslag?");
         }
     }
 

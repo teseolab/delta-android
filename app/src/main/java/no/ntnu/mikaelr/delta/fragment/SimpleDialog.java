@@ -1,6 +1,7 @@
 package no.ntnu.mikaelr.delta.fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +20,15 @@ public class SimpleDialog extends DialogFragment
         dialog.show(fragmentManager, "tag");
     }
 
+    public static SimpleDialog newInstance(String title, String message) {
+        SimpleDialog dialog = new SimpleDialog();
+        Bundle args = new Bundle();
+        args.putString("title", title);
+        args.putString("message", message);
+        dialog.setArguments(args);
+        return dialog;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -29,7 +39,12 @@ public class SimpleDialog extends DialogFragment
         return new AlertDialog.Builder(getActivity())
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton(android.R.string.yes, null)
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dismiss();
+                }
+            })
             .create();
     }
 
