@@ -3,25 +3,29 @@ package no.ntnu.mikaelr.delta.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.*;
+import com.google.maps.android.ui.IconGenerator;
 import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.signature.MissionPresenter;
 import no.ntnu.mikaelr.delta.presenter.MissionPresenterImpl;
+import no.ntnu.mikaelr.delta.util.PhraseGenerator;
 import no.ntnu.mikaelr.delta.view.signature.MissionView;
 
 import java.util.ArrayList;
@@ -51,6 +55,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, presenter.getProject().getName()+" oppdrag");
         presenter.connectApiClient();
         initializeMap();
+        showDialog("For å komme i gang", "Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget.");
     }
 
     @Override
@@ -99,7 +104,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         if (item.getItemId() == R.id.action_cheat) {
             Task currentTask = presenter.getCurrentTask();
             if (currentTask != null) {
-                addMarkerForTask(currentTask);
+                addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask);
             }
         } else {
             finish();
@@ -122,10 +127,27 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     }
 
     @Override
-    public void addMarkerForTask(Task task) {
+    public void addMarkerForTask(int taskIndex, Task task) {
         if (map != null) {
+
+            View mapMarkerView = getLayoutInflater().inflate(R.layout.map_marker, null);
+            ImageView iconView = (ImageView) mapMarkerView.findViewById(R.id.icon);
+            String iconText = "";
+
+            if (taskIndex == 0) {
+                iconView.setImageResource(R.drawable.ic_location_start_48dp);
+            } else {
+                iconView.setImageResource(R.drawable.ic_location_48dp);
+                iconText = Integer.toString(taskIndex);
+            }
+
+            IconGenerator iconGenerator = new IconGenerator(this);
+            iconGenerator.setBackground(null);
+            iconGenerator.setContentView(mapMarkerView);
+            Bitmap mapMarkerBitmap = iconGenerator.makeIcon(iconText);
+
             LatLng position = new LatLng(task.getLatitude(), task.getLongitude());
-            MarkerOptions options = new MarkerOptions().position(position);
+            MarkerOptions options = new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(mapMarkerBitmap));
             Marker marker = map.addMarker(options);
             markers.add(marker);
             boundsBuilder.include(marker.getPosition());
@@ -155,6 +177,16 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void showDialog(String title, String hint) {
+        SimpleDialog dialog = SimpleDialog.newInstance(title, hint);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(dialog, null);
+        transaction.commitAllowingStateLoss();
+    }
+
+
+
     // Listeners -------------------------------------------------------------------------------------------------------
 
     @Override
@@ -176,6 +208,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             presenter.onActivityResult(requestCode, data);
         }

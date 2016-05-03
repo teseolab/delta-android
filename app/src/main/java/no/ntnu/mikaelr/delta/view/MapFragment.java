@@ -10,10 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.*;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.model.Project;
 import no.ntnu.mikaelr.delta.presenter.signature.MapPresenter;
@@ -102,7 +99,7 @@ public class MapFragment extends Fragment implements MapFragView, OnMapReadyCall
     public void addMarkerForProject(Project project) {
         if (map != null) {
             LatLng position = new LatLng(project.getLatitude(), project.getLongitude());
-            MarkerOptions options = new MarkerOptions().position(position).title(project.getName());
+            MarkerOptions options = new MarkerOptions().position(position).title(project.getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_idea_48dp));
             Marker marker = map.addMarker(options);
             boundsBuilder.include(marker.getPosition());
             markerIdsAndProjectIds.put(marker.getId(), project.getId());
