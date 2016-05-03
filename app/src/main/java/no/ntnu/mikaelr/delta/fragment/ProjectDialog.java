@@ -87,10 +87,12 @@ public class ProjectDialog extends DialogFragment implements DialogInterface.OnC
             Intent intent = getActivity().getIntent();
             intent.putExtra("projectId", projectId);
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+            dismiss();
         }
 
         else if (which == DialogInterface.BUTTON_NEGATIVE) {
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
+            dismiss();
         }
     }
 }

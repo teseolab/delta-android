@@ -64,15 +64,6 @@ public class MapPresenterImpl implements MapPresenter, ProjectInteractorImpl.OnF
             if (resultCode == Activity.RESULT_OK) {
                 int projectId = data.getIntExtra("projectId", -1);
                 goToProjectPage(projectId);
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Fragment context = (Fragment) view;
-                FragmentTransaction ft = context.getFragmentManager().beginTransaction();
-                Fragment prev = context.getFragmentManager().findFragmentByTag("dialog");
-                if (prev != null) {
-                    ft.remove(prev);
-                }
-                ft.addToBackStack(null);
-                ft.commit();
             }
         }
     }
