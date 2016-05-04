@@ -4,8 +4,6 @@ import android.content.Intent;
 import no.ntnu.mikaelr.delta.model.Project;
 import no.ntnu.mikaelr.delta.model.Task;
 
-import java.util.List;
-
 public interface MissionPresenter {
 
     void loadTasks();
@@ -25,4 +23,7 @@ public interface MissionPresenter {
     void onMarkerClick(int clickedTaskId);
 
     int getCurrentTaskIndex();
+
+    void startLocationService();
+    void stopLocationService();
 }

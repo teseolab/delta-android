@@ -15,4 +15,5 @@ public interface MissionView {
     void showDialog(String title, String hint);
 
     void finish();
+
 }

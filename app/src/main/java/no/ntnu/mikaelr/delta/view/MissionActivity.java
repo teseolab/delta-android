@@ -1,6 +1,8 @@
 package no.ntnu.mikaelr.delta.view;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -25,6 +27,7 @@ import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.signature.MissionPresenter;
 import no.ntnu.mikaelr.delta.presenter.MissionPresenterImpl;
+import no.ntnu.mikaelr.delta.util.LocationService;
 import no.ntnu.mikaelr.delta.util.PhraseGenerator;
 import no.ntnu.mikaelr.delta.view.signature.MissionView;
 
@@ -45,6 +48,8 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
 
     private HashMap<String, Integer> markerIdsAndTaskIds = new HashMap<String, Integer>();
 
+    private boolean locationServiceShouldStart = true;
+
     // Activity methods ------------------------------------------------------------------------------------------------
 
     @Override
@@ -56,6 +61,14 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         presenter.connectApiClient();
         initializeMap();
         showDialog("For å komme i gang", "Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget.");
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (isMyServiceRunning(LocationService.class)) {
+            presenter.stopLocationService();
+        }
+        super.onDestroy();
     }
 
     @Override
@@ -75,6 +88,12 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
             presenter.stopLocationUpdates();
             presenter.disconnectApiClient();
         }
+
+        if (locationServiceShouldStart) {
+            presenter.startLocationService();
+            locationServiceShouldStart = true;
+        }
+
         super.onPause();
     }
 
@@ -85,7 +104,21 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         } else {
             presenter.connectApiClient();
         }
+
+        if (isMyServiceRunning(LocationService.class)) {
+            presenter.stopLocationService();
+        }
         super.onResume();
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -107,6 +140,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
                 addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask);
             }
         } else {
+            locationServiceShouldStart = false;
             finish();
         }
         return true;
@@ -168,6 +202,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
 
     @Override
     public void setMyLocationEnabled(boolean enabled) {
+        // TODO: Handle permissions on Marshmallow
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) map.setMyLocationEnabled(enabled);
     }
@@ -186,7 +221,6 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     }
 
 
-
     // Listeners -------------------------------------------------------------------------------------------------------
 
     @Override
@@ -194,6 +228,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         map = googleMap;
         map.getUiSettings().setMapToolbarEnabled(false);
         setMyLocationEnabled(true);
+        map.getUiSettings().setMyLocationButtonEnabled(false);
         map.setOnMarkerClickListener(this);
         boundsBuilder = new LatLngBounds.Builder();
         presenter.loadTasks();
@@ -201,6 +236,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        locationServiceShouldStart = false;
         int clickedTaskId = markerIdsAndTaskIds.get(marker.getId());
         presenter.onMarkerClick(clickedTaskId);
         return true;
@@ -209,9 +245,15 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        locationServiceShouldStart = true; // TODO: This assumes that the only intent sending results here is TaskActivity
         if (resultCode == RESULT_OK) {
             presenter.onActivityResult(requestCode, data);
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        locationServiceShouldStart = false;
+        super.onBackPressed();
+    }
 }

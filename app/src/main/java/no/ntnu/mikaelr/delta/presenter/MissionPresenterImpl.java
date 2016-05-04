@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.*;
-import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Project;
@@ -37,6 +36,8 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     private Project project;
     private PhraseGenerator phraseGenerator;
 
+    private Intent serviceIntent;
+
     private List<Task> loadedTasks;
 
     private int currentTaskIndex = 0;
@@ -51,10 +52,11 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     public MissionPresenterImpl(MissionView view) {
         this.view = view;
-        this.context = (AppCompatActivity) view;
-        this.interactor = new ProjectInteractorImpl();
-        this.project = getProjectFromIntent();
-        this.phraseGenerator = new PhraseGenerator();
+        context = (AppCompatActivity) view;
+        serviceIntent = new Intent(context, LocationService.class);
+        interactor = new ProjectInteractorImpl();
+        project = getProjectFromIntent();
+        phraseGenerator = new PhraseGenerator();
 
         initializeGoogleApiClient();
     }
@@ -117,6 +119,18 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     }
 
     @Override
+    public void startLocationService() {
+        serviceIntent.putExtra("currentTaskLatitude", getCurrentTask().getLatitude());
+        serviceIntent.putExtra("currentTaskLongitude", getCurrentTask().getLongitude());
+        context.startService(serviceIntent);
+    }
+
+    @Override
+    public void stopLocationService() {
+        context.stopService(serviceIntent);
+    }
+
+    @Override
     public void connectApiClient() {
         googleApiClient.connect();
     }
@@ -139,10 +153,11 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     @Override
     public void startLocationUpdates() {
         if (!missionIsCompleted) {
+            // TODO: Check permissions on Marshmallow
             int permissionCheck = ContextCompat.checkSelfPermission((Context) view, Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                 LocationRequest locationRequest = new LocationRequest();
-                locationRequest.setInterval(2000);
+                locationRequest.setInterval(1000);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             }
@@ -198,6 +213,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             String hint = loadedTasks.get(currentTaskIndex).getHint();
             view.showDialog(title, hint);
             view.setHint(hint);
+
         }
     }
 
@@ -251,13 +267,12 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
         if (userHasFoundTaskLocation(distanceToTaskLocation)) {
             view.addMarkerForTask(currentTaskIndex, getCurrentTask());
-            //goToTask();
         }
 
     }
 
     private boolean userHasFoundTaskLocation(float distanceToTaskLocation) {
-        float radius = 20f;
+        float radius = 30f;
         return distanceToTaskLocation <= radius;
     }
 
@@ -284,12 +299,12 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         view.setMapLocationToMarkers();
         view.setHint(tasks.get(currentTaskIndex).getHint());
 
-
         tasksAreLoaded = true;
 
         if (googleApiClient.isConnected()) {
             startLocationUpdates();
         }
+
     }
 
     @Override
