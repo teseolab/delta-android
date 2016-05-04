@@ -180,7 +180,9 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         else if (clickedDrawerMenuPosition == 4) {
             SharedPrefsUtil.getInstance().setCookie("");
             Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            finish();
         }
     }
 
