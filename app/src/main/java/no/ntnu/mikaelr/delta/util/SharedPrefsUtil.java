@@ -29,10 +29,24 @@ public class SharedPrefsUtil {
         return sharedPreferences.getString("Cookie", "");
     }
 
-    public void saveMissionCompletionStatus(int projectId, String value) {
+    public void setUsername(String username) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("PROJECT_" + projectId + "_MISSION_COMPLETED", value);
+        editor.putString("Username", username);
         editor.apply();
+    }
+
+    public String getUsername() {
+        return sharedPreferences.getString("Username", "");
+    }
+
+    public void setMissionCompletionStatus(int projectId, String username, String value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("PROJECT_" + projectId + "_MISSION_COMPLETED_BY_USER_" + username, value);
+        editor.apply();
+    }
+
+    public String getMissionCompletionStatus(int projectId, String username) {
+        return sharedPreferences.getString("PROJECT_" + projectId + "_MISSION_COMPLETED_BY_USER_" + username, Constants.NA);
     }
 
 }

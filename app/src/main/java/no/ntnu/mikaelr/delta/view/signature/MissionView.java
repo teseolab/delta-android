@@ -12,7 +12,7 @@ public interface MissionView {
     void zoomMapToMarkers();
     void showMessage(String message, int duration);
 
-    void showDialog(String title, String hint);
+    void showSimpleDialog(String title, String hint);
     void showYesNoDialog(String title, String message);
 
     void finish();

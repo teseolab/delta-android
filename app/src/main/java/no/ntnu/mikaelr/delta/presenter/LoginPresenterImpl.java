@@ -16,6 +16,8 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractorImpl.O
     private Activity context;
     private LoginInteractor interactor;
 
+    private String username;
+
     public LoginPresenterImpl(LoginView view) {
         this.view = view;
         this.context = (Activity) view;
@@ -26,6 +28,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractorImpl.O
 
     @Override
     public void login(String username, String password) {
+        this.username = username;
         interactor.login(username, password, this);
     }
 
@@ -42,6 +45,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractorImpl.O
     @Override
     public void onLoginSuccess(String cookie) {
         SharedPrefsUtil.getInstance().setCookie(cookie);
+        SharedPrefsUtil.getInstance().setUsername(username);
         view.enableLoginButton(true);
         goToMainActivity();
     }

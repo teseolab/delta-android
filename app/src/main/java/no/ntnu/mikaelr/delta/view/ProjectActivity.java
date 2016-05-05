@@ -89,6 +89,17 @@ public class ProjectActivity extends AppCompatActivity implements ProjectView, V
 
     @Override
     public void onClick(View v) {
-        presenter.onButtonClick(v);
+        switch (v.getId()) {
+
+            case R.id.start_mission_button:
+                presenter.goToMission();
+                break;
+            case R.id.post_suggestion_button:
+                presenter.goToAddSuggestion();
+                break;
+            case R.id.browse_suggestions_button:
+                presenter.goToSuggestionList();
+                break;
+        }
     }
 }

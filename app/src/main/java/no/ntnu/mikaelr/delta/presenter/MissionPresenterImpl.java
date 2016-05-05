@@ -29,29 +29,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MissionPresenterImpl implements MissionPresenter, ProjectInteractorImpl.OnFinishedLoadingTasksListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ProjectInteractorImpl.OnPostFinishedMission {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener,
+        ProjectInteractorImpl.OnPostFinishedMission {
 
     private MissionView view;
     private AppCompatActivity context;
     private ProjectInteractor interactor;
     private Project project;
+    private GoogleApiClient googleApiClient;
     private PhraseGenerator phraseGenerator;
-
     private Intent serviceIntent;
 
     private List<Task> loadedTasks;
-
     private int currentTaskIndex = 0;
 
-    private GoogleApiClient googleApiClient;
-
     private boolean tasksAreLoaded = false;
-
     private boolean missionIsCompleted = false;
+    private boolean locationServiceShouldStart = true;
 
     static final int TASK_REQUEST = 1;
-
-    private boolean locationServiceShouldStart = true;
 
     @Override
     public void setStartLocationIsFound(boolean startLocationIsFound) {
@@ -219,7 +215,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
                     goToTask();
                 }
             } else {
-                view.showDialog("Ikke helt enda...", "Du må dra til dette punktet før du kan starte. Det vises et kompass i markøren når du er fremme.");
+                view.showSimpleDialog("Ikke helt enda...", "Du må dra til dette punktet før du kan starte. Det vises et kompass i markøren når du er fremme.");
             }
         }
     }
@@ -233,12 +229,13 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         if (missionIsCompleted) {
             currentTaskIndex = -1;
             interactor.postFinishedMission(project.getId(), this);
-            SharedPrefsUtil.getInstance().saveMissionCompletionStatus(project.getId(), Constants.YES);
+            String username = SharedPrefsUtil.getInstance().getUsername();
+            SharedPrefsUtil.getInstance().setMissionCompletionStatus(project.getId(), username, Constants.YES);
 
             context.setResult(Activity.RESULT_OK);
             context.finish();
 
-//            view.showDialog("Gratulerer!", "Du har fullført dette oppdraget. Du kan nå poste forslag og diskutere andres forslag.");
+//            view.showSimpleDialog("Gratulerer!", "Du har fullført dette oppdraget. Du kan nå poste forslag og diskutere andres forslag.");
         } else {
 //            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(currentTaskIndex), );
             currentTaskIndex++;
@@ -246,7 +243,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             String title = currentTaskIndex == 1 ? "Første oppgave" : phraseGenerator.encouragement()+"!";
             String hint = loadedTasks.get(currentTaskIndex).getHint();
 
-            view.showDialog(title, hint);
+            view.showSimpleDialog(title, hint);
             view.setHint(hint);
 
             setLocationServiceShouldStart(true);

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -61,7 +62,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, presenter.getProject().getName()+" oppdrag");
         presenter.connectApiClient();
         initializeMap();
-        showDialog("For å komme i gang", "Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget.");
+        showSimpleDialog("For å komme i gang", "Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget.");
     }
 
     @Override
@@ -145,6 +146,12 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) map.setMyLocationEnabled(enabled);
     }
 
+    private void showDialogFragment(DialogFragment dialogFragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(dialogFragment, null);
+        transaction.commitAllowingStateLoss();
+    }
+
     // INTERFACE METHODS -----------------------------------------------------------------------------------------------
 
     @Override
@@ -197,23 +204,19 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
 
     @Override
     public void showMessage(String message, int duration) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void showDialog(String title, String hint) {
+    public void showSimpleDialog(String title, String hint) {
         SimpleDialog dialog = SimpleDialog.newInstance(title, hint);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(dialog, null);
-        transaction.commitAllowingStateLoss();
+        showDialogFragment(dialog);
     }
 
     @Override
     public void showYesNoDialog(String title, String message) {
         YesNoDialog dialog = YesNoDialog.newInstance(title, message);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(dialog, null);
-        transaction.commitAllowingStateLoss();
+        showDialogFragment(dialog);
     }
 
     // CLICK LISTENERS -------------------------------------------------------------------------------------------------

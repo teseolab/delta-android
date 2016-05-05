@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
@@ -51,36 +49,6 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
         return project;
     }
 
-    private void goToMission() {
-//        if (missionIsCompleted != null) {
-//            if (missionIsCompleted) {
-//                String title = "Heisann!";
-//                String message = "Du har allerede fullført dette oppdraget. Hva med å heller poste et forslag?";
-//                SimpleDialog.createAndShow(context.getSupportFragmentManager(), title, message);
-//            } else {
-                Intent intent = new Intent(context, MissionActivity.class);
-                intent.putExtra("projectId", project.getId());
-                intent.putExtra("projectName", project.getName());
-                intent.putExtra("latitude", project.getLatitude());
-                intent.putExtra("longitude", project.getLongitude());
-                context.startActivityForResult(intent, MISSION_REQUEST);
-//            }
-//        }
-    }
-
-    private void goToAddSuggestion() {
-        Intent intent = new Intent(context, AddSuggestionActivity.class);
-        intent.putExtra("projectId", project.getId());
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        context.startActivity(intent);
-    }
-
-    private void goToSuggestionList() {
-        Intent intent = new Intent(context, SuggestionListActivity.class);
-        intent.putExtra("projectId", project.getId());
-        context.startActivity(intent);
-    }
-
     // Interface methods -----------------------------------------------------------------------------------------------
 
     @Override
@@ -90,8 +58,8 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
 
     @Override
     public void setMissionCompletionStatus() {
-        SharedPreferences preferences = context.getSharedPreferences("no.ntnu.mikaelr.delta", Context.MODE_PRIVATE);
-        String missionCompletedPreference = preferences.getString("PROJECT_" + project.getId() + "_MISSION_COMPLETED", Constants.NA);
+        String username = SharedPrefsUtil.getInstance().getUsername();
+        String missionCompletedPreference = SharedPrefsUtil.getInstance().getMissionCompletionStatus(project.getId(), username);
 
         if (missionCompletedPreference.equals(Constants.YES)) {
             missionIsCompleted = true;
@@ -103,39 +71,57 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
     }
 
     @Override
+    public void goToMission() {
+        if (missionIsCompleted != null) {
+            if (missionIsCompleted) {
+                String title = "Heisann!";
+                String message = "Du har allerede fullført dette oppdraget. Hva med å heller poste et forslag?";
+                SimpleDialog.newInstance(title, message).show(context.getSupportFragmentManager(), null);
+            } else {
+                Intent intent = new Intent(context, MissionActivity.class);
+                intent.putExtra("projectId", project.getId());
+                intent.putExtra("projectName", project.getName());
+                intent.putExtra("latitude", project.getLatitude());
+                intent.putExtra("longitude", project.getLongitude());
+                context.startActivityForResult(intent, MISSION_REQUEST);
+            }
+        }
+    }
+
+    @Override
+    public void goToAddSuggestion() {
+        Intent intent = new Intent(context, AddSuggestionActivity.class);
+        intent.putExtra("projectId", project.getId());
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToSuggestionList() {
+        Intent intent = new Intent(context, SuggestionListActivity.class);
+        intent.putExtra("projectId", project.getId());
+        context.startActivity(intent);
+    }
+
+    @Override
     public void onActivityResult(int requestCode) {
         if (requestCode == MISSION_REQUEST) {
             view.showDialog("Gratulerer!", "Du har fullført dette oppdraget. Hva med å poste et forslag?");
         }
     }
 
-    @Override
-    public void onButtonClick(View view) {
-
-        switch (view.getId()) {
-
-            case R.id.start_mission_button:
-                goToMission();
-                break;
-            case R.id.post_suggestion_button:
-                goToAddSuggestion();
-                break;
-            case R.id.browse_suggestions_button:
-                goToSuggestionList();
-                break;
-        }
-    }
 
     @Override
     public void onGetMissionForProjectIsCompletedByUserSuccess(Boolean missionIsCompleted) {
         this.missionIsCompleted = missionIsCompleted;
         String yesOrNo = missionIsCompleted ? Constants.YES : Constants.NO;
-        SharedPrefsUtil.getInstance().saveMissionCompletionStatus(project.getId(), yesOrNo);
+        String username = SharedPrefsUtil.getInstance().getUsername();
+        SharedPrefsUtil.getInstance().setMissionCompletionStatus(project.getId(), username, yesOrNo);
     }
 
     @Override
     public void onGetMissionForProjectIsCompletedByUserError(Integer errorCode) {
-        SharedPrefsUtil.getInstance().saveMissionCompletionStatus(project.getId(), Constants.NO);
+        String username = SharedPrefsUtil.getInstance().getUsername();
+        SharedPrefsUtil.getInstance().setMissionCompletionStatus(project.getId(), username, Constants.NO);
         String title = "Ops!";
         String message = (errorCode == StatusCode.NETWORK_UNREACHABLE ? "Kunne ikke sende responsen, siden du mangler tilkobling til Internett." : "Det har skjedd en merkelig feil.");
         SimpleDialog.createAndShow(context.getSupportFragmentManager(), title, message);

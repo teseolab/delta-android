@@ -5,9 +5,11 @@ import no.ntnu.mikaelr.delta.model.Project;
 
 public interface ProjectPresenter {
 
-    void onButtonClick(View view);
-
     Project getProject();
+
+    void goToMission();
+    void goToAddSuggestion();
+    void goToSuggestionList();
 
     void setMissionCompletionStatus();
 
