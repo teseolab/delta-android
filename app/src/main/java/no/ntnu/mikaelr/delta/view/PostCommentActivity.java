@@ -60,7 +60,6 @@ public class PostCommentActivity extends AppCompatActivity implements PostCommen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_task_done) {
-            showSpinner(true);
             String commentText = this.comment.getText().toString();
             presenter.onDoneClick(commentText);
         } else {

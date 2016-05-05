@@ -2,6 +2,7 @@ package no.ntnu.mikaelr.delta.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
@@ -32,7 +33,12 @@ public class PostCommentPresenterImpl implements PostCommentPresenter, ProjectIn
     @Override
     public void onDoneClick(String comment) {
         if (suggestionId != -1) {
-            interactor.postComment(comment, suggestionId, this);
+            if (!comment.equals("")) {
+                view.showSpinner(true);
+                interactor.postComment(comment, suggestionId, this);
+            } else {
+                view.showMessage(ErrorMessage.COMMENT_CANNOT_BE_EMPTY, Toast.LENGTH_LONG);
+            }
         }
     }
 
@@ -51,6 +57,6 @@ public class PostCommentPresenterImpl implements PostCommentPresenter, ProjectIn
     public void onPostCommentError(int errorCode) {
         view.showSpinner(false);
         view.showMessage(ErrorMessage.COULD_NOT_POST_COMMENT, Toast.LENGTH_LONG);
-        System.out.println(ErrorMessage.COULD_NOT_POST_COMMENT + ". Error " + errorCode);
+        Log.w("PostCommentPresenter", ErrorMessage.COULD_NOT_POST_COMMENT + ". Error " + errorCode);
     }
 }
