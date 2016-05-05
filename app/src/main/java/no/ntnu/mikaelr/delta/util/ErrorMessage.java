@@ -11,4 +11,6 @@ public class ErrorMessage {
     public static final String NO_ACTIVITIES_IN_LOG = "Du har ikke deltatt enda! Etterhvert som du fullfører rebusløp, poster forslag osv, kan du komme tilbake hit og få en oversikt over alt du har foretatt deg.";
 
     public static final String COMMENT_CANNOT_BE_EMPTY = "Kommentar kan ikke være tom";
+    public static final String TITLE_CANNOT_BE_EMPTY = "Tittel kan ikke være tom";
+    public static final String SUGGESTION_CANNOT_BE_EMPTY = "Forslag kan ikke være tomt";
 }

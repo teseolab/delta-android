@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.Menu;
@@ -17,12 +19,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
+import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.presenter.AddSuggestionPresenterImpl;
 import no.ntnu.mikaelr.delta.presenter.signature.AddSuggestionPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.view.signature.AddSuggestionView;
 
-public class AddSuggestionActivity extends AppCompatActivity implements AddSuggestionView, View.OnClickListener, AddImageDialog.AddImageDialogListener {
+public class AddSuggestionActivity extends AppCompatActivity implements AddSuggestionView, View.OnClickListener,
+        AddImageDialog.AddImageDialogListener, CustomDialog.CustomDialogPositiveButtonListener,
+        CustomDialog.CustomDialogNegativeButtonListener {
 
     private AddSuggestionPresenter presenter;
 
@@ -80,13 +85,13 @@ public class AddSuggestionActivity extends AppCompatActivity implements AddSugge
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String details = this.details.getText().toString();
         if (item.getItemId() == R.id.action_task_done) {
-            showSpinner(true);
             String title = this.title.getText().toString();
-            String details = this.details.getText().toString();
             presenter.onDoneClick(title, details);
         } else {
-            finish();
+            presenter.onCancelClick(details);
+//            finish();
         }
 
         // Makes the keyboard disappear
@@ -158,7 +163,24 @@ public class AddSuggestionActivity extends AppCompatActivity implements AddSugge
     }
 
     @Override
-    public void showMessage(String message) {
+    public void showMessage(String message, int length) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showDialog(DialogFragment dialog, String tag) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(dialog, tag);
+        transaction.commit();
+    }
+
+    @Override
+    public void onNegativeButtonClick(String dialogTag) {
+        presenter.onNegativeButtonClick(dialogTag);
+    }
+
+    @Override
+    public void onPositiveButtonClick(String dialogTag) {
+        presenter.onPositiveButtonClick(dialogTag);
     }
 }

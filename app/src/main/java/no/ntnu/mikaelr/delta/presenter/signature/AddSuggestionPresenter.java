@@ -5,6 +5,7 @@ import android.net.Uri;
 
 public interface AddSuggestionPresenter {
     void onDoneClick(String title, String details);
+    void onCancelClick(String details);
 
     void openCamera(int requestCode);
 
@@ -15,4 +16,9 @@ public interface AddSuggestionPresenter {
 //    void onGalleryResult(int resultCode, Intent data);
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
+
+    void onNegativeButtonClick(String dialogTag);
+
+    void onPositiveButtonClick(String dialogTag);
+
 }

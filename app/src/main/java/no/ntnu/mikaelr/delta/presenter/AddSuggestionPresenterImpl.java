@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.widget.Toast;
+import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
+import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Suggestion;
@@ -19,7 +22,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Calendar;
 
-public class AddSuggestionPresenterImpl implements AddSuggestionPresenter, ProjectInteractorImpl.OnPostSuggestionListener, ProjectInteractorImpl.OnPostImageListener {
+public class AddSuggestionPresenterImpl implements AddSuggestionPresenter,
+        ProjectInteractorImpl.OnPostSuggestionListener, ProjectInteractorImpl.OnPostImageListener {
 
     private AddSuggestionView view;
     private Activity context;
@@ -28,6 +32,8 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter, Proje
 
     private Uri imageFromCameraUri;
     private byte[] imageByteArray;
+    private final String NO_IMAGE_DIALOG_TAG = "NO_IMAGE_DIALOG_TAG";
+    private final String CANCEL_DIALOG_TAG = "CANCEL_DIALOG_TAG";
 
     public AddSuggestionPresenterImpl(AddSuggestionView view) {
         this.view = view;
@@ -40,11 +46,36 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter, Proje
 
     @Override
     public void onDoneClick(String title, String details) {
-        if (imageByteArray != null) {
-            interactor.uploadImage(imageByteArray, this);
-        } else {
-            postSuggestion("");
+        if (validateSuggestion(title, details)) {
+            if (imageByteArray != null) {
+                view.showSpinner(true);
+                interactor.uploadImage(imageByteArray, this);
+            } else {
+                CustomDialog dialog = CustomDialog.newInstance("Forslag uten bilde", "Er du sikker på at du vil poste et forslag uten bilde?", "Post forslag", "Legg til bilde", 0);
+                view.showDialog(dialog, NO_IMAGE_DIALOG_TAG);
+            }
         }
+    }
+
+    @Override
+    public void onCancelClick(String details) {
+        if (!details.equals("")) {
+            CustomDialog dialog = CustomDialog.newInstance("Avbryte forslag", "Er du sikker på at du vil avbryte?", "Ja", "Nei", 0);
+            view.showDialog(dialog, CANCEL_DIALOG_TAG);
+        } else {
+            context.finish();
+        }
+    }
+
+    private boolean validateSuggestion(String title, String details) {
+        if (title.equals("")) {
+            view.showMessage(ErrorMessage.TITLE_CANNOT_BE_EMPTY, Toast.LENGTH_SHORT);
+            return false;
+        } else if (details.equals("")) {
+            view.showMessage(ErrorMessage.SUGGESTION_CANNOT_BE_EMPTY, Toast.LENGTH_SHORT);
+            return false;
+        }
+        return true;
     }
 
     private void postSuggestion(String imageUri) {
@@ -100,6 +131,23 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter, Proje
         }
     }
 
+    @Override
+    public void onNegativeButtonClick(String dialogTag) {
+        if (dialogTag.equals(NO_IMAGE_DIALOG_TAG)) {
+            view.showDialog(AddImageDialog.newInstance(), null);
+        }
+    }
+
+    @Override
+    public void onPositiveButtonClick(String dialogTag) {
+        if (dialogTag.equals(NO_IMAGE_DIALOG_TAG)) {
+            postSuggestion("");
+        } else if (dialogTag.equals(CANCEL_DIALOG_TAG)) {
+            context.finish();
+        }
+    }
+
+
     // ASYNC TASK LISTENER ---------------------------------------------------------------------------------------------
 
     @Override
@@ -115,7 +163,7 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter, Proje
     @Override
     public void onPostSuggestionError(int errorCode) {
         view.showSpinner(false);
-        view.showMessage(ErrorMessage.COULD_NOT_POST_SUGGESTION);
+        view.showMessage(ErrorMessage.COULD_NOT_POST_SUGGESTION, Toast.LENGTH_LONG);
     }
 
     @Override
