@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.*;
+import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Project;
@@ -49,6 +50,15 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     private boolean missionIsCompleted = false;
 
     static final int TASK_REQUEST = 1;
+
+    private boolean locationServiceShouldStart = true;
+
+    @Override
+    public void setStartLocationIsFound(boolean startLocationIsFound) {
+        this.startLocationIsFound = startLocationIsFound;
+    }
+
+    private boolean startLocationIsFound = false;
 
     public MissionPresenterImpl(MissionView view) {
         this.view = view;
@@ -119,15 +129,22 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     }
 
     @Override
-    public void startLocationService() {
-        serviceIntent.putExtra("currentTaskLatitude", getCurrentTask().getLatitude());
-        serviceIntent.putExtra("currentTaskLongitude", getCurrentTask().getLongitude());
-        context.startService(serviceIntent);
+    public void startLocationServiceIfAppWillClose() {
+        if (locationServiceShouldStart) {
+            serviceIntent.putExtra("currentTaskLatitude", getCurrentTask().getLatitude());
+            serviceIntent.putExtra("currentTaskLongitude", getCurrentTask().getLongitude());
+            context.startService(serviceIntent);
+        }
     }
 
     @Override
     public void stopLocationService() {
         context.stopService(serviceIntent);
+    }
+
+    @Override
+    public void setLocationServiceShouldStart(boolean shouldStart) {
+        locationServiceShouldStart = shouldStart;
     }
 
     @Override
@@ -179,9 +196,18 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     @Override
     public void onMarkerClick(int clickedTaskId) {
-        if (currentTaskIndex != -1) {
-            if (clickedTaskId == getCurrentTask().getId()) {
-                goToTask();
+
+        boolean missionIsNotComplete = currentTaskIndex != -1;
+
+        if (missionIsNotComplete) {
+            if (startLocationIsFound) {
+                boolean userClickedCurrentTaskMarker = clickedTaskId == getCurrentTask().getId();
+                if (userClickedCurrentTaskMarker) {
+                    setLocationServiceShouldStart(false);
+                    goToTask();
+                }
+            } else {
+                view.showDialog("Ikke helt enda...", "Du må dra til dette punktet før du kan starte. Det vises et kompass i markøren når du er fremme.");
             }
         }
     }
@@ -202,31 +228,26 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
 //            view.showDialog("Gratulerer!", "Du har fullført dette oppdraget. Du kan nå poste forslag og diskutere andres forslag.");
         } else {
-            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(currentTaskIndex));
+//            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(currentTaskIndex), );
             currentTaskIndex++;
-            String title;
-            if (currentTaskIndex == 1) {
-                title = "Første oppgave ...";
-            } else {
-                title = phraseGenerator.encouragement()+"!";
-            }
+
+            String title = currentTaskIndex == 1 ? "Første oppgave" : phraseGenerator.encouragement()+"!";
             String hint = loadedTasks.get(currentTaskIndex).getHint();
+
             view.showDialog(title, hint);
             view.setHint(hint);
 
+            setLocationServiceShouldStart(true);
         }
     }
 
     // Listeners -------------------------------------------------------------------------------------------------------
 
-    private void addMarkers() {
-        if (currentTaskIndex == 0) {
-            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(0));
-        } else {
-            for (int i = 0; i < currentTaskIndex -1; i++) {
-                view.addMarkerForTask(currentTaskIndex, loadedTasks.get(i));
+    private void addAllCurrentMarkers() {
+            for (int i = 0; i <= currentTaskIndex; i++) {
+                view.addMarkerForTask(currentTaskIndex, loadedTasks.get(i), R.drawable.ic_location_48dp);
             }
-        }
+//        }
     }
 
     private Task getDefaultFirstTask() {
@@ -266,7 +287,9 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         view.setDistance("Neste punkt: " + String.format("%.0f", distanceToTaskLocation) + " m");
 
         if (userHasFoundTaskLocation(distanceToTaskLocation)) {
-            view.addMarkerForTask(currentTaskIndex, getCurrentTask());
+            startLocationIsFound = true;
+            int iconResourceId = currentTaskIndex == 0 ? R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
+            view.addMarkerForTask(currentTaskIndex, getCurrentTask(), iconResourceId);
         }
 
     }
@@ -294,9 +317,12 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
         loadedTasks = tasks;
 
-        addMarkers();
+        // Currently only shows the first task, but in the future this could be used to show the markers for completed
+        // tasks. The instance variable currentTaskIndex decides how many markers are shown.
+        // When clicking a finished task, the user could be shown what they answered.
+        addAllCurrentMarkers();
 
-        view.setMapLocationToMarkers();
+        view.zoomMapToMarkers();
         view.setHint(tasks.get(currentTaskIndex).getHint());
 
         tasksAreLoaded = true;

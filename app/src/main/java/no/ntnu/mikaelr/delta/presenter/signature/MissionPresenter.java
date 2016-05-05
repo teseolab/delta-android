@@ -6,6 +6,9 @@ import no.ntnu.mikaelr.delta.model.Task;
 
 public interface MissionPresenter {
 
+    // TODO: DELETE AFTER TEST
+    void setStartLocationIsFound(boolean startLocationIsFound);
+
     void loadTasks();
     Project getProject();
     Task getCurrentTask();
@@ -24,6 +27,8 @@ public interface MissionPresenter {
 
     int getCurrentTaskIndex();
 
-    void startLocationService();
+    void startLocationServiceIfAppWillClose();
     void stopLocationService();
+
+    void setLocationServiceShouldStart(boolean shouldStart);
 }
