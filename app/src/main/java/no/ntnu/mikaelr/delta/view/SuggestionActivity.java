@@ -7,10 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.adapter.CommentListAdapter;
@@ -91,7 +88,11 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
 
         if (!imageUri.equals("")) {
             Picasso.with(this).load(imageUri).into(image);
+        } else {
+            View imageWrapper = header.findViewById(R.id.imageWrapper);
+            imageWrapper.setVisibility(View.GONE);
         }
+
         username.setText(suggestion.getUser().getUsername());
         date.setText(DateFormatter.format(suggestion.getDate(), "dd.MM.yy"));
         title.setText(suggestion.getTitle());
