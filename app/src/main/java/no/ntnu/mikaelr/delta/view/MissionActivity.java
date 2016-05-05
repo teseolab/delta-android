@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.*;
 import com.google.maps.android.ui.IconGenerator;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
+import no.ntnu.mikaelr.delta.fragment.YesNoDialog;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.signature.MissionPresenter;
 import no.ntnu.mikaelr.delta.presenter.MissionPresenterImpl;
@@ -38,7 +39,7 @@ import java.util.List;
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 
 public class MissionActivity extends AppCompatActivity implements MissionView, OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMarkerClickListener, YesNoDialog.YesNoDialogListener {
 
     private static final String TAG = "MissionActivity";
 
@@ -207,6 +208,14 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         transaction.commitAllowingStateLoss();
     }
 
+    @Override
+    public void showYesNoDialog(String title, String message) {
+        YesNoDialog dialog = YesNoDialog.newInstance(title, message);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(dialog, null);
+        transaction.commitAllowingStateLoss();
+    }
+
     // CLICK LISTENERS -------------------------------------------------------------------------------------------------
 
     @Override
@@ -226,8 +235,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
 
         // Close button click
         else {
-            presenter.setLocationServiceShouldStart(false);
-            finish();
+            presenter.onCloseButtonClicked();
         }
 
         return true;
@@ -257,5 +265,15 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         map.setOnMarkerClickListener(this);
         setMyLocationEnabled(true);
         presenter.loadTasks();
+    }
+
+    @Override
+    public void onYesClicked() {
+        finish();
+    }
+
+    @Override
+    public void onNoClicked() {
+
     }
 }

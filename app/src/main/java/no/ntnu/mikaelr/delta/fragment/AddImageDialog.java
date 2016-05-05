@@ -17,7 +17,7 @@ public class AddImageDialog extends DialogFragment {
         void onSelectPhotoClicked(Dialog dialog);
     }
 
-    AddImageDialogListener listener;
+    private AddImageDialogListener listener;
 
     @Override
     public void onAttach(Activity activity) {

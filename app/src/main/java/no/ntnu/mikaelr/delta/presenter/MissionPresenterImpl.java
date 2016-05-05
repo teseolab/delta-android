@@ -195,6 +195,18 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     }
 
     @Override
+    public void onCloseButtonClicked() {
+        if (missionIsCompleted) {
+            locationServiceShouldStart = false;
+            context.finish();
+        } else if (currentTaskIndex > 0) {
+            view.showYesNoDialog("Oppdrag ikke fullført", "Er du sikker på at du vil gå tilbake?");
+        } else {
+            context.finish();
+        }
+    }
+
+    @Override
     public void onMarkerClick(int clickedTaskId) {
 
         boolean missionIsNotComplete = currentTaskIndex != -1;

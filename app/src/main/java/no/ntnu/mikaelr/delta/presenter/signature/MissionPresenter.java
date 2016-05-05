@@ -23,6 +23,7 @@ public interface MissionPresenter {
 
     void onActivityResult(int requestCode, Intent data);
 
+    void onCloseButtonClicked();
     void onMarkerClick(int clickedTaskId);
 
     int getCurrentTaskIndex();
@@ -31,4 +32,5 @@ public interface MissionPresenter {
     void stopLocationService();
 
     void setLocationServiceShouldStart(boolean shouldStart);
+
 }

@@ -13,6 +13,7 @@ public interface MissionView {
     void showMessage(String message, int duration);
 
     void showDialog(String title, String hint);
+    void showYesNoDialog(String title, String message);
 
     void finish();
 
