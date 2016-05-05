@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +29,6 @@ import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.signature.MissionPresenter;
 import no.ntnu.mikaelr.delta.presenter.MissionPresenterImpl;
 import no.ntnu.mikaelr.delta.util.LocationService;
-import no.ntnu.mikaelr.delta.util.PhraseGenerator;
 import no.ntnu.mikaelr.delta.view.signature.MissionView;
 
 import java.util.ArrayList;
@@ -40,6 +40,8 @@ import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 public class MissionActivity extends AppCompatActivity implements MissionView, OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener {
 
+    private static final String TAG = "MissionActivity";
+
     private MissionPresenter presenter;
 
     private GoogleMap map;
@@ -48,9 +50,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
 
     private HashMap<String, Integer> markerIdsAndTaskIds = new HashMap<String, Integer>();
 
-    private boolean locationServiceShouldStart = true;
-
-    // Activity methods ------------------------------------------------------------------------------------------------
+    // LIFECYCLE METHODS -----------------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +72,6 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_test_mission, menu);
-        return true;
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
     }
@@ -89,11 +83,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
             presenter.disconnectApiClient();
         }
 
-        if (locationServiceShouldStart) {
-            presenter.startLocationService();
-            locationServiceShouldStart = true;
-        }
-
+        presenter.startLocationServiceIfAppWillClose();
         super.onPause();
     }
 
@@ -111,6 +101,33 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         super.onResume();
     }
 
+    @Override
+    protected void onStop() {
+        presenter.disconnectApiClient();
+        super.onStop();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_test_mission, menu);
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            presenter.onActivityResult(requestCode, data);
+        }
+    }
+
+    // PRIVATE METHODS -------------------------------------------------------------------------------------------------
+
+    private void initializeMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mission_map);
+        mapFragment.getMapAsync(this);
+    }
+
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -121,32 +138,13 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         return false;
     }
 
-    @Override
-    protected void onStop() {
-        presenter.disconnectApiClient();
-        super.onStop();
+    private void setMyLocationEnabled(boolean enabled) {
+        // TODO: Handle permissions on Marshmallow
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) map.setMyLocationEnabled(enabled);
     }
 
-    private void initializeMap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mission_map);
-        mapFragment.getMapAsync(this);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_cheat) {
-            Task currentTask = presenter.getCurrentTask();
-            if (currentTask != null) {
-                addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask);
-            }
-        } else {
-            locationServiceShouldStart = false;
-            finish();
-        }
-        return true;
-    }
-
-    // Interface methods -----------------------------------------------------------------------------------------------
+    // INTERFACE METHODS -----------------------------------------------------------------------------------------------
 
     @Override
     public void setHint(CharSequence hint) {
@@ -161,19 +159,13 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     }
 
     @Override
-    public void addMarkerForTask(int taskIndex, Task task) {
+    public void addMarkerForTask(int taskIndex, Task task, int iconResourceId) {
         if (map != null) {
 
             View mapMarkerView = getLayoutInflater().inflate(R.layout.map_marker, null);
             ImageView iconView = (ImageView) mapMarkerView.findViewById(R.id.icon);
-            String iconText = "";
-
-            if (taskIndex == 0) {
-                iconView.setImageResource(R.drawable.ic_location_start_48dp);
-            } else {
-                iconView.setImageResource(R.drawable.ic_location_48dp);
-                iconText = Integer.toString(taskIndex);
-            }
+            iconView.setImageResource(iconResourceId);
+            String iconText = taskIndex == 0 ? "" : Integer.toString(taskIndex);
 
             IconGenerator iconGenerator = new IconGenerator(this);
             iconGenerator.setBackground(null);
@@ -190,21 +182,16 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     }
 
     @Override
-    public void setMapLocationToMarkers() {
+    public void zoomMapToMarkers() {
         if (map != null) {
             if (markers.size() == 1) {
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), 15.5f));
-            } else {
+            } else if (markers.size() > 1) {
                 map.moveCamera(newLatLngBounds(boundsBuilder.build(), 550));
+            } else {
+                Log.w(TAG, "Could not zoom the map since no markers have been added");
             }
         }
-    }
-
-    @Override
-    public void setMyLocationEnabled(boolean enabled) {
-        // TODO: Handle permissions on Marshmallow
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) map.setMyLocationEnabled(enabled);
     }
 
     @Override
@@ -220,40 +207,55 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         transaction.commitAllowingStateLoss();
     }
 
-
-    // Listeners -------------------------------------------------------------------------------------------------------
+    // CLICK LISTENERS -------------------------------------------------------------------------------------------------
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
-        map.getUiSettings().setMapToolbarEnabled(false);
-        setMyLocationEnabled(true);
-        map.getUiSettings().setMyLocationButtonEnabled(false);
-        map.setOnMarkerClickListener(this);
-        boundsBuilder = new LatLngBounds.Builder();
-        presenter.loadTasks();
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Cheat button click
+        // TODO: Delete before deployment
+        if (item.getItemId() == R.id.action_cheat) {
+            Task currentTask = presenter.getCurrentTask();
+            if (currentTask != null) {
+                int resourceId = presenter.getCurrentTaskIndex() == 0 ?
+                        R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
+                addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask, resourceId);
+                presenter.setStartLocationIsFound(true);
+            }
+        }
+
+        // Close button click
+        else {
+            presenter.setLocationServiceShouldStart(false);
+            finish();
+        }
+
+        return true;
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        locationServiceShouldStart = false;
         int clickedTaskId = markerIdsAndTaskIds.get(marker.getId());
         presenter.onMarkerClick(clickedTaskId);
         return true;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        locationServiceShouldStart = true; // TODO: This assumes that the only intent sending results here is TaskActivity
-        if (resultCode == RESULT_OK) {
-            presenter.onActivityResult(requestCode, data);
-        }
+    public void onBackPressed() {
+        presenter.setLocationServiceShouldStart(false);
+        super.onBackPressed();
     }
 
+    // MAP READY LISTENER ----------------------------------------------------------------------------------------------
+
     @Override
-    public void onBackPressed() {
-        locationServiceShouldStart = false;
-        super.onBackPressed();
+    public void onMapReady(GoogleMap googleMap) {
+        boundsBuilder = new LatLngBounds.Builder();
+        map = googleMap;
+        map.getUiSettings().setMapToolbarEnabled(false);
+        map.getUiSettings().setMyLocationButtonEnabled(false);
+        map.setOnMarkerClickListener(this);
+        setMyLocationEnabled(true);
+        presenter.loadTasks();
     }
 }

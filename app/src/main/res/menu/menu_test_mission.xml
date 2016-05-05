@@ -7,7 +7,6 @@
     <item
         android:id="@+id/action_cheat"
         android:orderInCategory="1"
-        android:icon="@drawable/ic_gps_fixed_white_24dp"
         app:showAsAction="always"
         android:title=""/>
 
