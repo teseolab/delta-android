@@ -25,8 +25,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.google.maps.android.ui.IconGenerator;
 import no.ntnu.mikaelr.delta.R;
-import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
-import no.ntnu.mikaelr.delta.fragment.YesNoDialog;
+import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.signature.MissionPresenter;
 import no.ntnu.mikaelr.delta.presenter.MissionPresenterImpl;
@@ -40,7 +39,7 @@ import java.util.List;
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 
 public class MissionActivity extends AppCompatActivity implements MissionView, OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener, YesNoDialog.YesNoDialogListener {
+        GoogleMap.OnMarkerClickListener, CustomDialog.CustomDialogPositiveButtonListener {
 
     private static final String TAG = "MissionActivity";
 
@@ -59,10 +58,14 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission);
         this.presenter = new MissionPresenterImpl(this);
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, presenter.getProject().getName()+" oppdrag");
+        String missionName = presenter.getProject().getName() + " oppdrag";
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, missionName);
         presenter.connectApiClient();
         initializeMap();
-        showSimpleDialog("For å komme i gang", "Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget.");
+        String title = "For å starte oppdraget";
+        String message = "Velkommen til " + missionName + ". Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget. Det vises et kompass i markøren når du er fremme.";
+        CustomDialog welcomeDialog = CustomDialog.newInstance(title, message, "Ok", null, R.drawable.explore);
+        showDialog(welcomeDialog, "");
     }
 
     @Override
@@ -146,12 +149,6 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) map.setMyLocationEnabled(enabled);
     }
 
-    private void showDialogFragment(DialogFragment dialogFragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(dialogFragment, null);
-        transaction.commitAllowingStateLoss();
-    }
-
     // INTERFACE METHODS -----------------------------------------------------------------------------------------------
 
     @Override
@@ -208,15 +205,10 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     }
 
     @Override
-    public void showSimpleDialog(String title, String hint) {
-        SimpleDialog dialog = SimpleDialog.newInstance(title, hint);
-        showDialogFragment(dialog);
-    }
-
-    @Override
-    public void showYesNoDialog(String title, String message) {
-        YesNoDialog dialog = YesNoDialog.newInstance(title, message);
-        showDialogFragment(dialog);
+    public void showDialog(DialogFragment dialogFragment, String tag) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(dialogFragment, tag);
+        transaction.commitAllowingStateLoss();
     }
 
     // CLICK LISTENERS -------------------------------------------------------------------------------------------------
@@ -252,6 +244,11 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     }
 
     @Override
+    public void onPositiveButtonClick(String dialogTag) {
+        presenter.onPositiveButtonClick(dialogTag);
+    }
+
+    @Override
     public void onBackPressed() {
         presenter.setLocationServiceShouldStart(false);
         super.onBackPressed();
@@ -268,15 +265,5 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         map.setOnMarkerClickListener(this);
         setMyLocationEnabled(true);
         presenter.loadTasks();
-    }
-
-    @Override
-    public void onYesClicked() {
-        finish();
-    }
-
-    @Override
-    public void onNoClicked() {
-
     }
 }

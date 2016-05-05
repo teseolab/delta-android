@@ -15,6 +15,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.*;
 import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Project;
@@ -48,6 +49,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     private boolean locationServiceShouldStart = true;
 
     static final int TASK_REQUEST = 1;
+    static final String CLOSE_MISSION_DIALOG_TAG = "closeMissionDialog";
 
     @Override
     public void setStartLocationIsFound(boolean startLocationIsFound) {
@@ -196,8 +198,20 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             locationServiceShouldStart = false;
             context.finish();
         } else if (currentTaskIndex > 0) {
-            view.showYesNoDialog("Oppdrag ikke fullført", "Er du sikker på at du vil gå tilbake?");
+            String title = "Oppdrag ikke fullført";
+            String message = "Er du sikker på at du vil gå tilbake?";
+            CustomDialog closeMissionDialog = CustomDialog.newInstance(title, message, "Ja", "Nei", 0);
+            // Tag used to handle listener callbacks
+            view.showDialog(closeMissionDialog, CLOSE_MISSION_DIALOG_TAG);
         } else {
+            context.finish();
+        }
+    }
+
+    @Override
+    public void onPositiveButtonClick(String dialogTag) {
+        if (dialogTag != null && dialogTag.equals(CLOSE_MISSION_DIALOG_TAG)) {
+            locationServiceShouldStart = false;
             context.finish();
         }
     }
@@ -215,7 +229,10 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
                     goToTask();
                 }
             } else {
-                view.showSimpleDialog("Ikke helt enda...", "Du må dra til dette punktet før du kan starte. Det vises et kompass i markøren når du er fremme.");
+                String title = "For å starte oppdraget";
+                String message = "Du må dra til dette punktet før du kan starte. Det vises et kompass i markøren når du er fremme.";
+                CustomDialog dialog = CustomDialog.newInstance(title, message, "Ok", null, R.drawable.explore);
+                view.showDialog(dialog, null);
             }
         }
     }
@@ -235,15 +252,13 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             context.setResult(Activity.RESULT_OK);
             context.finish();
 
-//            view.showSimpleDialog("Gratulerer!", "Du har fullført dette oppdraget. Du kan nå poste forslag og diskutere andres forslag.");
         } else {
-//            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(currentTaskIndex), );
             currentTaskIndex++;
 
             String title = currentTaskIndex == 1 ? "Første oppgave" : phraseGenerator.encouragement()+"!";
             String hint = loadedTasks.get(currentTaskIndex).getHint();
 
-            view.showSimpleDialog(title, hint);
+            view.showDialog(CustomDialog.newInstance(title, hint, "Ok", null, 0), null);
             view.setHint(hint);
 
             setLocationServiceShouldStart(true);
@@ -351,4 +366,5 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     public void onPostFinishedMissionError(int errorCode) {
         // TODO: ?
     }
+
 }

@@ -24,6 +24,7 @@ public interface MissionPresenter {
     void onActivityResult(int requestCode, Intent data);
 
     void onCloseButtonClicked();
+    void onPositiveButtonClick(String dialogTag);
     void onMarkerClick(int clickedTaskId);
 
     int getCurrentTaskIndex();
