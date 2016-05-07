@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -314,6 +315,8 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             startLocationIsFound = true;
             int iconResourceId = currentTaskIndex == 0 ? R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
             view.addMarkerForTask(currentTaskIndex, getCurrentTask(), iconResourceId);
+            Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            v.vibrate(600);
         }
 
     }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -225,6 +226,8 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
                         R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
                 addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask, resourceId);
                 presenter.setStartLocationIsFound(true);
+                Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(600);
             }
         }
 
