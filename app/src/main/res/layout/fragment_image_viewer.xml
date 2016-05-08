@@ -9,8 +9,7 @@
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                android:scaleType="fitCenter"
-               android:clickable="true"
-               android:src="@drawable/nyhavna2_hires">
+               android:clickable="true">
     </ImageView>
 
 </LinearLayout>

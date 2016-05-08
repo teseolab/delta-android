@@ -24,6 +24,7 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
             android:singleLine="true"
             android:hint="@string/password"
             android:inputType="textPassword"/>
@@ -33,6 +34,7 @@
             android:id="@+id/password_check"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
             android:singleLine="true"
             android:hint="@string/repeat_password"
             android:inputType="textPassword"/>

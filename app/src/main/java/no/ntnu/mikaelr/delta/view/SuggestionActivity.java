@@ -216,7 +216,7 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
                 presenter.goToPostComment();
                 break;
             case R.id.image:
-                ImageViewerDialog.newInstance(presenter.getSuggestion().getImageUri()).show(getSupportFragmentManager(), "tag");
+                ImageViewerDialog.newInstance(presenter.getSuggestion().getImageUri()).show(getSupportFragmentManager(), null);
                 break;
         }
 
