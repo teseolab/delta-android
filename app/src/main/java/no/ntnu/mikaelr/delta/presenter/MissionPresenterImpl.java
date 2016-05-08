@@ -130,10 +130,17 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     @Override
     public void startLocationServiceIfAppWillClose() {
-        if (locationServiceShouldStart) {
-            serviceIntent.putExtra("currentTaskLatitude", getCurrentTask().getLatitude());
-            serviceIntent.putExtra("currentTaskLongitude", getCurrentTask().getLongitude());
-            context.startService(serviceIntent);
+        // TODO: 08.05.2016
+        // Today when opening MissionActivity, onPause was called immediately.
+        // This caused the app to crash, since the tasks had not been loaded.
+        // The first check here should avoid the crash, but I don't what why onPause was called.
+        // Could also have been "fixed" by setting default value of locationServiceShouldStart to false.
+        if (getCurrentTask() != null) {
+            if (locationServiceShouldStart) {
+                serviceIntent.putExtra("currentTaskLatitude", getCurrentTask().getLatitude());
+                serviceIntent.putExtra("currentTaskLongitude", getCurrentTask().getLongitude());
+                context.startService(serviceIntent);
+            }
         }
     }
 
