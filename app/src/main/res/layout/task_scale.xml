@@ -1,38 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-    android:background="@color/list_divider">
+              android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/task_scale_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="15dp"/>
+    <include layout="@layout/toolbar"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/white"
-        android:padding="15dp">
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <SeekBar
-            android:id="@+id/seekbar"
-            android:layout_weight="0.7"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:max="4"/>
+        <LinearLayout android:id="@+id/parent_layout_task_scale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/seekbar_text"
-            android:layout_weight="0.3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:textStyle="bold"
-            android:gravity="center"/>
+            <RelativeLayout
+                android:id="@+id/imageWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="150dp">
 
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:scaleType="centerCrop"
+                    android:clickable="true"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_photo_size_select_large_white_24dp"
+                    android:padding="15dp"/>
+
+            </RelativeLayout>
+
+            <!--<ImageView-->
+                <!--android:id="@+id/image"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="150dp"-->
+                <!--android:scaleType="centerCrop"-->
+                <!--android:clickable="true"/>-->
+
+            <!-- task_scale_item_item.xml will be inflated here -->
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

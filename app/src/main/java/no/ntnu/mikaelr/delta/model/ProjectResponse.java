@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class ProjectResponse {
 
     private ArrayList<String> response;
-    private int userId;
     private int projectId;
     private int taskId;
 
@@ -19,7 +18,6 @@ public class ProjectResponse {
         try {
             JSONArray jsonResponse = new JSONArray(response);
             json.put("response", jsonResponse);
-            json.put("userId", userId);
             json.put("projectId", projectId);
             json.put("taskId", taskId);
         } catch (JSONException e) {
@@ -34,14 +32,6 @@ public class ProjectResponse {
 
     public void setResponse(ArrayList<String> response) {
         this.response = response;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public int getProjectId() {
