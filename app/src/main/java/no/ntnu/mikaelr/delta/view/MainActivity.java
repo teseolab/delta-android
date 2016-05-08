@@ -10,7 +10,6 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
 import no.ntnu.mikaelr.delta.listener.ProjectDialogClickListener;
@@ -33,8 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainView, AdapterView.OnItemClickListener,
-        DrawerLayout.DrawerListener, ProjectDialogClickListener, AddImageDialog.AddImageDialogListener,
-        FragmentManager.OnBackStackChangedListener {
+        DrawerLayout.DrawerListener, ProjectDialogClickListener, AddImageDialog.AddImageDialogListener {
 
     private DrawerLayout drawerView;
     private ActionBarDrawerToggle drawerToggle;
@@ -75,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         initializeNavigationDrawer();
 
         fragmentManager = getSupportFragmentManager();
-        fragmentManager.addOnBackStackChangedListener(this);
 
         presenter = new MainPresenterImpl(this);
         presenter.loadProjects();
@@ -115,14 +111,20 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+            MenuItem toggleMapButton = menu.findItem(R.id.action_show_project_list);
 
-        MenuItem toggleMapButton = menu.findItem(R.id.action_show_project_list);
-        ToolbarUtil.showSpinner(toggleMapButton, mapIsLoading);
+        if (clickedDrawerMenuPosition == 0) {
+            ToolbarUtil.showSpinner(toggleMapButton, mapIsLoading);
+            Drawable icon = showsMap ?
+                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_cards_white_24dp, null)
+                    : ResourcesCompat.getDrawable(getResources(), R.drawable.ic_map_white_24dp, null);
+            toggleMapButton.setIcon(icon);
+            toggleMapButton.setVisible(true);
+        }
 
-        Drawable icon = showsMap ?
-                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_cards_white_24dp, null)
-                : ResourcesCompat.getDrawable(getResources(), R.drawable.ic_map_white_24dp, null);
-        toggleMapButton.setIcon(icon);
+        else {
+            toggleMapButton.setVisible(false);
+        }
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -170,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     @Override
     public void onDrawerClosed(View drawerView) {
-
         if (clickedDrawerMenuPosition == 4) {
             SharedPrefsUtil.getInstance().setCookie("");
             Intent intent = new Intent(this, LoginActivity.class);
@@ -178,17 +179,10 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
             startActivity(intent);
             finish();
         }
-
         else {
-
             if (clickedDrawerMenuPosition == 0 && previousDrawerMenuPosition != 0) {
-                if (showsMap) {
-                    setMapIsLoading(true);
-                    MapFragment mapFragment = MapFragment.newInstance(presenter.getProjects());
-                    fragmentManager.beginTransaction().add(R.id.content_frame, mapFragment, MENU_ITEM_MAIN).commit();
-                } else {
-                    fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
-                }
+                fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
+                showsMap = false;
             } else if (clickedDrawerMenuPosition == 1 && previousDrawerMenuPosition != 1) {
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new ProfileFragment(), MENU_ITEM_PROFILE).commit();
             } else if (clickedDrawerMenuPosition == 2 && previousDrawerMenuPosition != 2) {
@@ -196,66 +190,10 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
             } else if (clickedDrawerMenuPosition == 3 && previousDrawerMenuPosition != 3) {
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new ActivityLogFragment(), MENU_ITEM_ACTIVITY_LOG).commit();
             }
-
-//            if (clickedDrawerMenuPosition == 0 && previousDrawerMenuPosition != 0) {
-//                Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
-//                if (!(visibleFragment instanceof MapFragment || visibleFragment instanceof ProjectListFragment)) {
-//                    fragmentManager.beginTransaction().remove(visibleFragment).commit();
-//                    fragmentManager.popBackStack();
-//                }
-//            }
-//
-//            else {
-//
-//                if (clickedDrawerMenuPosition == 1 && previousDrawerMenuPosition != 1) {
-//                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-//                    transaction.replace(R.id.content_frame, new ProfileFragment(), MENU_ITEM_PROFILE);
-//                    if (previousDrawerMenuPosition == 0) {
-//                        transaction.addToBackStack("Main");
-//                    }
-//                    transaction.commit();
-//                }
-//
-//                else if (clickedDrawerMenuPosition == 2 && previousDrawerMenuPosition != 2) {
-//                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-//                    transaction.replace(R.id.content_frame, new TopListFragment(), MENU_ITEM_TOP_LIST);
-//                    if (previousDrawerMenuPosition == 0) {
-//                        transaction.addToBackStack("Main");
-//                    }
-//                    transaction.commit();
-//                } else if (clickedDrawerMenuPosition == 3 && previousDrawerMenuPosition != 3) {
-//                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-//                    transaction.replace(R.id.content_frame, new ActivityLogFragment(), MENU_ITEM_ACTIVITY_LOG);
-//                    if (previousDrawerMenuPosition == 0) {
-//                        transaction.addToBackStack("Main");
-//                    }
-//                    transaction.commit();
-//                }
-//            }
+            supportInvalidateOptionsMenu();
         }
-
         previousDrawerMenuPosition = clickedDrawerMenuPosition;
-
-        Log.w("BACKSTACKENTRYCOUNT", Integer.toString(fragmentManager.getBackStackEntryCount()));
-
     }
-
-//    private void showOrAddFragment(Fragment f) {
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        for (Fragment fragment : fragments) {
-//            if (fragment.equals(f)) {
-//                if (fragment.isAdded()) {
-//                    ft.show(fragment);
-//                }
-//                else {
-//                    ft.add(R.id.content_frame, fragment);
-//                }
-//            } else if (fragment.isVisible()) {
-//                ft.hide(fragment);
-//            }
-//        }
-//        ft.commit();
-//    }
 
     @Override
     public void onDrawerStateChanged(int newState) {
@@ -300,56 +238,28 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     @Override
     public void onBackPressed() {
-//        Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
-//        if (!(visibleFragment instanceof ProjectListFragment || visibleFragment instanceof MapFragment)) {
-//            fragmentManager.beginTransaction().remove(visibleFragment).commit();
-//            if (!showsMap) {
-//                fragmentManager.beginTransaction().show(projectListFragment).hide(mapFragment).commit();
-//            } else {
-//                fragmentManager.beginTransaction().hide(projectListFragment).show(mapFragment).commit();
-//            }
-//        }
-//        if (fragmentManager.getBackStackEntryCount() > 0) {
-//            Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
-//            fragmentManager.beginTransaction().remove(visibleFragment).commit();
-//        }
-
-//        Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
-//        if (!(visibleFragment instanceof MapFragment || visibleFragment instanceof ProjectListFragment)) {
-//            fragmentManager.beginTransaction().remove(visibleFragment).commit();
-//        }
-
+        // TODO: Refactoring
         if (previousDrawerMenuPosition == 0) {
             if (showsMap) {
                 fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
-                showsMap = false;
             } else {
                 super.onBackPressed();
             }
         } else {
-            showsMap = false;
             fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
             drawerList.setItemChecked(0, true);
             ToolbarUtil.setTitle(this, menuItemMap.get(0));
             previousDrawerMenuPosition = 0;
+            clickedDrawerMenuPosition = 0;
         }
-
-    }
-
-    @Override
-    public void onBackStackChanged() {
-//        Fragment visibleFragment = fragmentManager.findFragmentById(R.id.content_frame);
-//        String fragmentTag = visibleFragment.getTag();
-//        drawerList.setItemChecked(menuItemMap.indexOfValue(fragmentTag), true);
-//        ToolbarUtil.setTitle(this, fragmentTag);
+        showsMap = false;
+        supportInvalidateOptionsMenu();
     }
 
     @Override
     public void addProjectListFragment(ArrayList<Project> projects) {
         projectListFragment = ProjectListFragment.newInstance(projects);
-
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.add(R.id.content_frame, mapFragment, "KART");
         fragmentTransaction.replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
     }
 
