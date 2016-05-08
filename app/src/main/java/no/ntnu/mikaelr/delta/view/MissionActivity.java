@@ -155,13 +155,23 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     @Override
     public void setHint(CharSequence hint) {
         TextView hintView = (TextView) findViewById(R.id.hint_textview);
-        hintView.setText(hint);
+        if (hint == null) {
+            hintView.setVisibility(View.GONE);
+        } else {
+            hintView.setVisibility(View.VISIBLE);
+            hintView.setText(hint);
+        }
     }
 
     @Override
     public void setDistance(String distance) {
         TextView distanceView = (TextView) findViewById(R.id.distance_textview);
-        distanceView.setText(distance);
+        if (distance == null) {
+            distanceView.setVisibility(View.GONE);
+        } else {
+            distanceView.setVisibility(View.VISIBLE);
+            distanceView.setText(distance);
+        }
     }
 
     @Override
@@ -228,6 +238,9 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
                 presenter.setStartLocationIsFound(true);
                 Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(600);
+                presenter.stopLocationUpdates();
+                setDistance(null);
+                setHint(null);
             }
         }
 
