@@ -1,0 +1,14 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".TaskActivity">
+
+    <item
+        android:id="@+id/action_show_project_list"
+        android:orderInCategory="1"
+        android:title="@string/show_list"
+        android:icon="@drawable/ic_map_white_24dp"
+        app:showAsAction="always" />
+
+</menu>

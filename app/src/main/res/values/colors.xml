@@ -23,6 +23,7 @@
     <color name="gray_70">#b3b3b3</color>
     <color name="gray_80">#cccccc</color>
     <color name="gray_90">#e5e5e5</color>
+    <color name="gray_98">#fafafa</color>
 
     <color name="white">#ffffff</color>
     <color name="white_trans_30">#4dffffff</color>

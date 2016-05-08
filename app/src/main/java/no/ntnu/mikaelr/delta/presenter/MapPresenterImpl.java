@@ -2,51 +2,49 @@ package no.ntnu.mikaelr.delta.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import no.ntnu.mikaelr.delta.fragment.ProjectDialog;
-import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
-import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Project;
 import no.ntnu.mikaelr.delta.presenter.signature.MapPresenter;
-import no.ntnu.mikaelr.delta.util.JsonFormatter;
 import no.ntnu.mikaelr.delta.view.signature.MapFragView;
 import no.ntnu.mikaelr.delta.view.ProjectActivity;
-import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MapPresenterImpl implements MapPresenter, ProjectInteractorImpl.OnFinishedLoadingProjectsListener {
+public class MapPresenterImpl implements MapPresenter {
 
     private MapFragView view;
-    List<Project> loadedProjects;
+    private List<Project> projects;
 
-    private ProjectInteractor projectInteractor;
+//    private ProjectInteractor projectInteractor;
 
     public static final int PROJECT_DIALOG = 1;
 
     public MapPresenterImpl(MapFragView view) {
         this.view = view;
-        this.projectInteractor = new ProjectInteractorImpl();
+//        this.projectInteractor = new ProjectInteractorImpl();
     }
 
     @Override
     public void onMarkerClick(int clickedProjectId) {
-        Fragment context = (Fragment) view;
-        DialogFragment dialogFrag = ProjectDialog.newInstance(loadedProjects.get(clickedProjectId-1));
-        dialogFrag.setTargetFragment(context, PROJECT_DIALOG);
-        dialogFrag.show(context.getFragmentManager().beginTransaction(), "dialog");
+
+        Project project = projects.get(clickedProjectId - 1);
+        view.showProjectCard(project.getName(), project.getId());
+
+//        Fragment context = (Fragment) view;
+//        DialogFragment dialogFrag = ProjectDialog.newInstance(projects.get(clickedProjectId-1));
+//        dialogFrag.setTargetFragment(context, PROJECT_DIALOG);
+//        dialogFrag.show(context.getFragmentManager().beginTransaction(), "dialog");
     }
 
-    @Override
-    public void loadProjects() {
-        projectInteractor.getProjects(this);
-    }
+//    @Override
+//    public void loadProjects() {
+//        projectInteractor.getProjects(this);
+//    }
 
     @Override
-    public void goToProjectPage(int projectId) {
-        Project project = loadedProjects.get(projectId-1);
+    public void goToProjectPage(int projectIndex) {
+        Project project = projects.get(projectIndex -1);
         Fragment context = (Fragment) view;
         Intent intent = new Intent(context.getActivity(), ProjectActivity.class);
         intent.putExtra("id", project.getId());
@@ -69,15 +67,26 @@ public class MapPresenterImpl implements MapPresenter, ProjectInteractorImpl.OnF
     }
 
     @Override
-    public void onFinishedLoadingProjects(JSONArray jsonResult) {
-        if (jsonResult.length() != 0) {
-            List<Project> projects = JsonFormatter.formatProjects(jsonResult);
-            this.loadedProjects = projects;
-            for (Project project : projects) {
-                view.addMarkerForProject(project);
-            }
-            view.setMapLocationToMarkers();
-        }
+    public void setProjects(ArrayList<Project> projects) {
+        this.projects = projects;
     }
+
+    @Override
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+//    @Override
+//    public void onFinishedLoadingProjects(JSONArray jsonResult) {
+//        if (jsonResult.length() != 0) {
+//            List<Project> projects = JsonFormatter.formatProjects(jsonResult);
+//            this.projects = projects;
+//            for (Project project : projects) {
+//                view.addMarkerForProject(project);
+//            }
+//            view.setMapLocationToMarkers();
+//            view.initializeProjectList(projects);
+//        }
+//    }
 
 }

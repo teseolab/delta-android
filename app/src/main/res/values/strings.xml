@@ -22,4 +22,6 @@
     <string name="loading_mission">Henter oppdrag...</string>
     <string name="your_suggestion">Ditt forslag</string>
     <string name="posting_suggestion">Poster forslag...</string>
+    <string name="show_list">Vis liste</string>
+    <string name="read_more">Les mer</string>
 </resources>

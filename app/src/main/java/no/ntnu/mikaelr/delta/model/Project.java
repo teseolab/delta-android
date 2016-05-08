@@ -1,6 +1,8 @@
 package no.ntnu.mikaelr.delta.model;
 
-public class Project {
+import java.io.Serializable;
+
+public class Project implements Serializable {
 
     private Integer id;
     private String name;
@@ -8,6 +10,8 @@ public class Project {
     private String imageUri;
     private float latitude;
     private float longitude;
+
+    public Project() {}
 
     public Integer getId() {
         return id;

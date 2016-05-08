@@ -20,19 +20,18 @@
                 android:layout_height="150dp"
                 android:layout_width="fill_parent"
                 android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
-                android:src="@drawable/nyhavna"/>
+                android:adjustViewBounds="true"/>
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/description"
-                android:textStyle="bold"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:background="@color/list_divider"/>
+            <!--<TextView-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/description"-->
+                <!--android:textStyle="bold"-->
+                <!--android:paddingTop="10dp"-->
+                <!--android:paddingBottom="10dp"-->
+                <!--android:paddingStart="15dp"-->
+                <!--android:paddingEnd="15dp"-->
+                <!--android:background="@color/list_divider"/>-->
 
             <TextView
                 android:id="@+id/project_description"

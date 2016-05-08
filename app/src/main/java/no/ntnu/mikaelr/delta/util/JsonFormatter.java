@@ -27,7 +27,11 @@ public class JsonFormatter {
                 project.setLatitude((float)jsonProject.getDouble("latitude"));
                 project.setLongitude((float)jsonProject.getDouble("longitude"));
                 project.setDescription(jsonProject.getString("description"));
-                project.setImageUri(jsonProject.getString("imageUri"));
+                String imageUri = jsonProject.getString("imageUri");
+                if (imageUri.equals("null") || imageUri.equals("")){
+                    imageUri = null;
+                }
+                project.setImageUri(imageUri);
                 projects.add(project);
             }
         }
