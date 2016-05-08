@@ -51,6 +51,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     static final int TASK_REQUEST = 1;
     static final String CLOSE_MISSION_DIALOG_TAG = "closeMissionDialog";
+    private boolean taskWasCancelled = false;
 
     @Override
     public void setStartLocationIsFound(boolean startLocationIsFound) {
@@ -168,7 +169,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     @Override
     public void startLocationUpdates() {
-        if (!missionIsCompleted) {
+        if (!missionIsCompleted && !taskWasCancelled) {
             // TODO: Check permissions on Marshmallow
             int permissionCheck = ContextCompat.checkSelfPermission((Context) view, Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
@@ -238,10 +239,13 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         }
     }
 
-    private void taskWasCancelled() {}
+    private void taskWasCancelled() {
+        taskWasCancelled = true;
+    }
 
     private void taskWasFinished() {
 
+        taskWasCancelled = false;
         missionIsCompleted = currentTaskIndex == loadedTasks.size() - 1;
 
         if (missionIsCompleted) {
@@ -260,6 +264,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             String hint = loadedTasks.get(currentTaskIndex).getHint();
 
             view.showDialog(CustomDialog.newInstance(title, hint, "Ok", null, 0), null);
+            view.setDistance("Beregner distanse...");
             view.setHint(hint);
 
             setLocationServiceShouldStart(true);
@@ -277,7 +282,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     private Task getDefaultFirstTask() {
         Task defaultFirstTask = new Task();
-        defaultFirstTask.setId(project.getId());
+        defaultFirstTask.setId(0);
         defaultFirstTask.setLatitude(project.getLatitude());
         defaultFirstTask.setLongitude(project.getLongitude());
         defaultFirstTask.setTaskType(TaskType.FIRST_TASK);
@@ -313,8 +318,11 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
         if (userHasFoundTaskLocation(distanceToTaskLocation)) {
             startLocationIsFound = true;
+            stopLocationUpdates();
             int iconResourceId = currentTaskIndex == 0 ? R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
             view.addMarkerForTask(currentTaskIndex, getCurrentTask(), iconResourceId);
+            view.setDistance(null);
+            view.setHint(null);
             Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
             v.vibrate(600);
         }
