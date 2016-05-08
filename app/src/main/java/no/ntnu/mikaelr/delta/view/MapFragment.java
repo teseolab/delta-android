@@ -141,6 +141,8 @@ public class MapFragment extends Fragment implements MapFragView, OnMapReadyCall
 
                     MainView mainView = (MainView) getActivity();
                     mainView.removeProjectListFragment();
+                    mainView.setMapIsLoading(false);
+                    mainView.supportInvalidateOptionsMenu();
                 }
             }
         });

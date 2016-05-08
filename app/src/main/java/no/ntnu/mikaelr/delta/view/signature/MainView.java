@@ -8,4 +8,7 @@ public interface MainView {
     void addProjectListFragment(ArrayList<Project> projects);
 
     void removeProjectListFragment();
+
+    void setMapIsLoading(boolean isLoading);
+    void supportInvalidateOptionsMenu();
 }
