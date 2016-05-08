@@ -266,8 +266,8 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
 
     @Override
     public void onBackPressed() {
+        presenter.onCloseButtonClicked();
         presenter.setLocationServiceShouldStart(false);
-        super.onBackPressed();
     }
 
     // MAP READY LISTENER ----------------------------------------------------------------------------------------------
