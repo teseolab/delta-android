@@ -184,7 +184,8 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
                 fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
                 showsMap = false;
             } else if (clickedDrawerMenuPosition == 1 && previousDrawerMenuPosition != 1) {
-                fragmentManager.beginTransaction().replace(R.id.content_frame, new ProfileFragment(), MENU_ITEM_PROFILE).commit();
+                profileFragment = new ProfileFragment();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, profileFragment, MENU_ITEM_PROFILE).commit();
             } else if (clickedDrawerMenuPosition == 2 && previousDrawerMenuPosition != 2) {
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new TopListFragment(), MENU_ITEM_TOP_LIST).commit();
             } else if (clickedDrawerMenuPosition == 3 && previousDrawerMenuPosition != 3) {

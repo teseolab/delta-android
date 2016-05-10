@@ -8,7 +8,7 @@
     <string name="done">Ferdig</string>
     <string name="comments">Kommentarer</string>
     <string name="calculating_distance">Beregner distanse...</string>
-    <string name="your_response_here">Din tilbakemelding her</string>
+    <string name="your_response">Din tilbakemelding</string>
     <string name="title">Tittel</string>
     <string name="add_picture">Legg til bilde</string>
     <string name="write_comment">Skriv kommentar</string>

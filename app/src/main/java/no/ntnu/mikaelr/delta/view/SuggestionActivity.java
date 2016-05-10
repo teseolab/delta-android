@@ -46,8 +46,8 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
         this.presenter = new SuggestionPresenterImpl(this);
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Forslag");
 
-        initializeListAdapter();
         addHeaderView();
+        initializeListAdapter();
 
 //        if (presenter.hasImage()) {
 //            presenter.loadImage();

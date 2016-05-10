@@ -18,10 +18,8 @@ android {
 
     defaultConfig {
         applicationId "no.ntnu.mikaelr.delta"
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
 
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true

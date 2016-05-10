@@ -230,18 +230,18 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         // Cheat button click
         // TODO: Delete before deployment
         if (item.getItemId() == R.id.action_cheat) {
-            Task currentTask = presenter.getCurrentTask();
-            if (currentTask != null) {
-                int resourceId = presenter.getCurrentTaskIndex() == 0 ?
-                        R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
-                addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask, resourceId);
-                presenter.setStartLocationIsFound(true);
-                Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-                v.vibrate(600);
-                presenter.stopLocationUpdates();
-                setDistance(null);
-                setHint(null);
-            }
+//            Task currentTask = presenter.getCurrentTask();
+//            if (currentTask != null) {
+//                int resourceId = presenter.getCurrentTaskIndex() == 0 ?
+//                        R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
+//                addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask, resourceId);
+//                presenter.setStartLocationIsFound(true);
+//                Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+//                v.vibrate(600);
+//                presenter.stopLocationUpdates();
+//                setDistance(null);
+//                setHint(null);
+//            }
         }
 
         // Close button click
