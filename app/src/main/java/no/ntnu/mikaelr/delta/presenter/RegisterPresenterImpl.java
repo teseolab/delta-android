@@ -34,10 +34,14 @@ public class RegisterPresenterImpl implements RegisterPresenter, LoginInteractor
     @Override
     public void register(String username, String password, String passwordCheck, String registerCode) {
 
-        if (password.equals(passwordCheck)) {
-            interactor.register(username, password, registerCode, this);
-        } else {
+        if (username.trim().equals("")) {
+            view.showMessage("Brukernavn kan ikke være tomt");
+        } else if (password.trim().equals("")) {
+            view.showMessage("Passord kan ikke være tomt");
+        } else if (!password.equals(passwordCheck)) {
             view.showMessage("Ops! Passordene du skrev inn er ikke like.");
+        } else {
+            interactor.register(username, password, registerCode, this);
         }
 
     }
@@ -61,6 +65,8 @@ public class RegisterPresenterImpl implements RegisterPresenter, LoginInteractor
     public void onRegisterError(int errorCode) {
         if (errorCode == HttpStatus.PRECONDITION_FAILED.value()) {
             view.showMessage("Registreringskoden er ugyldig");
+        } else if (errorCode == HttpStatus.CONFLICT.value()) {
+            view.showMessage("Brukernavn er opptatt");
         } else {
             view.showMessage("Sorry! Det oppsto en feil.");
         }

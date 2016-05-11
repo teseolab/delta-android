@@ -28,8 +28,6 @@ public class LocationService extends Service {
     public MyLocationListener listener;
     public Location previousBestLocation = null;
 
-    public static final int REQUEST_ACCESS_FINE_LOCATION_SERVICE = 3;
-
     private Intent intent;
 
     @Override
