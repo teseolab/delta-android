@@ -77,7 +77,7 @@ public class MapPresenterImpl implements MapPresenter {
     }
 
 //    @Override
-//    public void onFinishedLoadingProjects(JSONArray jsonResult) {
+//    public void onGetProjectsSuccess(JSONArray jsonResult) {
 //        if (jsonResult.length() != 0) {
 //            List<Project> projects = JsonFormatter.formatProjects(jsonResult);
 //            this.projects = projects;

@@ -9,26 +9,26 @@ import org.json.JSONObject;
 
 public class ProjectInteractorImpl implements ProjectInteractor {
 
-    public interface OnFinishedLoadingProjectsListener {
-        void onFinishedLoadingProjects(JSONArray jsonArray);
-        // TODO: onFinishedLoadingProjectsError
+    public interface OnGetProjectsListener {
+        void onGetProjectsSuccess(JSONArray jsonArray);
+        void onGetProjectsError(int errorCode);
     }
 
     @Override
-    public void getProjects(OnFinishedLoadingProjectsListener listener) {
+    public void getProjects(OnGetProjectsListener listener) {
         String apiCall = "http://129.241.102.204:8080/projects";
-        new GetProjectsAsyncTask(apiCall, listener).execute();
+        new GetProjects2AsyncTask(apiCall, listener).execute();
     }
 
-    public interface OnFinishedLoadingTasksListener {
-        void onFinishedLoadingTasks(JSONArray jsonArray);
-        // TODO: onFinishedLoadingTasksError
+    public interface OnGetTasksListener {
+        void onGetTasksSuccess(JSONArray jsonArray);
+        void onGetTasksError(int errorCode);
     }
 
     @Override
-    public void getTasks(int projectId, OnFinishedLoadingTasksListener listener) {
+    public void getTasks(int projectId, OnGetTasksListener listener) {
         String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/tasks";
-        new GetTasksAsyncTask(apiCall, listener).execute();
+        new GetTasks2AsyncTask(apiCall, listener).execute();
     }
 
     public interface OnPostProjectResponseListener {

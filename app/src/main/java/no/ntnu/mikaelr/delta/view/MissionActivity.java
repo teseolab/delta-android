@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -127,6 +128,11 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        presenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     // PRIVATE METHODS -------------------------------------------------------------------------------------------------
 
     private void initializeMap() {
@@ -144,11 +150,11 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         return false;
     }
 
-    private void setMyLocationEnabled(boolean enabled) {
-        // TODO: Handle permissions on Marshmallow
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) map.setMyLocationEnabled(enabled);
-    }
+//    private void setMyLocationEnabled(boolean enabled) {
+//        // TODO: Handle permissions on Marshmallow
+//        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+//        if (permissionCheck == PackageManager.PERMISSION_GRANTED) map.setMyLocationEnabled(enabled);
+//    }
 
     // INTERFACE METHODS -----------------------------------------------------------------------------------------------
 
@@ -172,6 +178,11 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
             distanceView.setVisibility(View.VISIBLE);
             distanceView.setText(distance);
         }
+    }
+
+    @Override
+    public GoogleMap getMap() {
+        return map;
     }
 
     @Override
@@ -279,7 +290,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         map.getUiSettings().setMapToolbarEnabled(false);
         map.getUiSettings().setMyLocationButtonEnabled(false);
         map.setOnMarkerClickListener(this);
-        setMyLocationEnabled(true);
+//        setMyLocationEnabled(true);
         presenter.loadTasks();
     }
 }

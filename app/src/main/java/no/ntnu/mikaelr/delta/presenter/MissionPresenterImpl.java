@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.*;
@@ -30,7 +32,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MissionPresenterImpl implements MissionPresenter, ProjectInteractorImpl.OnFinishedLoadingTasksListener,
+public class MissionPresenterImpl implements MissionPresenter, ProjectInteractorImpl.OnGetTasksListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener,
         ProjectInteractorImpl.OnPostFinishedMission {
 
@@ -50,8 +52,10 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     private boolean locationServiceShouldStart = true;
 
     static final int TASK_REQUEST = 1;
+    static final int REQUEST_ACCESS_FINE_LOCATION = 2;
     static final String CLOSE_MISSION_DIALOG_TAG = "closeMissionDialog";
     private boolean taskWasCancelled = false;
+    private boolean locationAccessWasDenied = false;
 
     @Override
     public void setStartLocationIsFound(boolean startLocationIsFound) {
@@ -177,9 +181,14 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     @Override
     public void startLocationUpdates() {
         if (!missionIsCompleted && !taskWasCancelled) {
-            // TODO: Check permissions on Marshmallow
-            int permissionCheck = ContextCompat.checkSelfPermission((Context) view, Manifest.permission.ACCESS_FINE_LOCATION);
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(context,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
+            } else if (!googleApiClientIsConnected()) {
+                connectApiClient();
+            } else  {
+                view.getMap().setMyLocationEnabled(true);
                 LocationRequest locationRequest = new LocationRequest();
                 locationRequest.setInterval(1000);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -197,6 +206,22 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             }
             else if (action == Constants.TASK_CANCELLED) {
                 taskWasCancelled();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_ACCESS_FINE_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationAccessWasDenied = false;
+                    startLocationUpdates();
+                } else {
+                    locationAccessWasDenied = true;
+                    view.setDistance("OBS!");
+                    view.setHint("Appen trenger din posisjon for å starte et oppdrag.");
+                }
             }
         }
     }
@@ -281,9 +306,9 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     // Listeners -------------------------------------------------------------------------------------------------------
 
     private void addAllCurrentMarkers() {
-            for (int i = 0; i <= currentTaskIndex; i++) {
-                view.addMarkerForTask(currentTaskIndex, loadedTasks.get(i), R.drawable.ic_location_48dp);
-            }
+        for (int i = 0; i <= currentTaskIndex; i++) {
+            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(i), R.drawable.ic_location_48dp);
+        }
 //        }
     }
 
@@ -303,7 +328,13 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (tasksAreLoaded) {
-            startLocationUpdates();
+            // TODO: 11.05.2016
+            // If location permission was denied, onConnect is called again, which again requests the permission
+            // causing the permission dialog to appear over and over again.
+            // This test avoids the problem.
+            if (!locationAccessWasDenied) {
+                startLocationUpdates();
+            }
         }
     }
 
@@ -353,7 +384,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     // ASYNC TASK LISTENERS --------------------------------------------------------------------------------------------
 
     @Override
-    public void onFinishedLoadingTasks(JSONArray jsonArray) {
+    public void onGetTasksSuccess(JSONArray jsonArray) {
         List<Task> tasks = JsonFormatter.formatTasks(jsonArray);
         tasks.add(0, getDefaultFirstTask());
 
@@ -373,6 +404,11 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             startLocationUpdates();
         }
 
+    }
+
+    @Override
+    public void onGetTasksError(int errorCode) {
+        view.showMessage(ErrorMessage.COULD_NOT_LOAD_TASKS, Toast.LENGTH_LONG);
     }
 
     @Override

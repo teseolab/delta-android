@@ -14,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,19 +23,19 @@ import no.ntnu.mikaelr.delta.view.MainActivity;
 import no.ntnu.mikaelr.delta.view.MissionActivity;
 
 public class LocationService extends Service {
-    public static final String BROADCAST_ACTION = "Hello World";
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     public LocationManager locationManager;
     public MyLocationListener listener;
     public Location previousBestLocation = null;
 
-    Intent intent;
-    int counter = 0;
+    public static final int REQUEST_ACCESS_FINE_LOCATION_SERVICE = 3;
+
+    private Intent intent;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        intent = new Intent(BROADCAST_ACTION);
+        intent = new Intent();
     }
 
     @Override
@@ -54,7 +55,8 @@ public class LocationService extends Service {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             listener = new MyLocationListener(this, goalLatitude, goalLongitude);
 
-            // TODO: Handle permissions on Marshmallow
+            // TODO: Note about permission
+            // On Marshmallow, if permission is not granted, this service will not do anything
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 0, listener);
@@ -128,7 +130,6 @@ public class LocationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.v("STOP_SERVICE", "DONE");
-        // TODO: Handle permissions on Marshmallow
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             locationManager.removeUpdates(listener);
@@ -193,12 +194,12 @@ public class LocationService extends Service {
         }
 
         public void onProviderDisabled(String provider) {
-            Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT ).show();
+            Toast.makeText(getApplicationContext(), "GPS aktivert", Toast.LENGTH_SHORT ).show();
         }
 
 
         public void onProviderEnabled(String provider) {
-            Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "GPS deaktivert", Toast.LENGTH_SHORT).show();
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {}

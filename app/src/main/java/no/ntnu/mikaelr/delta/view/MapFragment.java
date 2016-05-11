@@ -3,6 +3,7 @@ package no.ntnu.mikaelr.delta.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
 import android.widget.Button;
@@ -123,8 +124,13 @@ public class MapFragment extends Fragment implements MapFragView, OnMapReadyCall
         map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                for (Project project : presenter.getProjects()) {
-                    addMarkerForProject(project);
+                List<Project> projects = presenter.getProjects();
+                if (projects != null) {
+                    for (Project project : presenter.getProjects()) {
+                        addMarkerForProject(project);
+                    }
+                } else {
+                    Log.w("MapFragment", "Could not add markers to map since presenter.getProjects() returns null");
                 }
                 setMapLocationToMarkers();
             }

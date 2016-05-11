@@ -22,6 +22,7 @@ public interface MissionPresenter {
     void startLocationUpdates();
 
     void onActivityResult(int requestCode, Intent data);
+    void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults);
 
     void onCloseButtonClicked();
     void onPositiveButtonClick(String dialogTag);

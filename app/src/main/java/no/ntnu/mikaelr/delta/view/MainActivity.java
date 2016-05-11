@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
 import no.ntnu.mikaelr.delta.listener.ProjectDialogClickListener;
@@ -261,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     public void addProjectListFragment(ArrayList<Project> projects) {
         projectListFragment = ProjectListFragment.newInstance(projects);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
+        fragmentTransaction.replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commitAllowingStateLoss();
     }
 
     @Override
@@ -272,5 +273,10 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     @Override
     public void setMapIsLoading(boolean isLoading) {
         mapIsLoading = isLoading;
+    }
+
+    @Override
+    public void showMessage(String message, int length) {
+        Toast.makeText(this, message, length).show();
     }
 }

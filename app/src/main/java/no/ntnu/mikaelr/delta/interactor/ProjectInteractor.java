@@ -5,8 +5,8 @@ import no.ntnu.mikaelr.delta.model.Suggestion;
 
 public interface ProjectInteractor {
 
-    void getProjects(ProjectInteractorImpl.OnFinishedLoadingProjectsListener listener);
-    void getTasks(int projectId, ProjectInteractorImpl.OnFinishedLoadingTasksListener listener);
+    void getProjects(ProjectInteractorImpl.OnGetProjectsListener listener);
+    void getTasks(int projectId, ProjectInteractorImpl.OnGetTasksListener listener);
     void getSuggestions(int projectId, ProjectInteractorImpl.OnFinishedLoadingSuggestionsListener listener);
     void getComments(int suggestionId, ProjectInteractorImpl.OnFinishedLoadingCommentsListener listener);
     void getTopList(ProjectInteractorImpl.OnFinishedLoadingTopList listener);

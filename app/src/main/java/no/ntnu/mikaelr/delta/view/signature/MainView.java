@@ -11,4 +11,6 @@ public interface MainView {
 
     void setMapIsLoading(boolean isLoading);
     void supportInvalidateOptionsMenu();
+
+    void showMessage(String message, int length);
 }
