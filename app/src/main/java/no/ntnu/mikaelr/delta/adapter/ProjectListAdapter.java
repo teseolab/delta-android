@@ -63,6 +63,12 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
             if (imageUri != null) {
                 Picasso.with(itemView.getContext()).load(imageUri).into(image);
             }
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(project);
+                }
+            });
             title.setText(project.getName());
             description.setText(project.getDescription());
             button.setOnClickListener(new View.OnClickListener() {
