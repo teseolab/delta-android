@@ -10,9 +10,8 @@ public class SessionInvalidator {
     public static void invalidateSession(Activity context) {
         SharedPrefsUtil.getInstance().setCookie("");
         Intent intent = new Intent(context, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
-        context.finish();
         Toast.makeText(context, ErrorMessage.SESSION_EXPIRED, Toast.LENGTH_LONG).show();
     }
 
