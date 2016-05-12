@@ -36,6 +36,7 @@ public class MapFragment extends Fragment implements MapFragView, OnMapReadyCall
 
     private LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
     private HashMap<String, Integer> markerIdsAndProjectIds = new HashMap<String, Integer>();
+    private List markers = new ArrayList();
 
     public static MapFragment newInstance(List<Project> projects) {
         Bundle args = new Bundle();
@@ -161,6 +162,7 @@ public class MapFragment extends Fragment implements MapFragView, OnMapReadyCall
             LatLng position = new LatLng(project.getLatitude(), project.getLongitude());
             MarkerOptions options = new MarkerOptions().position(position).title(project.getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_idea_48dp));
             Marker marker = map.addMarker(options);
+            markers.add(marker);
             boundsBuilder.include(marker.getPosition());
             markerIdsAndProjectIds.put(marker.getId(), project.getId());
         }
@@ -169,8 +171,13 @@ public class MapFragment extends Fragment implements MapFragView, OnMapReadyCall
     @Override
     public void setMapLocationToMarkers() {
         int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130, getResources().getDisplayMetrics());
-        if (map != null) map.moveCamera(newLatLngBounds(boundsBuilder.build(), padding));
-//        if (map != null) map.animateCamera(newLatLngBounds(boundsBuilder.build(), padding));
+        if (map != null) {
+            if (markers.size() > 0) {
+                map.moveCamera(newLatLngBounds(boundsBuilder.build(), padding));
+            } else {
+                Log.w("MapFragment", "Could not zoom to markers, since there are no projects");
+            }
+        }
     }
 
     @Override

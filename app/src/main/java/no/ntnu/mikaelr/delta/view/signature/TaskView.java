@@ -6,4 +6,6 @@ public interface TaskView {
     void showSpinner(boolean showSpinner);
     String getTextTaskResponse();
     ArrayList<String> getScaleTaskResponse();
+
+    void showMessage(String message, int length);
 }

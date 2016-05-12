@@ -28,6 +28,7 @@ import no.ntnu.mikaelr.delta.util.*;
 import no.ntnu.mikaelr.delta.view.signature.MissionView;
 import no.ntnu.mikaelr.delta.view.TaskActivity;
 import org.json.JSONArray;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -408,7 +409,11 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     @Override
     public void onGetTasksError(int errorCode) {
-        view.showMessage(ErrorMessage.COULD_NOT_LOAD_TASKS, Toast.LENGTH_LONG);
+        if (errorCode == HttpStatus.UNAUTHORIZED.value()) {
+            SessionInvalidator.invalidateSession(context);
+        } else {
+            view.showMessage(ErrorMessage.COULD_NOT_LOAD_TASKS, Toast.LENGTH_LONG);
+        }
     }
 
     @Override

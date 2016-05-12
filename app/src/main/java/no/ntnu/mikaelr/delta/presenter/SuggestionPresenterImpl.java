@@ -3,16 +3,20 @@ package no.ntnu.mikaelr.delta.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.widget.Toast;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Comment;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.presenter.signature.SuggestionPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
+import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
+import no.ntnu.mikaelr.delta.util.SessionInvalidator;
 import no.ntnu.mikaelr.delta.view.PostCommentActivity;
 import no.ntnu.mikaelr.delta.view.signature.SuggestionView;
 import org.json.JSONArray;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +129,11 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
 
     @Override
     public void onFinishedLoadingCommentsError(Integer errorCode) {
-        view.setEmptyListMessage("Kunne ikke laste inn kommentarer :(");
+        if (errorCode == HttpStatus.UNAUTHORIZED.value()) {
+            SessionInvalidator.invalidateSession(context);
+        } else {
+            view.setEmptyListMessage(ErrorMessage.COULD_NOT_LOAD_COMMENTS);
+        }
     }
 
     @Override
@@ -150,23 +158,20 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
 
     @Override
     public void onPostAgreementError(Integer errorCode) {
-        // TODO: Error handling
-        System.out.println("POST AGREEMENT ERROR " + errorCode);
+        if (errorCode == HttpStatus.UNAUTHORIZED.value()) {
+            SessionInvalidator.invalidateSession(context);
+        } else {
+            view.showMessage(ErrorMessage.COULD_NOT_POST_AGREEMENT, Toast.LENGTH_LONG);
+        }
     }
 
     @Override
     public void onPostDisagreementError(Integer errorCode) {
-        // TODO: Error handling
-        System.out.println("POST DISAGREEMENT ERROR " + errorCode);
+        if (errorCode == HttpStatus.UNAUTHORIZED.value()) {
+            SessionInvalidator.invalidateSession(context);
+        } else {
+            view.showMessage(ErrorMessage.COULD_NOT_POST_DISAGREEMENT, Toast.LENGTH_LONG);
+        }
     }
 
-//    @Override
-//    public void onGetImageSuccess(Bitmap image) {
-//        view.updateImage(image);
-//    }
-//
-//    @Override
-//    public void onGetImageError(int errorCode) {
-//        System.out.println("SUGGESTION IMAGE ERROR " + errorCode);
-//    }
 }

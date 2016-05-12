@@ -16,4 +16,6 @@ public interface SuggestionView {
 
     void setEmptyListMessage(String message);
     void hideEmptyListMessage();
+
+    void showMessage(String message, int length);
 }

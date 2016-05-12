@@ -122,8 +122,5 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
     public void onGetMissionForProjectIsCompletedByUserError(Integer errorCode) {
         String username = SharedPrefsUtil.getInstance().getUsername();
         SharedPrefsUtil.getInstance().setMissionCompletionStatus(project.getId(), username, Constants.NO);
-        String title = "Ops!";
-        String message = (errorCode == StatusCode.NETWORK_UNREACHABLE ? "Kunne ikke sende responsen, siden du mangler tilkobling til Internett." : "Det har skjedd en merkelig feil.");
-        SimpleDialog.createAndShow(context.getSupportFragmentManager(), title, message);
     }
 }

@@ -7,6 +7,7 @@ import no.ntnu.mikaelr.delta.interactor.LoginInteractorImpl;
 import no.ntnu.mikaelr.delta.presenter.signature.LoginPresenter;
 import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
+import no.ntnu.mikaelr.delta.util.StatusCode;
 import no.ntnu.mikaelr.delta.view.MainActivity;
 import no.ntnu.mikaelr.delta.view.signature.LoginView;
 
@@ -52,6 +53,10 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractorImpl.O
 
     @Override
     public void onLoginError(int errorCode) {
-        view.showMessage(ErrorMessage.WRONG_USERNAME_OR_PASSWORD);
+        if (errorCode == StatusCode.NETWORK_UNREACHABLE) {
+            view.showMessage(ErrorMessage.COULD_NOT_CONNECT_TO_INTERNET);
+        } else {
+            view.showMessage(ErrorMessage.WRONG_USERNAME_OR_PASSWORD);
+        }
     }
 }

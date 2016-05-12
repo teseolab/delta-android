@@ -10,22 +10,27 @@ import no.ntnu.mikaelr.delta.model.Comment;
 import no.ntnu.mikaelr.delta.presenter.signature.PostCommentPresenter;
 import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
+import no.ntnu.mikaelr.delta.util.SessionInvalidator;
 import no.ntnu.mikaelr.delta.view.PostCommentActivity;
+import no.ntnu.mikaelr.delta.view.signature.PostCommentView;
 import org.json.JSONArray;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 
 public class PostCommentPresenterImpl implements PostCommentPresenter, ProjectInteractorImpl.OnPostCommentListener {
 
-    private PostCommentActivity view;
+    private PostCommentView view;
+    private Activity context;
     private ProjectInteractor interactor;
 
     private int suggestionId;
 
-    public PostCommentPresenterImpl(PostCommentActivity view) {
+    public PostCommentPresenterImpl(PostCommentView view) {
         this.view = view;
+        this.context = (Activity) view;
         this.interactor = new ProjectInteractorImpl();
-        this.suggestionId = view.getIntent().getIntExtra("suggestionId", -1);
+        this.suggestionId = context.getIntent().getIntExtra("suggestionId", -1);
     }
 
     // INTERFACE METHODS
@@ -49,14 +54,18 @@ public class PostCommentPresenterImpl implements PostCommentPresenter, ProjectIn
         ArrayList<Comment> comments = JsonFormatter.formatComments(jsonArray);
         Intent intent = new Intent();
         intent.putExtra("comments", comments);
-        view.setResult(Activity.RESULT_OK, intent);
-        view.finish();
+        context.setResult(Activity.RESULT_OK, intent);
+        context.finish();
     }
 
     @Override
     public void onPostCommentError(int errorCode) {
-        view.showSpinner(false);
-        view.showMessage(ErrorMessage.COULD_NOT_POST_COMMENT, Toast.LENGTH_LONG);
-        Log.w("PostCommentPresenter", ErrorMessage.COULD_NOT_POST_COMMENT + ". Error " + errorCode);
+        if (errorCode == HttpStatus.UNAUTHORIZED.value()) {
+            SessionInvalidator.invalidateSession(context);
+        } else {
+            view.showSpinner(false);
+            view.showMessage(ErrorMessage.COULD_NOT_POST_COMMENT, Toast.LENGTH_LONG);
+            Log.w("PostCommentPresenter", ErrorMessage.COULD_NOT_POST_COMMENT + ". Error " + errorCode);
+        }
     }
 }

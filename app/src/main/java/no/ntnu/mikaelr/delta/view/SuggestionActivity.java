@@ -193,6 +193,11 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
         listView.removeFooterView(emptyView);
     }
 
+    @Override
+    public void showMessage(String message, int length) {
+        Toast.makeText(this, message, length).show();
+    }
+
     // LISTENERS -------------------------------------------------------------------------------------------------------
 
     @Override

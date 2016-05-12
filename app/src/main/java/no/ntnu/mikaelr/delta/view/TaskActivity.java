@@ -170,6 +170,11 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         return response;
     }
 
+    @Override
+    public void showMessage(String message, int length) {
+        Toast.makeText(this, message, length).show();
+    }
+
     // SEEK BAR LISTENER -----------------------------------------------------------------------------------------------
 
     @Override

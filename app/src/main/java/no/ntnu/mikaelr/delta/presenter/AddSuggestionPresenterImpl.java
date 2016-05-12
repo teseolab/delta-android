@@ -15,9 +15,11 @@ import no.ntnu.mikaelr.delta.presenter.signature.AddSuggestionPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.ImageHandler;
+import no.ntnu.mikaelr.delta.util.SessionInvalidator;
 import no.ntnu.mikaelr.delta.view.SuggestionListActivity;
 import no.ntnu.mikaelr.delta.view.signature.AddSuggestionView;
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -162,8 +164,12 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter,
 
     @Override
     public void onPostSuggestionError(int errorCode) {
-        view.showSpinner(false);
-        view.showMessage(ErrorMessage.COULD_NOT_POST_SUGGESTION, Toast.LENGTH_LONG);
+        if (errorCode == HttpStatus.UNAUTHORIZED.value()) {
+            SessionInvalidator.invalidateSession(context);
+        } else {
+            view.showSpinner(false);
+            view.showMessage(ErrorMessage.COULD_NOT_POST_SUGGESTION, Toast.LENGTH_LONG);
+        }
     }
 
     @Override

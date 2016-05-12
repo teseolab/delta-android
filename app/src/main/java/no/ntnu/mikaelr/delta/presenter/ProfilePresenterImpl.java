@@ -5,14 +5,18 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
+import android.widget.Toast;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.HighscoreUser;
 import no.ntnu.mikaelr.delta.presenter.signature.ProfilePresenter;
+import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.ImageHandler;
+import no.ntnu.mikaelr.delta.util.SessionInvalidator;
 import no.ntnu.mikaelr.delta.view.ImageCropperActivity;
 import no.ntnu.mikaelr.delta.view.signature.ProfileView;
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 
 public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractorImpl.OnGetUserListener, ProjectInteractorImpl.OnPostImageListener, ProjectInteractorImpl.OnPutAvatarListener {
 
@@ -78,7 +82,11 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
 
     @Override
     public void onGetUserError(int errorCode) {
-        // TODO: Handle
+        if (errorCode == HttpStatus.UNAUTHORIZED.value()) {
+            SessionInvalidator.invalidateSession(context.getActivity());
+        } else {
+            view.showMessage(ErrorMessage.COULD_NOT_LOAD_PROFILE, Toast.LENGTH_LONG);
+        }
     }
 
     @Override
@@ -88,7 +96,7 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
 
     @Override
     public void onPostImageError(int errorCode) {
-        // TODO: Handle
+        view.showMessage(ErrorMessage.COULD_NOT_POST_AVATAR, Toast.LENGTH_LONG);
     }
 
     @Override
@@ -98,6 +106,6 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
 
     @Override
     public void onPutAvatarError(int errorCode) {
-        // TODO: Handle
+        view.showMessage(ErrorMessage.COULD_NOT_POST_AVATAR, Toast.LENGTH_LONG);
     }
 }

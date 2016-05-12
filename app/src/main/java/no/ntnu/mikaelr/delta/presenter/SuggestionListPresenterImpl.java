@@ -6,10 +6,13 @@ import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.presenter.signature.SuggestionListPresenter;
+import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.JsonFormatter;
+import no.ntnu.mikaelr.delta.util.SessionInvalidator;
 import no.ntnu.mikaelr.delta.view.SuggestionActivity;
 import no.ntnu.mikaelr.delta.view.signature.SuggestionListView;
 import org.json.JSONArray;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -81,7 +84,11 @@ public class SuggestionListPresenterImpl implements SuggestionListPresenter, Pro
 
     @Override
     public void onFinishedLoadingSuggestionsError(Integer errorCode) {
-        view.setEmptyListMessage("Kunne ikke laste inn forslag :(");
-        view.hideProgressSpinner();
+        if (errorCode == HttpStatus.UNAUTHORIZED.value()) {
+            SessionInvalidator.invalidateSession(context);
+        } else {
+            view.setEmptyListMessage(ErrorMessage.COULD_NOT_LOAD_SUGGESTION);
+            view.hideProgressSpinner();
+        }
     }
 }

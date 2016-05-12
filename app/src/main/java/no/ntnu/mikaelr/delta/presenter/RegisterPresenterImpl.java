@@ -7,6 +7,7 @@ import no.ntnu.mikaelr.delta.interactor.LoginInteractorImpl;
 import no.ntnu.mikaelr.delta.model.User;
 import no.ntnu.mikaelr.delta.presenter.signature.LoginPresenter;
 import no.ntnu.mikaelr.delta.presenter.signature.RegisterPresenter;
+import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.view.LoginActivity;
 import no.ntnu.mikaelr.delta.view.MainActivity;
@@ -64,11 +65,11 @@ public class RegisterPresenterImpl implements RegisterPresenter, LoginInteractor
     @Override
     public void onRegisterError(int errorCode) {
         if (errorCode == HttpStatus.PRECONDITION_FAILED.value()) {
-            view.showMessage("Registreringskoden er ugyldig");
+            view.showMessage(ErrorMessage.REGISTRATION_CODE_INVALID);
         } else if (errorCode == HttpStatus.CONFLICT.value()) {
-            view.showMessage("Brukernavn er opptatt");
+            view.showMessage(ErrorMessage.USERNAME_TAKEN);
         } else {
-            view.showMessage("Sorry! Det oppsto en feil.");
+            view.showMessage(ErrorMessage.COULD_NOT_REGISTER_USER);
         }
     }
 }

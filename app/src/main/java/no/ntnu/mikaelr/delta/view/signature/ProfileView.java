@@ -8,5 +8,5 @@ public interface ProfileView {
 
     void setAvatar(Uri avatarUri);
 
-    void showMessage(String message);
+    void showMessage(String message, int length);
 }

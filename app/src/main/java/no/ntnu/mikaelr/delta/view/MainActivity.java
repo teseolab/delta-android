@@ -2,10 +2,12 @@ package no.ntnu.mikaelr.delta.view;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,10 +16,7 @@ import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.*;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
 import no.ntnu.mikaelr.delta.listener.ProjectDialogClickListener;
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_menu_white_24dp, MENU_ITEM_MAIN);
 
         menuItemMap.put(0, MENU_ITEM_MAIN);
@@ -115,12 +113,21 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
             MenuItem toggleMapButton = menu.findItem(R.id.action_show_project_list);
 
         if (clickedDrawerMenuPosition == 0) {
+
             ToolbarUtil.showSpinner(toggleMapButton, mapIsLoading);
             Drawable icon = showsMap ?
                     ResourcesCompat.getDrawable(getResources(), R.drawable.ic_cards_white_24dp, null)
                     : ResourcesCompat.getDrawable(getResources(), R.drawable.ic_map_white_24dp, null);
             toggleMapButton.setIcon(icon);
             toggleMapButton.setVisible(true);
+
+            if (presenter.getProjects() == null && icon != null) {
+                ToolbarUtil.showSpinner(toggleMapButton, false);
+                icon.mutate().setColorFilter(ContextCompat.getColor(this, R.color.white_trans_30), PorterDuff.Mode.SRC_IN);
+                toggleMapButton.setEnabled(false);
+            } else {
+                toggleMapButton.setEnabled(true);
+            }
         }
 
         else {
@@ -181,9 +188,13 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
             finish();
         }
         else {
-            if (clickedDrawerMenuPosition == 0 && previousDrawerMenuPosition != 0) {
-                fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
-                showsMap = false;
+            if (clickedDrawerMenuPosition == 0) {
+                if (projectListFragment == null) {
+                    presenter.loadProjects();
+                } else if (previousDrawerMenuPosition != 0) {
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
+                    showsMap = false;
+                }
             } else if (clickedDrawerMenuPosition == 1 && previousDrawerMenuPosition != 1) {
                 profileFragment = new ProfileFragment();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, profileFragment, MENU_ITEM_PROFILE).commit();
@@ -279,4 +290,10 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     public void showMessage(String message, int length) {
         Toast.makeText(this, message, length).show();
     }
+
+    @Override
+    public void addEmptyMessageFragment() {
+        fragmentManager.beginTransaction().replace(R.id.content_frame, new SimpleMessageFragment()).commit();
+    }
+
 }

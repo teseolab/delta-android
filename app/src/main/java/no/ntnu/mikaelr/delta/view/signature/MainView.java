@@ -13,4 +13,6 @@ public interface MainView {
     void supportInvalidateOptionsMenu();
 
     void showMessage(String message, int length);
+
+    void addEmptyMessageFragment();
 }

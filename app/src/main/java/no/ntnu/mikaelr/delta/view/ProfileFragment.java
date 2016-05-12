@@ -68,8 +68,8 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
     }
 
     @Override
-    public void showMessage(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    public void showMessage(String message, int length) {
+        Toast.makeText(getActivity(), message, length).show();
     }
 
     // ON CLICK LISTENER

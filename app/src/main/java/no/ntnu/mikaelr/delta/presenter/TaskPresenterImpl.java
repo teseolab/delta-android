@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
+import android.widget.Toast;
 import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
@@ -13,9 +14,12 @@ import no.ntnu.mikaelr.delta.model.ProjectResponse;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.signature.TaskPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
+import no.ntnu.mikaelr.delta.util.ErrorMessage;
+import no.ntnu.mikaelr.delta.util.SessionInvalidator;
 import no.ntnu.mikaelr.delta.util.StatusCode;
 import no.ntnu.mikaelr.delta.view.signature.TaskView;
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 
@@ -146,23 +150,11 @@ public class TaskPresenterImpl implements TaskPresenter, ProjectInteractorImpl.O
 
     @Override
     public void onPostProjectResponseError(Integer errorCode) {
-
         view.showSpinner(false);
-
-        String title = "Ops!";
-        String message;
-
-        if (errorCode == StatusCode.NETWORK_UNREACHABLE) {
-            message = "Kunne ikke sende responsen, siden du mangler tilkobling til Internett.";
+        if (errorCode == HttpStatus.UNAUTHORIZED.value()) {
+            SessionInvalidator.invalidateSession(context);
         } else {
-            message = "Det har skjedd en merkelig feil.";
+            view.showMessage(ErrorMessage.COULD_NOT_POST_RESPONSE, Toast.LENGTH_LONG);
         }
-
-        DialogFragment dialog = new SimpleDialog();
-        Bundle args = new Bundle();
-        args.putString("title", title);
-        args.putString("message", message);
-        dialog.setArguments(args);
-        dialog.show(context.getSupportFragmentManager(), "tag");
     }
 }
