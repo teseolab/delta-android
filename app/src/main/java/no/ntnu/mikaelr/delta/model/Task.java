@@ -4,6 +4,7 @@ import no.ntnu.mikaelr.delta.util.TaskType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Task implements Serializable {
 
@@ -13,7 +14,8 @@ public class Task implements Serializable {
     private float latitude;
     private float longitude;
     private String hint;
-    private ArrayList<String> descriptions;
+    private String description;
+    private List<String> taskElements;
 
     public Integer getId() {
         return id;
@@ -63,11 +65,19 @@ public class Task implements Serializable {
         this.hint = hint;
     }
 
-    public ArrayList<String> getDescriptions() {
-        return descriptions;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescriptions(ArrayList<String> descriptions) {
-        this.descriptions = descriptions;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<String> getTaskElements() {
+        return taskElements;
+    }
+
+    public void setTaskElements(List<String> taskElements) {
+        this.taskElements = taskElements;
     }
 }

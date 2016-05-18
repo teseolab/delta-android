@@ -3,6 +3,7 @@ package no.ntnu.mikaelr.delta.interactor;
 import no.ntnu.mikaelr.delta.async_task.LoginAsyncTask;
 import no.ntnu.mikaelr.delta.async_task.PostImageAsyncTask;
 import no.ntnu.mikaelr.delta.async_task.PostUserAsyncTask;
+import no.ntnu.mikaelr.delta.util.Constants;
 
 public class LoginInteractorImpl implements LoginInteractor {
 
@@ -12,7 +13,7 @@ public class LoginInteractorImpl implements LoginInteractor {
     }
 
     public void login(String username, String password, OnLoginListener listener) {
-        String apiCall = "http://129.241.102.204:8080/login";
+        String apiCall = "http://" + Constants.SERVER_URL + "/login";
         new LoginAsyncTask(apiCall, username, password, listener).execute();
     }
 
@@ -22,7 +23,7 @@ public class LoginInteractorImpl implements LoginInteractor {
     }
 
     public void register(String username, String password, String registerCode, OnRegisterListener listener) {
-        String apiCall = "http://129.241.102.204:8080/users";
+        String apiCall = "http://" + Constants.SERVER_URL + "/users";
         new PostUserAsyncTask(apiCall, username, password, registerCode, listener).execute();
     }
 

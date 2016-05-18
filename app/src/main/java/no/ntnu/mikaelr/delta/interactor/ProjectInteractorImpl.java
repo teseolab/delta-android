@@ -2,8 +2,9 @@ package no.ntnu.mikaelr.delta.interactor;
 
 import android.graphics.Bitmap;
 import no.ntnu.mikaelr.delta.async_task.*;
-import no.ntnu.mikaelr.delta.model.ProjectResponse;
+import no.ntnu.mikaelr.delta.model.TaskResponse;
 import no.ntnu.mikaelr.delta.model.Suggestion;
+import no.ntnu.mikaelr.delta.util.Constants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,7 +17,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void getProjects(OnGetProjectsListener listener) {
-        String apiCall = "http://129.241.102.204:8080/projects";
+        String apiCall = "http://" + Constants.SERVER_URL + "/projects";
         new GetProjects2AsyncTask(apiCall, listener).execute();
     }
 
@@ -27,7 +28,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void getTasks(int projectId, OnGetTasksListener listener) {
-        String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/tasks";
+        String apiCall = "http://" + Constants.SERVER_URL + "/projects/" + projectId + "/tasks";
         new GetTasks2AsyncTask(apiCall, listener).execute();
     }
 
@@ -36,9 +37,9 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         void onPostProjectResponseError(Integer errorCode);
     }
     @Override
-    public void postResponse(ProjectResponse projectResponse, OnPostProjectResponseListener listener) {
-        String apiCall = "http://129.241.102.204:8080/projects/" + projectResponse.getProjectId() + "/responses";
-        new PostResponseAsyncTask(apiCall, projectResponse.toJson(), listener).execute();
+    public void postResponse(TaskResponse taskResponse, OnPostProjectResponseListener listener) {
+        String apiCall = "http://" + Constants.SERVER_URL + "/projects/" + taskResponse.getProjectId() + "/responses";
+        new PostResponseAsyncTask(apiCall, taskResponse.toJson(), listener).execute();
     }
 
     public interface OnPostFinishedMission {
@@ -48,7 +49,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void postFinishedMission(int projectId, OnPostFinishedMission listener) {
-        String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/mission/complete";
+        String apiCall = "http://" + Constants.SERVER_URL + "/projects/" + projectId + "/mission/complete";
         new PostFinishedMissionAsyncTask(apiCall, listener).execute();
     }
     public interface OnGetMissionForProjectIsCompletedByUser {
@@ -58,7 +59,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void getMissionForProjectIsCompletedByUser(int projectId, OnGetMissionForProjectIsCompletedByUser listener) {
-        String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/mission/isCompleted";
+        String apiCall = "http://" + Constants.SERVER_URL + "/projects/" + projectId + "/mission/isCompleted";
         new GetMissionIsCompletedAsyncTask(apiCall, listener).execute();
     }
     public interface OnFinishedLoadingSuggestionsListener {
@@ -69,7 +70,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void getSuggestions(int projectId, OnFinishedLoadingSuggestionsListener listener) {
-        String apiCall = "http://129.241.102.204:8080/projects/" + projectId + "/suggestions";
+        String apiCall = "http://" + Constants.SERVER_URL + "/projects/" + projectId + "/suggestions";
         new GetSuggestionsAsyncTask(apiCall, listener).execute();
     }
     public interface OnFinishedLoadingCommentsListener {
@@ -80,7 +81,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void getComments(int suggestionId, OnFinishedLoadingCommentsListener listener) {
-        String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/comments";
+        String apiCall = "http://" + Constants.SERVER_URL + "/suggestions/" + suggestionId + "/comments";
         new GetCommentsAsyncTask(apiCall, listener).execute();
     }
     public interface OnFinishedLoadingTopList {
@@ -90,7 +91,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     }
     @Override
     public void getTopList(OnFinishedLoadingTopList listener) {
-        String apiCall = "http://129.241.102.204:8080/users";
+        String apiCall = "http://" + Constants.SERVER_URL + "/users";
         new GetTopListAsyncTask(apiCall, listener).execute();
     }
 
@@ -101,7 +102,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void getMe(OnGetUserListener listener) {
-        String apiCall = "http://129.241.102.204:8080/users/me";
+        String apiCall = "http://" + Constants.SERVER_URL + "/users/me";
         new GetUserAsyncTask(apiCall, listener).execute();
     }
 
@@ -112,7 +113,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void getLogRecords(ProjectInteractorImpl.OnGetLogRecordsListener listener) {
-        String apiCall = "http://129.241.102.204:8080/users/me/logRecords";
+        String apiCall = "http://" + Constants.SERVER_URL + "/users/me/logRecords";
         new GetLogRecordsAsyncTask(apiCall, listener).execute();
     }
 
@@ -122,7 +123,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     }
     @Override
     public void postAgreement(int suggestionId, OnPostAgreementListener listener) {
-        String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/agree";
+        String apiCall = "http://" + Constants.SERVER_URL + "/suggestions/" + suggestionId + "/agree";
         new PostAgreementAsyncTask(apiCall, listener).execute();
     }
     public interface OnPostDisagreementListener {
@@ -131,7 +132,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     }
     @Override
     public void postDisagreement(int suggestionId, OnPostDisagreementListener listener) {
-        String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/disagree";
+        String apiCall = "http://" + Constants.SERVER_URL + "/suggestions/" + suggestionId + "/disagree";
         new PostDisagreementAsyncTask(apiCall, listener).execute();
     }
     public interface OnPostSuggestionListener {
@@ -141,7 +142,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     }
     @Override
     public void postSuggestion(Suggestion suggestion, OnPostSuggestionListener listener) {
-        String apiCall = "http://129.241.102.204:8080/suggestions";
+        String apiCall = "http://" + Constants.SERVER_URL + "/suggestions";
         new PostSuggestionAsyncTask(apiCall, suggestion.toJson(), listener).execute();
     }
     public interface OnPostCommentListener {
@@ -153,7 +154,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void postComment(String comment, int suggestionId, OnPostCommentListener listener) {
-        String apiCall = "http://129.241.102.204:8080/suggestions/" + suggestionId + "/comments";
+        String apiCall = "http://" + Constants.SERVER_URL + "/suggestions/" + suggestionId + "/comments";
         new PostCommentAsyncTask(apiCall, comment, listener).execute();
     }
 
@@ -164,7 +165,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void uploadImage(byte[] byteArray, OnPostImageListener listener) {
-        String apiCall = "http://129.241.102.204:8080/images/upload";
+        String apiCall = "http://" + Constants.SERVER_URL + "/images/upload";
         new PostImageAsyncTask(apiCall, byteArray, listener).execute();
     }
 
@@ -185,7 +186,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
 
     @Override
     public void putAvatar(String avatarUri, OnPutAvatarListener listener) {
-        String apiCall = "http://129.241.102.204:8080/users/me/avatar";
+        String apiCall = "http://" + Constants.SERVER_URL + "/users/me/avatar";
         new PutAvatarAsyncTask(apiCall, avatarUri, listener).execute();
     }
 }

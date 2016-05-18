@@ -4,11 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class ProjectResponse {
+public class TaskResponse {
 
-    private ArrayList<String> response;
+    private List<String> response;
     private int projectId;
     private int taskId;
 
@@ -26,11 +26,11 @@ public class ProjectResponse {
         return json.toString();
     }
 
-    public ArrayList<String> getResponse() {
+    public List<String> getResponse() {
         return response;
     }
 
-    public void setResponse(ArrayList<String> response) {
+    public void setResponse(List<String> response) {
         this.response = response;
     }
 

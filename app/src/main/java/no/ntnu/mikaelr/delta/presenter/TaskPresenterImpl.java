@@ -2,21 +2,17 @@ package no.ntnu.mikaelr.delta.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.widget.Toast;
-import no.ntnu.mikaelr.delta.fragment.SimpleDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
-import no.ntnu.mikaelr.delta.model.ProjectResponse;
+import no.ntnu.mikaelr.delta.model.TaskResponse;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.signature.TaskPresenter;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.SessionInvalidator;
-import no.ntnu.mikaelr.delta.util.StatusCode;
 import no.ntnu.mikaelr.delta.view.signature.TaskView;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -78,30 +74,40 @@ public class TaskPresenterImpl implements TaskPresenter, ProjectInteractorImpl.O
             case SCALE_TASK:
                 projectInteractor.postResponse(getScaleTaskResponses(), this);
                 break;
+            case ALTERNATIVE_TASK:
+                projectInteractor.postResponse(getAlternativeResponses(), this);
+                break;
             case FIRST_TASK:
                 goBackToMissionView();
                 break;
         }
     }
 
-    private ProjectResponse getTextTaskResponse() {
+    private TaskResponse getTextTaskResponse() {
         ArrayList<String> responses = new ArrayList<String>();
         String response = view.getTextTaskResponse();
         responses.add(response);
         return createProjectResponse(responses);
     }
 
-    private ProjectResponse getScaleTaskResponses() {
+    private TaskResponse getScaleTaskResponses() {
         ArrayList<String> response = view.getScaleTaskResponse();
         return createProjectResponse(response);
     }
 
-    private ProjectResponse createProjectResponse(ArrayList<String> response) {
-        ProjectResponse projectResponse = new ProjectResponse();
-        projectResponse.setResponse(response);
-        projectResponse.setProjectId(projectId);
-        projectResponse.setTaskId(task.getId());
-        return projectResponse;
+    private TaskResponse getAlternativeResponses() {
+        String response = view.getAlternativeTaskResponse();
+        ArrayList<String> responses = new ArrayList<String>();
+        responses.add(response);
+        return createProjectResponse(responses);
+    }
+
+    private TaskResponse createProjectResponse(ArrayList<String> response) {
+        TaskResponse taskResponse = new TaskResponse();
+        taskResponse.setResponse(response);
+        taskResponse.setProjectId(projectId);
+        taskResponse.setTaskId(task.getId());
+        return taskResponse;
     }
 
     @Override

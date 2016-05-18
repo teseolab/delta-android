@@ -2,6 +2,7 @@ package no.ntnu.mikaelr.delta.async_task;
 
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
+import android.util.Log;
 import no.ntnu.mikaelr.delta.interactor.LoginInteractorImpl;
 import no.ntnu.mikaelr.delta.model.User;
 import no.ntnu.mikaelr.delta.util.StatusCode;
@@ -50,14 +51,17 @@ public class PostUserAsyncTask extends AsyncTask<Void, Void, Pair<Integer, Respo
         }
 
         catch (HttpStatusCodeException e) {
+            Log.w("PostUserAsyncTask", e.getMessage());
             return new Pair<Integer, ResponseEntity<String>>(e.getStatusCode().value(), null);
         }
 
         catch (ResourceAccessException e) {
+            Log.w("PostUserAsyncTask", e.getMessage());
             return new Pair<Integer, ResponseEntity<String>>(StatusCode.NETWORK_UNREACHABLE, null);
         }
 
         catch (UnknownHttpStatusCodeException e) {
+            Log.w("PostUserAsyncTask", e.getMessage());
             return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_UNKNOWN, null);
         }
     }

@@ -52,7 +52,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectView, V
         browseSuggestionsButton.setOnClickListener(this);
 
         String imageUri = presenter.getProject().getImageUri();
-        if (!imageUri.equals("")) {
+        if (imageUri != null) {
             Picasso.with(this).load(imageUri).into(image);
         }
         description.setText(presenter.getProject().getDescription());

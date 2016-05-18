@@ -1,6 +1,6 @@
 package no.ntnu.mikaelr.delta.interactor;
 
-import no.ntnu.mikaelr.delta.model.ProjectResponse;
+import no.ntnu.mikaelr.delta.model.TaskResponse;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 
 public interface ProjectInteractor {
@@ -13,7 +13,7 @@ public interface ProjectInteractor {
     void getMe(ProjectInteractorImpl.OnGetUserListener listener);
     void getLogRecords(ProjectInteractorImpl.OnGetLogRecordsListener listener);
 
-    void postResponse(ProjectResponse response, ProjectInteractorImpl.OnPostProjectResponseListener listener);
+    void postResponse(TaskResponse response, ProjectInteractorImpl.OnPostProjectResponseListener listener);
     void postFinishedMission(int projectId, ProjectInteractorImpl.OnPostFinishedMission listener);
     void postAgreement(int suggestionId, ProjectInteractorImpl.OnPostAgreementListener listener);
     void postDisagreement(int suggestionId, ProjectInteractorImpl.OnPostDisagreementListener listener);

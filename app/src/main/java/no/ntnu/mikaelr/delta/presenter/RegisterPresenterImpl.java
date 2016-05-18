@@ -2,6 +2,7 @@ package no.ntnu.mikaelr.delta.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import no.ntnu.mikaelr.delta.interactor.LoginInteractor;
 import no.ntnu.mikaelr.delta.interactor.LoginInteractorImpl;
 import no.ntnu.mikaelr.delta.model.User;

@@ -2,6 +2,9 @@ package no.ntnu.mikaelr.delta.util;
 
 public class Constants {
 
+    //public static final String SERVER_URL = "129.241.102.204:8080";
+    public static final String SERVER_URL = "10.0.0.8:8080";
+
     public static final int TASK_FINISHED = 0;
     public static final int TASK_CANCELLED = 1;
 

@@ -54,12 +54,17 @@ public class JsonFormatter {
                 Task task = new Task();
 
                 task.setId(jsonTask.getInt("id"));
-                String taskTypeString = jsonTask.getString("taskType");
-                if (taskTypeString.equals(TaskType.SCALE_TASK.name())) {
-                    task.setTaskType(TaskType.SCALE_TASK);
-                } else if (taskTypeString.equals(TaskType.TEXT_TASK.name())) {
-                    task.setTaskType(TaskType.TEXT_TASK);
-                }
+
+//                String taskTypeString = jsonTask.getString("taskType");
+//                if (taskTypeString.equals(TaskType.SCALE_TASK.name())) {
+//                    task.setTaskType(TaskType.SCALE_TASK);
+//                } else if (taskTypeString.equals(TaskType.TEXT_TASK.name())) {
+//                    task.setTaskType(TaskType.TEXT_TASK);
+//                } else if (taskTypeString.equals(TaskType.ALTERNATIVE_TASK)) {
+//                    task.setTaskType(TaskType.ALTERNATIVE_TASK);
+//                }
+
+                task.setTaskType(TaskType.valueOf(jsonTask.getString("taskType")));
 
                 String imageUri = jsonTask.getString("imageUri");
                 if (imageUri.equals("null") || imageUri.equals("")){
@@ -69,13 +74,13 @@ public class JsonFormatter {
                 task.setLatitude((float) jsonTask.getDouble("latitude"));
                 task.setLongitude((float) jsonTask.getDouble("longitude"));
                 task.setHint(jsonTask.getString("hint"));
-
-                JSONArray jsonDescriptions = jsonTask.getJSONArray("descriptions");
-                ArrayList<String> descriptions = new ArrayList<String>();
-                for (int j = 0; j < jsonDescriptions.length(); j++) {
-                    descriptions.add((String) jsonDescriptions.get(j));
+                task.setDescription(jsonTask.getString("description"));
+                JSONArray jsonTaskElements = jsonTask.getJSONArray("taskElements");
+                List<String> taskElements = new ArrayList<String>();
+                for (int j = 0; j < jsonTaskElements.length(); j++) {
+                    taskElements.add(jsonTaskElements.getString(j));
                 }
-                task.setDescriptions(descriptions);
+                task.setTaskElements(taskElements);
                 tasks.add(task);
             }
         }

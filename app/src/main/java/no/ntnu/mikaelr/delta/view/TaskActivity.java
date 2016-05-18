@@ -2,6 +2,7 @@ package no.ntnu.mikaelr.delta.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.squareup.picasso.Picasso;
@@ -14,11 +15,12 @@ import no.ntnu.mikaelr.delta.view.signature.TaskView;
 
 import java.util.ArrayList;
 
-public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
+public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar.OnSeekBarChangeListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
     private TaskPresenter presenter;
 
     private ArrayList<View> scaleTaskViews = new ArrayList<View>();
+    private RadioGroup radioGroup;
 
     private boolean responseIsBeingPosted = false;
 
@@ -72,6 +74,9 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
             case TEXT_TASK:
                 initializeTextTaskView(taskIndex, task);
                 break;
+            case ALTERNATIVE_TASK:
+                initializeAlternativeTaskView(taskIndex, task);
+                break;
             case SCALE_TASK:
                 initializeScaleTaskView(taskIndex, task);
                 break;
@@ -82,8 +87,8 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         LayoutInflater inflater = LayoutInflater.from(this);
         View taskView = inflater.inflate(R.layout.task_first, null);
 
-        TextView firstTaskTextView = (TextView) taskView.findViewById(R.id.first_task_text);
-        firstTaskTextView.setText(task.getDescriptions().get(0));
+        TextView firstTaskTextView = (TextView) taskView.findViewById(R.id.description);
+        firstTaskTextView.setText(task.getDescription());
 
         setContentView(taskView);
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Klar, ferdig, gå!");
@@ -104,11 +109,14 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
             imageWrapper.setVisibility(View.GONE);
         }
 
-        for (String taskDescription : task.getDescriptions()) {
+        TextView descriptionView = (TextView) parentLayout.findViewById(R.id.description);
+        descriptionView.setText(task.getDescription());
+
+        for (String taskElement : task.getTaskElements()) {
 
             View scaleTaskView = inflater.inflate(R.layout.task_scale_item, null);
             TextView scaleTaskTextView = (TextView) scaleTaskView.findViewById(R.id.task_scale_text);
-            scaleTaskTextView.setText(taskDescription);
+            scaleTaskTextView.setText(taskElement);
 
             parentLayout.addView(scaleTaskView);
             scaleTaskViews.add(scaleTaskView);
@@ -119,6 +127,41 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
             TextView textView = (TextView) scaleTaskView.findViewById(R.id.seekbar_text);
             String scaleValue = presenter.getScaleValue(seekBar.getProgress());
             textView.setText(scaleValue);
+        }
+
+        setContentView(taskView);
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex);
+    }
+
+    private void initializeAlternativeTaskView(int taskIndex, Task task) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View taskView = inflater.inflate(R.layout.task_alternative, null);
+
+        View imageWrapper = taskView.findViewById(R.id.imageWrapper);
+        ImageView image = (ImageView) taskView.findViewById(R.id.image);
+        image.setOnClickListener(this);
+        String imageUri = task.getImageUri();
+        if (imageUri != null) {
+            Picasso.with(this).load(imageUri).into(image);
+        } else {
+            imageWrapper.setVisibility(View.GONE);
+        }
+
+        TextView descriptionView = (TextView) taskView.findViewById(R.id.description);
+        descriptionView.setText(task.getDescription());
+
+        radioGroup = (RadioGroup) taskView.findViewById(R.id.radio_group);
+        radioGroup.setOnCheckedChangeListener(this);
+
+        for (int i = 0; i < task.getTaskElements().size(); i++) {
+            String taskElement = task.getTaskElements().get(i);
+            LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.WRAP_CONTENT,
+                    RadioGroup.LayoutParams.WRAP_CONTENT);
+            RadioButton radioButton = new RadioButton(this);
+            radioButton.setId(i);
+            radioButton.setText(taskElement);
+            radioGroup.addView(radioButton, layoutParams);
         }
 
         setContentView(taskView);
@@ -139,8 +182,8 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
             imageWrapper.setVisibility(View.GONE);
         }
 
-        TextView textTaskTextView = (TextView) taskView.findViewById(R.id.text_task_text);
-        textTaskTextView.setText(task.getDescriptions().get(0));
+        TextView textTaskTextView = (TextView) taskView.findViewById(R.id.description);
+        textTaskTextView.setText(task.getDescription());
 
         setContentView(taskView);
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex);
@@ -171,6 +214,13 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
     }
 
     @Override
+    public String getAlternativeTaskResponse() {
+        int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+        RadioButton checkedRadioButton = (RadioButton) findViewById(checkedRadioButtonId);
+        return checkedRadioButton.getText().toString();
+    }
+
+    @Override
     public void showMessage(String message, int length) {
         Toast.makeText(this, message, length).show();
     }
@@ -196,6 +246,20 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
     public void onClick(View v) {
         if (v.getId() == R.id.image) {
             ImageViewerDialog.newInstance(presenter.getTaskImageUri()).show(getSupportFragmentManager(), null);
+        }
+    }
+
+    // RADIO BUTTON LISTENER -------------------------------------------------------------------------------------------
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        RadioButton checkedRadioButton = (RadioButton) findViewById(checkedId);
+        String checkedRadioButtonText = checkedRadioButton.getText().toString();
+        TextView otherTextView = (TextView) findViewById(R.id.other_text);
+        if (checkedRadioButtonText.toLowerCase().equals("annet")) {
+            otherTextView.setVisibility(View.VISIBLE);
+        } else {
+            otherTextView.setVisibility(View.GONE);
         }
     }
 }
