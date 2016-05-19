@@ -55,16 +55,15 @@ public class JsonFormatter {
 
                 task.setId(jsonTask.getInt("id"));
 
-//                String taskTypeString = jsonTask.getString("taskType");
-//                if (taskTypeString.equals(TaskType.SCALE_TASK.name())) {
-//                    task.setTaskType(TaskType.SCALE_TASK);
-//                } else if (taskTypeString.equals(TaskType.TEXT_TASK.name())) {
-//                    task.setTaskType(TaskType.TEXT_TASK);
-//                } else if (taskTypeString.equals(TaskType.ALTERNATIVE_TASK)) {
-//                    task.setTaskType(TaskType.ALTERNATIVE_TASK);
-//                }
-
                 task.setTaskType(TaskType.valueOf(jsonTask.getString("taskType")));
+                task.setOrder(jsonTask.getInt("order"));
+                task.setFinished(jsonTask.getBoolean("finished"));
+                String taskTypeString = jsonTask.getString("taskType");
+                if (taskTypeString.equals(TaskType.SCALE_TASK.name())) {
+                    task.setTaskType(TaskType.SCALE_TASK);
+                } else if (taskTypeString.equals(TaskType.TEXT_TASK.name())) {
+                    task.setTaskType(TaskType.TEXT_TASK);
+                }
 
                 String imageUri = jsonTask.getString("imageUri");
                 if (imageUri.equals("null") || imageUri.equals("")){

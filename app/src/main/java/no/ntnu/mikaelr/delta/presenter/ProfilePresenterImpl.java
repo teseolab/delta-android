@@ -1,10 +1,15 @@
 package no.ntnu.mikaelr.delta.presenter;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Toast;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
@@ -18,6 +23,8 @@ import no.ntnu.mikaelr.delta.view.signature.ProfileView;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 
+import java.io.FileNotFoundException;
+
 public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractorImpl.OnGetUserListener, ProjectInteractorImpl.OnPostImageListener, ProjectInteractorImpl.OnPutAvatarListener {
 
     private ProfileView view;
@@ -28,6 +35,8 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
     private Bitmap avatar;
 
     private HighscoreUser user;
+    private int REQUEST_OPEN_CAMERA = 0;
+    private int REQUEST_OPEN_GALLERY = 1;
 
     public ProfilePresenterImpl(ProfileView view) {
         this.view = view;
@@ -43,31 +52,26 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
     }
 
     @Override
-    public void openCamera(int requestCode) {
-
+    public void openImageCropper(int requestCode) {
         Intent intent = new Intent(context.getActivity(), ImageCropperActivity.class);
         intent.putExtra("requestCode", requestCode);
         context.startActivityForResult(intent, requestCode);
-
     }
 
-    @Override
-    public void openGallery(int requestCode) {
-
-        Intent intent = new Intent(context.getActivity(), ImageCropperActivity.class);
-        intent.putExtra("requestCode", requestCode);
-        context.startActivityForResult(intent, requestCode);
-
-    }
 
     @Override
     public void onCropResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             Uri avatarUri = data.getParcelableExtra("avatarUri");
             if (avatarUri != null) {
-                avatar = ImageHandler.decodeImageFromFilePath(avatarUri, 350);
-                interactor.uploadImage(ImageHandler.byteArrayFromBitmap(avatar), this);
-                view.setAvatar(avatarUri);
+                try {
+                    avatar = ImageHandler.decodeImageFromFilePath(avatarUri, 350);
+                    interactor.uploadImage(ImageHandler.byteArrayFromBitmap(avatar), this);
+                    view.setAvatar(avatarUri);
+                } catch (FileNotFoundException e) {
+                    Log.w("ProfilePresenterImpl", "Image file not found.");
+                    view.showMessage(ErrorMessage.IMAGE_FILE_NOT_FOUND, Toast.LENGTH_LONG);
+                }
             }
         }
     }

@@ -1,20 +1,25 @@
 package no.ntnu.mikaelr.delta.view;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.util.Constants;
@@ -28,6 +33,10 @@ public class ImageCropperActivity extends AppCompatActivity implements CropImage
     private Uri avatarUri;
     private CropImageView cropImageView;
     private boolean imageIsLoaded = false;
+    private Bitmap croppedImage;
+    private File croppedImageFile;
+    private final int REQUEST_OPEN_CAMERA = 0;
+    private final int REQUEST_OPEN_GALLERY = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,17 +54,32 @@ public class ImageCropperActivity extends AppCompatActivity implements CropImage
         int requestCode = getIntent().getIntExtra("requestCode", -1);
 
         if (requestCode == Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            avatarUri = ImageHandler.getOutputImageFileUri();
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, avatarUri);
-            startActivityForResult(intent, 0);
-        }
 
-        else if (requestCode == Constants.CHOOSE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent, 0);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_OPEN_CAMERA);
+            } else {
+                openCameraIntent();
+            }
+        } else if (requestCode == Constants.CHOOSE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_OPEN_GALLERY);
+            } else {
+                openGalleryIntent();
+            }
         }
+    }
+
+    private void openCameraIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        avatarUri = ImageHandler.getOutputImageFileUri();
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, avatarUri);
+        startActivityForResult(intent, 0);
+    }
+
+    private void openGalleryIntent() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, 0);
     }
 
     @Override
@@ -80,23 +104,47 @@ public class ImageCropperActivity extends AppCompatActivity implements CropImage
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_cropping_done) {
-
-            Bitmap croppedImage = cropImageView.getCroppedImage();
-            File croppedImageFile = ImageHandler.getOutputImageFile();
-            ImageHandler.writeBitmapToFile(croppedImage, croppedImageFile);
-
-            Intent intent = new Intent();
-            intent.putExtra("avatarUri", Uri.fromFile(croppedImageFile));
-            setResult(Activity.RESULT_OK, intent);
-            finish();
+            croppedImage = cropImageView.getCroppedImage();
+            saveCroppedImageToFile();
+            finishCropperActivity();
         }
-
         else {
             setResult(Activity.RESULT_CANCELED);
             finish();
         }
-
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_OPEN_CAMERA: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openCameraIntent();
+                } else {
+                    Toast.makeText(this, "Delta does not have permission to save the image", Toast.LENGTH_LONG).show();
+                }
+            }
+            case REQUEST_OPEN_GALLERY: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openGalleryIntent();
+                } else {
+                    Toast.makeText(this, "Delta does not have permission to save the image", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    private void finishCropperActivity() {
+        Intent intent = new Intent();
+        intent.putExtra("avatarUri", Uri.fromFile(croppedImageFile));
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
+
+    private void saveCroppedImageToFile() {
+        croppedImageFile = ImageHandler.getOutputImageFile();
+        ImageHandler.writeBitmapToFile(croppedImage, croppedImageFile);
     }
 
     @Override

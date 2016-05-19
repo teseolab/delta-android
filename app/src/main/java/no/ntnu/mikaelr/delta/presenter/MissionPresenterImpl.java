@@ -390,6 +390,12 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
         loadedTasks = tasks;
 
+        int i = 0;
+        while (tasks.get(i).isFinished()) {
+            i = i + 1;
+            currentTaskIndex = i;
+        }
+
         // Currently only shows the first task, but in the future this could be used to show the markers for completed
         // tasks. The instance variable currentTaskIndex decides how many markers are shown.
         // When clicking a finished task, the user could be shown what they answered.

@@ -130,32 +130,27 @@ public class ImageHandler {
     }
 
     /** Decodes image and scales it to reduce memory consumption */
-    public static Bitmap decodeImageFromFilePath(Uri uri, int size) {
+    public static Bitmap decodeImageFromFilePath(Uri uri, int size) throws FileNotFoundException {
 
         File imageFile = new File(uri.getPath());
 
-        try {
-            // Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(new FileInputStream(imageFile), null, o);
+        // Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(new FileInputStream(imageFile), null, o);
 
-            // Find the correct scale value. It should be the power of 2.
-            int scale = 1;
-            while(o.outWidth / scale / 2 >= size &&
-                    o.outHeight / scale / 2 >= size) {
-                scale *= 2;
-            }
-
-            // Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-
-            return BitmapFactory.decodeStream(new FileInputStream(imageFile), null, o2);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        // Find the correct scale value. It should be the power of 2.
+        int scale = 1;
+        while(o.outWidth / scale / 2 >= size &&
+                o.outHeight / scale / 2 >= size) {
+            scale *= 2;
         }
-        return null;
+
+        // Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+
+        return BitmapFactory.decodeStream(new FileInputStream(imageFile), null, o2);
     }
 
     /** Decodes image and scales it to reduce memory consumption */

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
 import no.ntnu.mikaelr.delta.fragment.CustomDialog;
@@ -21,6 +22,7 @@ import no.ntnu.mikaelr.delta.view.signature.AddSuggestionView;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -112,18 +114,28 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter,
             Bitmap image = null;
 
             if (requestCode == Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+                try {
                 image = ImageHandler.decodeImageFromFilePath(imageFromCameraUri, 350);
+                } catch (FileNotFoundException e) {
+                    Log.w("ProfilePresenterImpl", e.getMessage());
+                    view.showMessage(ErrorMessage.IMAGE_FILE_NOT_FOUND, Toast.LENGTH_LONG);
+                }
                 try {
                     image = ImageHandler.rotateImage(image, imageFromCameraUri.getPath());
-                } catch (IOException e) {e.printStackTrace();}
+                } catch (IOException e) {
+                    Log.w("ProfilePresenterImpl", e.getMessage());
+                    view.showMessage(ErrorMessage.IMAGE_FILE_NOT_FOUND, Toast.LENGTH_LONG);
+                }
             }
             else if (requestCode == Constants.CHOOSE_IMAGE_ACTIVITY_REQUEST_CODE) {
                 image = ImageHandler.decodeImageFromFileUri(context.getContentResolver(), data.getData(), 350);
                 try {
                     image = ImageHandler.rotateImage(image, data.getData().toString()); // TODO: Rotation does not work
-                } catch (IOException e) {e.printStackTrace();}
+                } catch (IOException e) {
+                    Log.w("ProfilePresenterImpl", e.getMessage());
+                    view.showMessage(ErrorMessage.IMAGE_FILE_NOT_FOUND, Toast.LENGTH_LONG);
+                }
             }
-
 
             if (image != null) {
                 view.setSuggestionImage(image);

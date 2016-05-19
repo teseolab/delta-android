@@ -81,28 +81,14 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
         }
     }
 
-    // DIALOG LISTENER
-
-//    @Override
-//    public void onTakePhotoClicked(Dialog dialog) {
-//        dialog.dismiss();
-//        presenter.openCamera(Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-//    }
-//
-//    @Override
-//    public void onSelectPhotoClicked(Dialog dialog) {
-//        dialog.dismiss();
-//        presenter.openGallery(Constants.CHOOSE_IMAGE_ACTIVITY_REQUEST_CODE);
-//    }
-
     // Called from MainActivity
     public void openCamera() {
-        presenter.openCamera(Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        presenter.openImageCropper(Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
     // Called from MainActivity
     public void openGallery() {
-        presenter.openGallery(Constants.CHOOSE_IMAGE_ACTIVITY_REQUEST_CODE);
+        presenter.openImageCropper(Constants.CHOOSE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
     // INTENT RESULT ---------------------------------------------------------------------------------------------------

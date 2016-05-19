@@ -32,4 +32,6 @@ public class ErrorMessage {
     public static final String SESSION_EXPIRED = "Sesjonen er utgått. Vennligst logg inn på nytt.";
     public static final String COULD_NOT_POST_AGREEMENT = "Enighet kunne ikke registreres";
     public static final String COULD_NOT_POST_DISAGREEMENT = "Uenighet kunne ikke registreres";
+
+    public static final String IMAGE_FILE_NOT_FOUND = "Bildefilen ble ikke funnet";
 }

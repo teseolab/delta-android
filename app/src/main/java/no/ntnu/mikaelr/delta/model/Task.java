@@ -2,6 +2,7 @@ package no.ntnu.mikaelr.delta.model;
 
 import no.ntnu.mikaelr.delta.util.TaskType;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
 public class Task implements Serializable {
 
     private Integer id;
+    private Integer order;
+    private boolean finished;
     private TaskType taskType;
     private String imageUri;
     private float latitude;
@@ -23,6 +26,22 @@ public class Task implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 
     public TaskType getTaskType() {
