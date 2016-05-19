@@ -58,12 +58,14 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     private boolean taskWasCancelled = false;
     private boolean locationAccessWasDenied = false;
 
+    private boolean startLocationIsFound = false;
+    private boolean currentLocationIsFound = false;
+
     @Override
     public void setStartLocationIsFound(boolean startLocationIsFound) {
         this.startLocationIsFound = startLocationIsFound;
     }
 
-    private boolean startLocationIsFound = false;
 
     public MissionPresenterImpl(MissionView view) {
         this.view = view;
@@ -134,7 +136,13 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     }
 
     @Override
-    public void startLocationServiceIfAppWillClose() {
+    public void onPause() {
+
+        if (googleApiClientIsConnected()) {
+            stopLocationUpdates();
+            disconnectApiClient();
+        }
+
         // TODO: 08.05.2016
         // Today when opening MissionActivity, onPause was called immediately.
         // This caused the app to crash, since the tasks had not been loaded.
@@ -145,6 +153,10 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
                 serviceIntent.putExtra("currentTaskLatitude", getCurrentTask().getLatitude());
                 serviceIntent.putExtra("currentTaskLongitude", getCurrentTask().getLongitude());
                 context.startService(serviceIntent);
+            } else {
+                if (currentLocationIsFound) {
+                    SharedPrefsUtil.getInstance().setLocationFoundStatus(project.getId(), loadedTasks.get(currentTaskIndex).getId(), Constants.YES);
+                }
             }
         }
     }
@@ -157,6 +169,11 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     @Override
     public void setLocationServiceShouldStart(boolean shouldStart) {
         locationServiceShouldStart = shouldStart;
+    }
+
+    @Override
+    public void setCurrentLocationIsFound(boolean isFound) {
+        currentLocationIsFound = isFound;
     }
 
     @Override
@@ -231,6 +248,9 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     public void onCloseButtonClicked() {
         if (missionIsCompleted) {
             locationServiceShouldStart = false;
+            if (loadedTasks.size() > currentTaskIndex) {
+                currentLocationIsFound = true;
+            }
         }
         context.finish();
     }
@@ -284,6 +304,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
         } else {
             currentTaskIndex++;
+            currentLocationIsFound = false;
 
             String title = currentTaskIndex == 1 ? "Første oppgave" : phraseGenerator.encouragement()+"!";
             String hint = loadedTasks.get(currentTaskIndex).getHint();
@@ -299,12 +320,13 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     // Listeners -------------------------------------------------------------------------------------------------------
 
     private void addAllCurrentMarkers() {
-        for (int i = 0; i < currentTaskIndex; i++) {
-            if (i == 0) {
-                view.addMarkerForTask(i, loadedTasks.get(i), R.drawable.ic_location_start_48dp);
-            } else {
-                view.addMarkerForTask(i, loadedTasks.get(i), R.drawable.ic_location_48dp);
-            }
+        if (startLocationIsFound) {
+            view.addMarkerForTask(0, loadedTasks.get(0), R.drawable.ic_location_start_48dp);
+        } else {
+            view.addMarkerForTask(0, loadedTasks.get(0), R.drawable.ic_location_48dp);
+        }
+        for (int i = 1; i < currentTaskIndex; i++) {
+            view.addMarkerForTask(i, loadedTasks.get(i), R.drawable.ic_location_48dp);
         }
     }
 
@@ -351,6 +373,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
         if (userHasFoundTaskLocation(distanceToTaskLocation)) {
             startLocationIsFound = true;
+            currentLocationIsFound = true;
             SharedPrefsUtil.getInstance().setStartLocationFoundStatus(project.getId(), Constants.YES);
             stopLocationUpdates();
             int iconResourceId = currentTaskIndex == 0 ? R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
@@ -385,15 +408,24 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         tasks.add(0, getDefaultFirstTask());
 
         loadedTasks = tasks;
+
         startLocationIsFound = SharedPrefsUtil.getInstance().getStartLocationFoundStatus(project.getId()).equals(Constants.YES);
+        if (startLocationIsFound) {
+            currentTaskIndex = 1;
+        }
 
         int i = 1;
         while (tasks.get(i).isFinished()) {
             i = i + 1;
             currentTaskIndex = i;
+            startLocationIsFound = true;
         }
 
         addAllCurrentMarkers();
+
+        if (SharedPrefsUtil.getInstance().getLocationFoundStatus(project.getId(), loadedTasks.get(currentTaskIndex).getId()).equals(Constants.YES)) {
+            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(currentTaskIndex), R.drawable.ic_location_48dp);
+        }
 
         view.zoomMapToMarkers();
         view.setHint(tasks.get(currentTaskIndex).getHint());

@@ -58,4 +58,14 @@ public class SharedPrefsUtil {
     public String getStartLocationFoundStatus(int projectId) {
         return sharedPreferences.getString("PROJECT_" + projectId + "_START_LOCATION_FOUND_BY_USER_" + getUsername(), Constants.NO);
     }
+
+    public void setLocationFoundStatus(int projectId, int taskIndex, String value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("PROJECT_" + projectId + "_TASK_NUMBER_" + taskIndex + "_LOCATION_FOUND_BY_USER_" + getUsername(), value);
+        editor.apply();
+    }
+
+    public String getLocationFoundStatus(int projectId, int taskIndex) {
+        return sharedPreferences.getString("PROJECT_" + projectId + "_TASK_NUMBER_" + taskIndex + "_LOCATION_FOUND_BY_USER_" + getUsername(), Constants.NO);
+    }
 }

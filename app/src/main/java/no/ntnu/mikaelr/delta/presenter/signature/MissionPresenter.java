@@ -30,9 +30,10 @@ public interface MissionPresenter {
 
     int getCurrentTaskIndex();
 
-    void startLocationServiceIfAppWillClose();
+    void onPause();
     void stopLocationService();
 
     void setLocationServiceShouldStart(boolean shouldStart);
 
+    void setCurrentLocationIsFound(boolean isFound);
 }
