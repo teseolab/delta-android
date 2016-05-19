@@ -31,7 +31,9 @@ import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.signature.MissionPresenter;
 import no.ntnu.mikaelr.delta.presenter.MissionPresenterImpl;
+import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.LocationService;
+import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.view.signature.MissionView;
 
 import java.util.ArrayList;
@@ -243,6 +245,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         if (item.getItemId() == R.id.action_cheat) {
             Task currentTask = presenter.getCurrentTask();
             if (currentTask != null) {
+                SharedPrefsUtil.getInstance().setStartLocationFoundStatus(presenter.getProject().getId(), Constants.YES);
                 int resourceId = presenter.getCurrentTaskIndex() == 0 ?
                         R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
                 addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask, resourceId);

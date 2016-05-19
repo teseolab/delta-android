@@ -231,16 +231,8 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     public void onCloseButtonClicked() {
         if (missionIsCompleted) {
             locationServiceShouldStart = false;
-            context.finish();
-        } else if (currentTaskIndex > 0) {
-            String title = "Oppdrag ikke fullført";
-            String message = "Er du sikker på at du vil gå tilbake?";
-            CustomDialog closeMissionDialog = CustomDialog.newInstance(title, message, "Ja", "Nei", 0);
-            // Tag used to handle listener callbacks
-            view.showDialog(closeMissionDialog, CLOSE_MISSION_DIALOG_TAG);
-        } else {
-            context.finish();
         }
+        context.finish();
     }
 
     @Override
@@ -307,10 +299,13 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     // Listeners -------------------------------------------------------------------------------------------------------
 
     private void addAllCurrentMarkers() {
-        for (int i = 0; i <= currentTaskIndex; i++) {
-            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(i), R.drawable.ic_location_48dp);
+        for (int i = 0; i < currentTaskIndex; i++) {
+            if (i == 0) {
+                view.addMarkerForTask(i, loadedTasks.get(i), R.drawable.ic_location_start_48dp);
+            } else {
+                view.addMarkerForTask(i, loadedTasks.get(i), R.drawable.ic_location_48dp);
+            }
         }
-//        }
     }
 
     private Task getDefaultFirstTask() {
@@ -356,6 +351,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
         if (userHasFoundTaskLocation(distanceToTaskLocation)) {
             startLocationIsFound = true;
+            SharedPrefsUtil.getInstance().setStartLocationFoundStatus(project.getId(), Constants.YES);
             stopLocationUpdates();
             int iconResourceId = currentTaskIndex == 0 ? R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
             view.addMarkerForTask(currentTaskIndex, getCurrentTask(), iconResourceId);
@@ -389,16 +385,14 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         tasks.add(0, getDefaultFirstTask());
 
         loadedTasks = tasks;
+        startLocationIsFound = SharedPrefsUtil.getInstance().getStartLocationFoundStatus(project.getId()).equals(Constants.YES);
 
-        int i = 0;
+        int i = 1;
         while (tasks.get(i).isFinished()) {
             i = i + 1;
             currentTaskIndex = i;
         }
 
-        // Currently only shows the first task, but in the future this could be used to show the markers for completed
-        // tasks. The instance variable currentTaskIndex decides how many markers are shown.
-        // When clicking a finished task, the user could be shown what they answered.
         addAllCurrentMarkers();
 
         view.zoomMapToMarkers();

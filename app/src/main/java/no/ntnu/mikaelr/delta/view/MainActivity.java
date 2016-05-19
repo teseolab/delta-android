@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     @Override
     public void addEmptyMessageFragment() {
-        fragmentManager.beginTransaction().replace(R.id.content_frame, new SimpleMessageFragment()).commit();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, new SimpleMessageFragment()).commitAllowingStateLoss();
     }
 
 }
