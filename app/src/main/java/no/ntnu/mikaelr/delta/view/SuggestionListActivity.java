@@ -36,7 +36,7 @@ public class SuggestionListActivity extends AppCompatActivity implements Suggest
 
         this.presenter = new SuggestionListPresenterImpl(this);
 
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Forslag");
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_arrow_back_white_24dp, "Forslag");
 
         LinearLayout progressSpinnerView = (LinearLayout) findViewById(R.id.progress_spinner_view);
         CircularProgressView progressSpinner = (CircularProgressView) progressSpinnerView.findViewById(R.id.progress_spinner);

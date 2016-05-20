@@ -82,7 +82,11 @@ public class TopListAdapter extends BaseAdapter {
 
         int listPosition = position + 1;
         viewHolder.position.setText("#" + listPosition);
-        Picasso.with(context).load(user.getAvatarUri()).transform(new CircleTransform()).into(viewHolder.avatar);
+        if (user.getAvatarUri() != null) {
+            Picasso.with(context).load(user.getAvatarUri()).transform(new CircleTransform()).error(R.drawable.no_avatar).into(viewHolder.avatar);
+        } else {
+            viewHolder.avatar.setImageResource(R.drawable.no_avatar);
+        }
         viewHolder.username.setText(user.getUsername());
         viewHolder.score.setText(user.getScore() + " poeng");
         viewHolder.missionsCompleted.setText(Integer.toString(user.getNumberOfMissions()));

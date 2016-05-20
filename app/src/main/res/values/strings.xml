@@ -24,4 +24,6 @@
     <string name="posting_suggestion">Poster forslag...</string>
     <string name="show_list">Vis liste</string>
     <string name="read_more">Les mer</string>
+    <string name="missions">oppdrag</string>
+    <string name="suggestions">forslag</string>
 </resources>

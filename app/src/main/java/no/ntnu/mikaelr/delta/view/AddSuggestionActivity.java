@@ -47,7 +47,7 @@ public class AddSuggestionActivity extends AppCompatActivity implements AddSugge
         this.presenter = new AddSuggestionPresenterImpl(this);
 
         initializeView();
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Nytt forslag");
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Post forslag");
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------

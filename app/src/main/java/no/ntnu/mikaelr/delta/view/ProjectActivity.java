@@ -27,7 +27,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectView, V
 
         this.presenter = new ProjectPresenterImpl(this);
 
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, presenter.getProject().getName());
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_arrow_back_white_24dp, presenter.getProject().getName());
         initializeView();
 
     }

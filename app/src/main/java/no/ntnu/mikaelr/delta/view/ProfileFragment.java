@@ -31,6 +31,15 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
     private TextView suggestionsPosted;
     private TextView commentsPosted;
 
+    public static ProfileFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        ProfileFragment fragment = new ProfileFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -54,7 +63,11 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
 
     @Override
     public void updateView(HighscoreUser user) {
-        Picasso.with(getActivity()).load(user.getAvatarUri()).error(R.drawable.default_avatar).transform(new CircleTransform()).into(avatar);
+        if (user.getAvatarUri() != null) {
+            Picasso.with(getActivity()).load(user.getAvatarUri()).error(R.drawable.default_avatar).transform(new CircleTransform()).into(avatar);
+        } else {
+            avatar.setImageResource(R.drawable.default_avatar);
+        }
         username.setText(user.getUsername());
         score.setText("Poeng: " + user.getScore());
         missionsCompleted.setText(Integer.toString(user.getNumberOfMissions()));

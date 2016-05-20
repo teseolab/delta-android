@@ -6,6 +6,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import no.ntnu.mikaelr.delta.R;
@@ -17,8 +18,9 @@ import no.ntnu.mikaelr.delta.view.signature.TopListView;
 
 import java.util.List;
 
-public class TopListFragment extends Fragment implements TopListView {
+public class TopListFragment extends Fragment implements TopListView, AdapterView.OnItemClickListener {
 
+    private TopListPresenter presenter;
     private TopListAdapter listAdapter;
     private ListView topList;
 
@@ -26,11 +28,12 @@ public class TopListFragment extends Fragment implements TopListView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_top_list, container, false);
 
-        TopListPresenter presenter = new TopListPresenterImpl(this);
+        presenter = new TopListPresenterImpl(this);
 
         topList = (ListView) view.findViewById(R.id.top_list);
         listAdapter = new TopListAdapter(getActivity());
         topList.setAdapter(listAdapter);
+        topList.setOnItemClickListener(this);
 
         presenter.loadTopList();
 
@@ -69,4 +72,10 @@ public class TopListFragment extends Fragment implements TopListView {
 
     }
 
+    // CLICK LISTENER --------------------------------------------------------------------------------------------------
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        presenter.onItemClick(position);
+    }
 }

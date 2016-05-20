@@ -44,7 +44,7 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
         contentView = getLayoutInflater().inflate(R.layout.activity_suggestion, null);
         setContentView(contentView);
         this.presenter = new SuggestionPresenterImpl(this);
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Forslag");
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_arrow_back_white_24dp, "Forslag");
 
         addHeaderView();
         initializeListAdapter();

@@ -28,7 +28,7 @@ public class PostCommentActivity extends AppCompatActivity implements PostCommen
         this.presenter = new PostCommentPresenterImpl(this);
 
         initializeView();
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Ny kommentar");
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Skriv kommentar");
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------

@@ -4,10 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HighscoreUser {
+public class HighscoreUser implements Serializable {
 
     private int id;
     private String username;
@@ -38,7 +39,12 @@ public class HighscoreUser {
         try {
             user.setId(jsonObject.getInt("id"));
             user.setUsername(jsonObject.getString("username"));
-            user.setAvatarUri(jsonObject.getString("avatarUri"));
+            String avatarUri = jsonObject.getString("avatarUri");
+            if (avatarUri.equals("null") || avatarUri.equals("")) {
+                user.setAvatarUri(null);
+            } else {
+                user.setAvatarUri(avatarUri);
+            }
             user.setScore(jsonObject.getInt("score"));
             user.setNumberOfMissions(jsonObject.getInt("numberOfMissions"));
             user.setNumberOfSuggestions(jsonObject.getInt("numberOfSuggestions"));
