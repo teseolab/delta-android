@@ -237,7 +237,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         if (item.getItemId() == R.id.action_cheat) {
             Task currentTask = presenter.getCurrentTask();
             if (currentTask != null) {
-                SharedPrefsUtil.getInstance().setStartLocationFoundStatus(presenter.getProject().getId(), Constants.YES);
+                SharedPrefsUtil.getInstance().setFirstTaskFinishedStatus(presenter.getProject().getId(), Constants.YES);
                 int resourceId = presenter.getCurrentTaskIndex() == 0 ?
                         R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
                 addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask, resourceId);

@@ -30,7 +30,6 @@ import no.ntnu.mikaelr.delta.view.TaskActivity;
 import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MissionPresenterImpl implements MissionPresenter, ProjectInteractorImpl.OnGetTasksListener,
@@ -153,11 +152,12 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
                 serviceIntent.putExtra("currentTaskLatitude", getCurrentTask().getLatitude());
                 serviceIntent.putExtra("currentTaskLongitude", getCurrentTask().getLongitude());
                 context.startService(serviceIntent);
-            } else {
-                if (currentLocationIsFound) {
-                    SharedPrefsUtil.getInstance().setLocationFoundStatus(project.getId(), loadedTasks.get(currentTaskIndex).getId(), Constants.YES);
-                }
             }
+//            else {
+//                if (currentLocationIsFound) {
+//                    SharedPrefsUtil.getInstance().setLocationFoundStatus(project.getId(), loadedTasks.get(currentTaskIndex).getId(), Constants.YES);
+//                }
+//            }
         }
     }
 
@@ -216,19 +216,6 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     }
 
     @Override
-    public void onActivityResult(int requestCode, Intent intent) {
-        if (requestCode == TASK_REQUEST) {
-            int action = intent.getIntExtra("action", -1);
-            if (action == Constants.TASK_FINISHED) {
-                taskWasFinished();
-            }
-            else if (action == Constants.TASK_CANCELLED) {
-                taskWasCancelled();
-            }
-        }
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case REQUEST_ACCESS_FINE_LOCATION: {
@@ -240,6 +227,19 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
                     view.setDistance("OBS!");
                     view.setHint("Appen trenger din posisjon for å starte et oppdrag.");
                 }
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, Intent intent) {
+        if (requestCode == TASK_REQUEST) {
+            int action = intent.getIntExtra("action", -1);
+            if (action == Constants.TASK_FINISHED) {
+                taskWasFinished();
+            }
+            else if (action == Constants.TASK_CANCELLED) {
+                taskWasCancelled();
             }
         }
     }
@@ -293,6 +293,10 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         taskWasCancelled = false;
         missionIsCompleted = currentTaskIndex == loadedTasks.size() - 1;
 
+        if (currentTaskIndex == 0) {
+            SharedPrefsUtil.getInstance().setFirstTaskFinishedStatus(project.getId(), Constants.YES);
+        }
+
         if (missionIsCompleted) {
             currentTaskIndex = -1;
             interactor.postFinishedMission(project.getId(), this);
@@ -319,7 +323,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     // Listeners -------------------------------------------------------------------------------------------------------
 
-    private void addAllCurrentMarkers() {
+    private void addFinishedMarkers() {
         if (startLocationIsFound) {
             view.addMarkerForTask(0, loadedTasks.get(0), R.drawable.ic_location_start_48dp);
         } else {
@@ -344,7 +348,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (tasksAreLoaded) {
+        if (loadedTasks != null) {
             // TODO: 11.05.2016
             // If location permission was denied, onConnect is called again, which again requests the permission
             // causing the permission dialog to appear over and over again.
@@ -374,7 +378,6 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         if (userHasFoundTaskLocation(distanceToTaskLocation)) {
             startLocationIsFound = true;
             currentLocationIsFound = true;
-            SharedPrefsUtil.getInstance().setStartLocationFoundStatus(project.getId(), Constants.YES);
             stopLocationUpdates();
             int iconResourceId = currentTaskIndex == 0 ? R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
             view.addMarkerForTask(currentTaskIndex, getCurrentTask(), iconResourceId);
@@ -404,38 +407,33 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     @Override
     public void onGetTasksSuccess(JSONArray jsonArray) {
+
         List<Task> tasks = JsonFormatter.formatTasks(jsonArray);
         tasks.add(0, getDefaultFirstTask());
-
         loadedTasks = tasks;
 
-        startLocationIsFound = SharedPrefsUtil.getInstance().getStartLocationFoundStatus(project.getId()).equals(Constants.YES);
+        // Check SharedPreferences if the start location has already been completed as this is not stored on the server
+        startLocationIsFound = SharedPrefsUtil.getInstance().getFirstTaskFinishedStatus(project.getId()).equals(Constants.YES);
         if (startLocationIsFound) {
             currentTaskIndex = 1;
         }
 
-        int i = 1;
-        while (tasks.get(i).isFinished()) {
-            i = i + 1;
-            currentTaskIndex = i;
-            startLocationIsFound = true;
-        }
-
-        addAllCurrentMarkers();
-
-        if (SharedPrefsUtil.getInstance().getLocationFoundStatus(project.getId(), loadedTasks.get(currentTaskIndex).getId()).equals(Constants.YES)) {
-            view.addMarkerForTask(currentTaskIndex, loadedTasks.get(currentTaskIndex), R.drawable.ic_location_48dp);
-        }
-
+        initializeCurrentTaskIndex(tasks);
+        addFinishedMarkers();
         view.zoomMapToMarkers();
         view.setHint(tasks.get(currentTaskIndex).getHint());
-
-        tasksAreLoaded = true;
 
         if (googleApiClient.isConnected()) {
             startLocationUpdates();
         }
+    }
 
+    private void initializeCurrentTaskIndex(List<Task> tasks) {
+        int i = 1;
+        while (tasks.get(i).isFinished()) {
+            i = i + 1;
+            currentTaskIndex = i;
+        }
     }
 
     @Override

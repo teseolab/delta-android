@@ -49,23 +49,23 @@ public class SharedPrefsUtil {
         return sharedPreferences.getString("PROJECT_" + projectId + "_MISSION_COMPLETED_BY_USER_" + username, Constants.NA);
     }
 
-    public void setStartLocationFoundStatus(Integer projectId, String value) {
+    public void setFirstTaskFinishedStatus(Integer projectId, String value) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("PROJECT_" + projectId + "_START_LOCATION_FOUND_BY_USER_" + getUsername(), value);
         editor.apply();
     }
 
-    public String getStartLocationFoundStatus(int projectId) {
+    public String getFirstTaskFinishedStatus(int projectId) {
         return sharedPreferences.getString("PROJECT_" + projectId + "_START_LOCATION_FOUND_BY_USER_" + getUsername(), Constants.NO);
     }
 
-    public void setLocationFoundStatus(int projectId, int taskIndex, String value) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("PROJECT_" + projectId + "_TASK_NUMBER_" + taskIndex + "_LOCATION_FOUND_BY_USER_" + getUsername(), value);
-        editor.apply();
-    }
-
-    public String getLocationFoundStatus(int projectId, int taskIndex) {
-        return sharedPreferences.getString("PROJECT_" + projectId + "_TASK_NUMBER_" + taskIndex + "_LOCATION_FOUND_BY_USER_" + getUsername(), Constants.NO);
-    }
+//    public void setLocationFoundStatus(int projectId, int taskIndex, String value) {
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString("PROJECT_" + projectId + "_TASK_NUMBER_" + taskIndex + "_LOCATION_FOUND_BY_USER_" + getUsername(), value);
+//        editor.apply();
+//    }
+//
+//    public String getLocationFoundStatus(int projectId, int taskIndex) {
+//        return sharedPreferences.getString("PROJECT_" + projectId + "_TASK_NUMBER_" + taskIndex + "_LOCATION_FOUND_BY_USER_" + getUsername(), Constants.NO);
+//    }
 }
