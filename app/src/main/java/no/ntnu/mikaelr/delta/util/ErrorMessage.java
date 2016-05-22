@@ -26,6 +26,7 @@ public class ErrorMessage {
     public static final String COULD_NOT_LOAD_ACTIVITY_LOG = "Kunne ikke laste inn aktivitetsloggen :(";
     public static final String COULD_NOT_LOAD_PROFILE = "Kunne ikke laste inn profilsiden :(";
     public static final String COULD_NOT_LOAD_TOP_LIST = "Kunne ikke laste inn toppliste :(";
+    public static final String COULD_NOT_LOAD_ACHIEVEMENTS = "Kunne ikke laste inn utmerkelser";
 
     public static final String NO_ACTIVITIES_IN_LOG = "Du har ikke deltatt enda! Etterhvert som du fullfører rebusløp, poster forslag osv, kan du komme tilbake hit og få en oversikt over alt du har foretatt deg.";
 

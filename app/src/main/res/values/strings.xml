@@ -6,7 +6,7 @@
     <string name="post_suggestion">Post forslag</string>
     <string name="discuss_suggestions">Diskuter forslag</string>
     <string name="done">Ferdig</string>
-    <string name="comments">Kommentarer</string>
+    <string name="Comments">Kommentarer</string>
     <string name="calculating_distance">Beregner distanse...</string>
     <string name="your_response">Din tilbakemelding</string>
     <string name="title">Tittel</string>
@@ -26,4 +26,5 @@
     <string name="read_more">Les mer</string>
     <string name="missions">oppdrag</string>
     <string name="suggestions">forslag</string>
+    <string name="comments">kommentarer</string>
 </resources>

@@ -3,16 +3,18 @@ package no.ntnu.mikaelr.delta.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
+import no.ntnu.mikaelr.delta.model.Achievement;
 import no.ntnu.mikaelr.delta.model.Comment;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.presenter.signature.SuggestionPresenter;
-import no.ntnu.mikaelr.delta.util.Constants;
-import no.ntnu.mikaelr.delta.util.ErrorMessage;
-import no.ntnu.mikaelr.delta.util.JsonFormatter;
-import no.ntnu.mikaelr.delta.util.SessionInvalidator;
+import no.ntnu.mikaelr.delta.util.*;
 import no.ntnu.mikaelr.delta.view.PostCommentActivity;
 import no.ntnu.mikaelr.delta.view.signature.SuggestionView;
 import org.json.JSONArray;
@@ -24,7 +26,7 @@ import java.util.List;
 public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInteractorImpl.OnFinishedLoadingCommentsListener, ProjectInteractorImpl.OnPostAgreementListener, ProjectInteractorImpl.OnPostDisagreementListener {
 
     private SuggestionView view;
-    private Activity context;
+    private AppCompatActivity context;
     private ProjectInteractor projectInteractor;
 
     private Suggestion suggestion;
@@ -33,7 +35,7 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
 
     public SuggestionPresenterImpl(SuggestionView view) {
         this.view = view;
-        this.context = (Activity) view;
+        this.context = (AppCompatActivity) view;
         this.projectInteractor = new ProjectInteractorImpl();
         this.suggestion = getSuggestionFromIntent();
     }
@@ -109,6 +111,14 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
     @Override
     public void onActivityResult(int requestCode, Intent data) {
         if (requestCode == COMMENT_REQUEST) {
+            Achievement achievement = (Achievement) data.getSerializableExtra("achievement");
+            if (achievement != null) {
+                FragmentManager fragmentManager = context.getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .add(CustomDialog.newInstance(achievement.getName(), achievement.getDescription(), "OK", null,
+                                BadgeIdConverter.getInstance().convertBadgeNameToResourceId(achievement.getBadgeName())),null)
+                        .commitAllowingStateLoss();
+            }
             @SuppressWarnings("unchecked")
             ArrayList<Comment> comments = (ArrayList<Comment>) data.getSerializableExtra("comments");
             view.updateComments(comments);

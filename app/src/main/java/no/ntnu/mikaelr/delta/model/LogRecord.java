@@ -2,6 +2,7 @@ package no.ntnu.mikaelr.delta.model;
 
 import no.ntnu.mikaelr.delta.util.DateFormatter;
 import no.ntnu.mikaelr.delta.util.LogRecordType;
+import no.ntnu.mikaelr.delta.util.TaskType;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +21,7 @@ public class LogRecord {
 
     private Integer suggestionId;
     private Integer projectId;
+    private String achievementBadgeName;
 
     public static List<LogRecord> fromJsonArray(JSONArray jsonArray) {
         List<LogRecord> logRecords = new ArrayList<LogRecord>();
@@ -42,6 +44,9 @@ public class LogRecord {
         logRecord.setDescription(jsonObject.getString("description"));
         logRecord.setType(LogRecordType.valueOf(jsonObject.getString("type")));
         logRecord.setGeneratedScore(jsonObject.getInt("generatedScore"));
+        if (logRecord.getType() == LogRecordType.ACHIEVEMENT) {
+            logRecord.setAchievementBadgeName(jsonObject.getString("achievementBadgeName"));
+        }
         return logRecord;
     }
 
@@ -99,5 +104,13 @@ public class LogRecord {
 
     public void setProjectId(Integer projectId) {
         this.projectId = projectId;
+    }
+
+    public String getAchievementBadgeName() {
+        return achievementBadgeName;
+    }
+
+    public void setAchievementBadgeName(String achievementBadgeName) {
+        this.achievementBadgeName = achievementBadgeName;
     }
 }

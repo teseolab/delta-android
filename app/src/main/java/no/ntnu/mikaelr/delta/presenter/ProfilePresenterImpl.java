@@ -1,31 +1,30 @@
 package no.ntnu.mikaelr.delta.presenter;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
+import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
+import no.ntnu.mikaelr.delta.model.Achievement;
 import no.ntnu.mikaelr.delta.model.HighscoreUser;
 import no.ntnu.mikaelr.delta.presenter.signature.ProfilePresenter;
-import no.ntnu.mikaelr.delta.util.ErrorMessage;
-import no.ntnu.mikaelr.delta.util.ImageHandler;
-import no.ntnu.mikaelr.delta.util.SessionInvalidator;
+import no.ntnu.mikaelr.delta.util.*;
 import no.ntnu.mikaelr.delta.view.ImageCropperActivity;
 import no.ntnu.mikaelr.delta.view.signature.ProfileView;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
-public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractorImpl.OnGetUserListener, ProjectInteractorImpl.OnPostImageListener, ProjectInteractorImpl.OnPutAvatarListener {
+public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractorImpl.OnGetUserListener, ProjectInteractorImpl.OnPostImageListener, ProjectInteractorImpl.OnPutAvatarListener, ProjectInteractorImpl.OnGetAchievementsListener {
 
     private ProfileView view;
     private Fragment context;
@@ -35,6 +34,7 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
     private Bitmap avatar;
 
     private HighscoreUser user;
+    private List<Achievement> achievements;
     private int REQUEST_OPEN_CAMERA = 0;
     private int REQUEST_OPEN_GALLERY = 1;
 
@@ -49,6 +49,11 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
     @Override
     public void loadProfile() {
         interactor.getMe(this);
+    }
+
+    @Override
+    public void loadAchievements() {
+        interactor.getMyAchievements(this);
     }
 
     @Override
@@ -81,7 +86,7 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
     @Override
     public void onGetUserSuccess(JSONObject jsonObject) {
         user = HighscoreUser.fromJsonObject(jsonObject);
-        view.updateView(user);
+        view.updateProfile(user);
     }
 
     @Override
@@ -104,12 +109,32 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
     }
 
     @Override
-    public void onPutAvatarSuccess() {
-
+    public void onPutAvatarSuccess(String result) {
+        if (result != null) {
+            loadProfile();
+            loadAchievements();
+            Achievement achievement = JsonFormatter.formatAchievement(result);
+            context.getFragmentManager()
+                    .beginTransaction()
+                    .add(CustomDialog.newInstance(achievement.getName(), achievement.getDescription(), "OK", null,
+                            BadgeIdConverter.getInstance().convertBadgeNameToResourceId(achievement.getBadgeName())), null)
+                    .commitAllowingStateLoss();
+        }
     }
 
     @Override
     public void onPutAvatarError(int errorCode) {
         view.showMessage(ErrorMessage.COULD_NOT_POST_AVATAR, Toast.LENGTH_LONG);
+    }
+
+    @Override
+    public void onGetAchievementsSuccess(JSONArray jsonArray) {
+        achievements = JsonFormatter.formatAchievements(jsonArray);
+        view.updateAchievements(achievements);
+    }
+
+    @Override
+    public void onGetAchievementsError(int errorCode) {
+        view.showMessage(ErrorMessage.COULD_NOT_LOAD_ACHIEVEMENTS, Toast.LENGTH_LONG);
     }
 }

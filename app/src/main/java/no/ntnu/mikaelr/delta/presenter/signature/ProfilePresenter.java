@@ -4,8 +4,10 @@ import android.content.Intent;
 
 public interface ProfilePresenter {
     void loadProfile();
+    void loadAchievements();
 
     void openImageCropper(int requestCode);
 
     void onCropResult(int resultCode, Intent data);
+
 }

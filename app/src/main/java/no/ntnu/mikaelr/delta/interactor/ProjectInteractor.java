@@ -8,7 +8,9 @@ public interface ProjectInteractor {
     void getProjects(ProjectInteractorImpl.OnGetProjectsListener listener);
     void getTasks(int projectId, ProjectInteractorImpl.OnGetTasksListener listener);
     void getSuggestions(int projectId, ProjectInteractorImpl.OnFinishedLoadingSuggestionsListener listener);
+    void getSuggestionAchievement(ProjectInteractorImpl.OnGetSuggestionAchievementListener listener);
     void getComments(int suggestionId, ProjectInteractorImpl.OnFinishedLoadingCommentsListener listener);
+    void getCommentAchievement(ProjectInteractorImpl.OnGetCommentAhievementListener listener);
     void getTopList(ProjectInteractorImpl.OnFinishedLoadingTopList listener);
     void getMe(ProjectInteractorImpl.OnGetUserListener listener);
     void getLogRecords(ProjectInteractorImpl.OnGetLogRecordsListener listener);
@@ -27,4 +29,5 @@ public interface ProjectInteractor {
     void getImage(String imageUri, ProjectInteractorImpl.OnGetImageListener listener);
 
     void putAvatar(String avatarUri, ProjectInteractorImpl.OnPutAvatarListener listener);
+    void getMyAchievements(ProjectInteractorImpl.OnGetAchievementsListener listener);
 }

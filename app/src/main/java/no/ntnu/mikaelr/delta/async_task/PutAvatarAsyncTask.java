@@ -17,7 +17,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
-public class PutAvatarAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity>> {
+public class PutAvatarAsyncTask extends AsyncTask<Void, Void, Pair<Integer, ResponseEntity<String>>> {
 
     private ProjectInteractorImpl.OnPutAvatarListener listener;
 
@@ -31,7 +31,7 @@ public class PutAvatarAsyncTask extends AsyncTask<Void, Void, Pair<Integer, Resp
     }
 
     @Override
-    protected Pair<Integer, ResponseEntity> doInBackground(Void... params) {
+    protected Pair<Integer, ResponseEntity<String>> doInBackground(Void... params) {
 
         ResponseEntity<String> response;
         RestTemplate template = new RestTemplate();
@@ -43,26 +43,26 @@ public class PutAvatarAsyncTask extends AsyncTask<Void, Void, Pair<Integer, Resp
 
         try {
             response = template.exchange(request, HttpMethod.PUT, entity, String.class);
-            return new Pair<Integer, ResponseEntity>(StatusCode.HTTP_OK, response);
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_OK, response);
         }
 
         catch (HttpStatusCodeException e) {
-            return new Pair<Integer, ResponseEntity>(e.getStatusCode().value(), null);
+            return new Pair<Integer, ResponseEntity<String>>(e.getStatusCode().value(), null);
         }
 
         catch (ResourceAccessException e) {
-            return new Pair<Integer, ResponseEntity>(StatusCode.NETWORK_UNREACHABLE, null);
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.NETWORK_UNREACHABLE, null);
         }
 
         catch (UnknownHttpStatusCodeException e) {
-            return new Pair<Integer, ResponseEntity>(StatusCode.HTTP_UNKNOWN, null);
+            return new Pair<Integer, ResponseEntity<String>>(StatusCode.HTTP_UNKNOWN, null);
         }
     }
 
     @Override
-    protected void onPostExecute(Pair<Integer, ResponseEntity> result) {
+    protected void onPostExecute(Pair<Integer, ResponseEntity<String>> result) {
         if (result.first == StatusCode.HTTP_OK) {
-            listener.onPutAvatarSuccess();
+            listener.onPutAvatarSuccess(result.second.getBody());
         }
         else {
             listener.onPutAvatarError(result.first);

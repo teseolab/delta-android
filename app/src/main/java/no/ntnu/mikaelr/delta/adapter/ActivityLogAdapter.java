@@ -10,6 +10,7 @@ import android.widget.TextView;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.model.HighscoreUser;
 import no.ntnu.mikaelr.delta.model.LogRecord;
+import no.ntnu.mikaelr.delta.util.BadgeIdConverter;
 import no.ntnu.mikaelr.delta.util.DateFormatter;
 import no.ntnu.mikaelr.delta.util.LogRecordType;
 
@@ -106,7 +107,12 @@ public class ActivityLogAdapter extends BaseAdapter {
                     viewHolderNormal = (ViewHolderNormal) convertView.getTag();
                 }
 
-                viewHolderNormal.icon.setImageResource(resourceIdFromLogRecordType(logRecord.getType()));
+                if (logRecord.getType() == LogRecordType.ACHIEVEMENT) {
+                    viewHolderNormal.icon.setImageResource(BadgeIdConverter.getInstance().convertBadgeNameToResourceId(logRecord.getAchievementBadgeName()));
+                } else {
+                    viewHolderNormal.icon.setImageResource(resourceIdFromLogRecordType(logRecord.getType()));
+                }
+
                 viewHolderNormal.description.setText(logRecord.getDescription());
                 viewHolderNormal.score.setText("+" + logRecord.getGeneratedScore());
             }
@@ -127,8 +133,12 @@ public class ActivityLogAdapter extends BaseAdapter {
                     viewHolderDivider = (ViewHolderDivider) convertView.getTag();
                 }
 
+                if (logRecord.getType() == LogRecordType.ACHIEVEMENT) {
+                    viewHolderDivider.icon.setImageResource(BadgeIdConverter.getInstance().convertBadgeNameToResourceId(logRecord.getAchievementBadgeName()));
+                } else {
+                    viewHolderDivider.icon.setImageResource(resourceIdFromLogRecordType(logRecord.getType()));
+                }
                 viewHolderDivider.date.setText(DateFormatter.format(logRecord.getDate(), "d. MMMM"));
-                viewHolderDivider.icon.setImageResource(resourceIdFromLogRecordType(logRecord.getType()));
                 viewHolderDivider.description.setText(logRecord.getDescription());
                 viewHolderDivider.score.setText("+" + logRecord.getGeneratedScore());
 

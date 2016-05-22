@@ -73,17 +73,40 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         String apiCall = "http://" + Constants.SERVER_URL + "/projects/" + projectId + "/suggestions";
         new GetSuggestionsAsyncTask(apiCall, listener).execute();
     }
+
     public interface OnFinishedLoadingCommentsListener {
+
         void onFinishedLoadingCommentsSuccess(JSONArray jsonArray);
         void onFinishedLoadingCommentsError(Integer errorCode);
-
     }
-
     @Override
     public void getComments(int suggestionId, OnFinishedLoadingCommentsListener listener) {
         String apiCall = "http://" + Constants.SERVER_URL + "/suggestions/" + suggestionId + "/comments";
         new GetCommentsAsyncTask(apiCall, listener).execute();
     }
+
+    public interface OnGetSuggestionAchievementListener {
+        void onGetSuggestionAchievementSuccess(String result);
+        void onGetSuggestionAchievementError(int errorCode);
+    }
+
+    @Override
+    public void getSuggestionAchievement(OnGetSuggestionAchievementListener listener) {
+        String apiCall = "http://" + Constants.SERVER_URL + "/users/me/suggestions/achievement";
+        new GetSuggestionAchievementAsyncTask(apiCall, listener).execute();
+    }
+
+    public interface OnGetCommentAhievementListener {
+        void onGetCommentAchievementSuccess(String result);
+        void onGetCommentAchievementError(int errorCode);
+    }
+
+    @Override
+    public void getCommentAchievement(OnGetCommentAhievementListener listener) {
+        String apiCall = "http://" + Constants.SERVER_URL + "users/me/comments/achievement";
+        new GetCommentAchievementAsyncTask(apiCall, listener).execute();
+    }
+
     public interface OnFinishedLoadingTopList {
         void onLoadTopListSuccess(JSONArray jsonArray);
         void onLoadTopListError(int errorCode);
@@ -137,7 +160,6 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     }
     public interface OnPostSuggestionListener {
         void onPostSuggestionSuccess(JSONObject jsonSuggestion);
-
         void onPostSuggestionError(int errorCode);
     }
     @Override
@@ -180,7 +202,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     }
 
     public interface OnPutAvatarListener {
-        void onPutAvatarSuccess();
+        void onPutAvatarSuccess(String result);
         void onPutAvatarError(int errorCode);
     }
 
@@ -188,5 +210,16 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     public void putAvatar(String avatarUri, OnPutAvatarListener listener) {
         String apiCall = "http://" + Constants.SERVER_URL + "/users/me/avatar";
         new PutAvatarAsyncTask(apiCall, avatarUri, listener).execute();
+    }
+
+    public interface OnGetAchievementsListener {
+        void onGetAchievementsSuccess(JSONArray jsonArray);
+        void onGetAchievementsError(int errorCode);
+    }
+
+    @Override
+    public void getMyAchievements(OnGetAchievementsListener listener) {
+        String apiCall = "http://" + Constants.SERVER_URL + "/users/me/achievements";
+        new GetAchievementsAsyncTask(apiCall, listener).execute();
     }
 }

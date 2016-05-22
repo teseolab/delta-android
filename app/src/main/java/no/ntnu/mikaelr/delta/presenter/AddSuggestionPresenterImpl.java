@@ -11,12 +11,10 @@ import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
 import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
+import no.ntnu.mikaelr.delta.model.Achievement;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.presenter.signature.AddSuggestionPresenter;
-import no.ntnu.mikaelr.delta.util.Constants;
-import no.ntnu.mikaelr.delta.util.ErrorMessage;
-import no.ntnu.mikaelr.delta.util.ImageHandler;
-import no.ntnu.mikaelr.delta.util.SessionInvalidator;
+import no.ntnu.mikaelr.delta.util.*;
 import no.ntnu.mikaelr.delta.view.SuggestionListActivity;
 import no.ntnu.mikaelr.delta.view.signature.AddSuggestionView;
 import org.json.JSONObject;
@@ -27,7 +25,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 public class AddSuggestionPresenterImpl implements AddSuggestionPresenter,
-        ProjectInteractorImpl.OnPostSuggestionListener, ProjectInteractorImpl.OnPostImageListener {
+        ProjectInteractorImpl.OnPostSuggestionListener, ProjectInteractorImpl.OnPostImageListener, ProjectInteractorImpl.OnGetSuggestionAchievementListener {
 
     private AddSuggestionView view;
     private Activity context;
@@ -167,10 +165,7 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter,
     @Override
     public void onPostSuggestionSuccess(JSONObject jsonSuggestion) {
         if (projectId != -1) {
-            Intent intent = new Intent(context, SuggestionListActivity.class);
-            intent.putExtra("projectId", projectId);
-            context.startActivity(intent);
-            context.finish();
+            interactor.getSuggestionAchievement(this);
         }
     }
 
@@ -181,6 +176,7 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter,
         } else {
             view.showSpinner(false);
             view.showMessage(ErrorMessage.COULD_NOT_POST_SUGGESTION, Toast.LENGTH_LONG);
+            Log.w("AddSuggestionPresenter", "Could not post suggestion. Error " + errorCode);
         }
     }
 
@@ -191,6 +187,27 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter,
 
     @Override
     public void onPostImageError(int errorCode) {
-        System.out.println("Image upload failed with error code " + errorCode);
+        Log.w("AddSuggestionPresenter", "Could not upload image. Error " + errorCode);
+    }
+
+    @Override
+    public void onGetSuggestionAchievementSuccess(String result) {
+        Intent intent = new Intent(context, SuggestionListActivity.class);
+        if (!result.equals("false")) {
+            Achievement achievement = JsonFormatter.formatAchievement(result);
+            intent.putExtra("achievement", achievement);
+        }
+        intent.putExtra("projectId", projectId);
+        context.startActivity(intent);
+        context.finish();
+    }
+
+    @Override
+    public void onGetSuggestionAchievementError(int errorCode) {
+        Intent intent = new Intent(context, SuggestionListActivity.class);
+        intent.putExtra("projectId", projectId);
+        context.startActivity(intent);
+        context.finish();
+        Log.w("AddSuggestionPresenter", "Could not get suggestion count. Error " + errorCode);
     }
 }

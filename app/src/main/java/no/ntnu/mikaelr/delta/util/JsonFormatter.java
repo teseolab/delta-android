@@ -153,4 +153,35 @@ public class JsonFormatter {
         return comments;
     }
 
+    public static ArrayList<Achievement> formatAchievements(JSONArray json) {
+        ArrayList<Achievement> achievements = new ArrayList<Achievement>();
+        try {
+            for (int i = 0; i < json.length(); i++) {
+//                JSONObject jsonAchievement = json.getJSONObject(i);
+//                Achievement achievement = new Achievement();
+//                achievement.setName(jsonAchievement.getString("name"));
+//                achievement.setDescription(jsonAchievement.getString("description"));
+//                achievement.setBadgeName(jsonAchievement.getString("badgeName"));
+                achievements.add(formatAchievement(json.getString(i)));
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return achievements;
+    }
+
+    public static Achievement formatAchievement(String jsonString) {
+        Achievement achievement = new Achievement();
+        try {
+            JSONObject jsonAchievement = new JSONObject(jsonString);
+            achievement.setName(jsonAchievement.getString("name"));
+            achievement.setDescription(jsonAchievement.getString("description"));
+            achievement.setBadgeName(jsonAchievement.getString("badgeName"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return achievement;
+    }
+
 }

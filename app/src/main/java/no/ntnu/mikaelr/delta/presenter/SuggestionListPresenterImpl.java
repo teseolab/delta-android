@@ -1,14 +1,15 @@
 package no.ntnu.mikaelr.delta.presenter;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.presenter.signature.SuggestionListPresenter;
-import no.ntnu.mikaelr.delta.util.ErrorMessage;
-import no.ntnu.mikaelr.delta.util.JsonFormatter;
-import no.ntnu.mikaelr.delta.util.SessionInvalidator;
+import no.ntnu.mikaelr.delta.util.*;
 import no.ntnu.mikaelr.delta.view.SuggestionActivity;
 import no.ntnu.mikaelr.delta.view.signature.SuggestionListView;
 import org.json.JSONArray;

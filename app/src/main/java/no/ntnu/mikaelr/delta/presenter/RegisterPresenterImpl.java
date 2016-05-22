@@ -61,6 +61,8 @@ public class RegisterPresenterImpl implements RegisterPresenter, LoginInteractor
             intent.putExtra("username", user.getUsername());
             context.startActivity(intent);
         }
+
+        view.showMessage("Bruker registrert");
     }
 
     @Override

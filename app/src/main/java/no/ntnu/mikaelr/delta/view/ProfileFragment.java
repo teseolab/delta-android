@@ -7,12 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
+import no.ntnu.mikaelr.delta.adapter.AchievementListAdapter;
 import no.ntnu.mikaelr.delta.fragment.AddImageDialog;
+import no.ntnu.mikaelr.delta.model.Achievement;
 import no.ntnu.mikaelr.delta.model.HighscoreUser;
 import no.ntnu.mikaelr.delta.presenter.ProfilePresenterImpl;
 import no.ntnu.mikaelr.delta.presenter.signature.ProfilePresenter;
@@ -20,9 +20,12 @@ import no.ntnu.mikaelr.delta.util.CircleTransform;
 import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.view.signature.ProfileView;
 
+import java.util.List;
+
 public class ProfileFragment extends Fragment implements ProfileView, View.OnClickListener {
 
     private ProfilePresenter presenter;
+    private AchievementListAdapter adapter;
 
     private ImageView avatar;
     private TextView username;
@@ -31,30 +34,29 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
     private TextView suggestionsPosted;
     private TextView commentsPosted;
 
-    public static ProfileFragment newInstance() {
-
-        Bundle args = new Bundle();
-
-        ProfileFragment fragment = new ProfileFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         presenter = new ProfilePresenterImpl(this);
 
-        avatar = (ImageView) view.findViewById(R.id.avatar);
+        LinearLayout header = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.profile_header, null);
+
+        avatar = (ImageView) header.findViewById(R.id.avatar);
         avatar.setOnClickListener(this);
-        username = (TextView) view.findViewById(R.id.username);
-        score = (TextView) view.findViewById(R.id.score);
-        missionsCompleted = (TextView) view.findViewById(R.id.missions_completed);
-        suggestionsPosted = (TextView) view.findViewById(R.id.suggestions_posted);
-        commentsPosted = (TextView) view.findViewById(R.id.comments_posted);
+        username = (TextView) header.findViewById(R.id.username);
+        score = (TextView) header.findViewById(R.id.score);
+        missionsCompleted = (TextView) header.findViewById(R.id.missions_completed);
+        suggestionsPosted = (TextView) header.findViewById(R.id.suggestions_posted);
+        commentsPosted = (TextView) header.findViewById(R.id.comments_posted);
+
+        ListView achievementList = (ListView) view.findViewById(R.id.achievement_list);
+        adapter = new AchievementListAdapter(getActivity());
+        achievementList.addHeaderView(header);
+        achievementList.setAdapter(adapter);
 
         presenter.loadProfile();
+        presenter.loadAchievements();
 
         return view;
     }
@@ -62,7 +64,7 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
     // INTERFACE METHODS -----------------------------------------------------------------------------------------------
 
     @Override
-    public void updateView(HighscoreUser user) {
+    public void updateProfile(HighscoreUser user) {
         if (user.getAvatarUri() != null) {
             Picasso.with(getActivity()).load(user.getAvatarUri()).error(R.drawable.default_avatar).transform(new CircleTransform()).into(avatar);
         } else {
@@ -73,6 +75,11 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
         missionsCompleted.setText(Integer.toString(user.getNumberOfMissions()));
         suggestionsPosted.setText(Integer.toString(user.getNumberOfSuggestions()));
         commentsPosted.setText(Integer.toString(user.getNumberOfComments()));
+    }
+
+    @Override
+    public void updateAchievements(List<Achievement> achievements) {
+        adapter.updateList(achievements);
     }
 
     @Override

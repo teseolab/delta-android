@@ -2,6 +2,7 @@ package no.ntnu.mikaelr.delta.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.MenuItem;
@@ -13,9 +14,13 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.adapter.SuggestionListAdapter;
+import no.ntnu.mikaelr.delta.fragment.CustomDialog;
+import no.ntnu.mikaelr.delta.model.Achievement;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.presenter.signature.SuggestionListPresenter;
 import no.ntnu.mikaelr.delta.presenter.SuggestionListPresenterImpl;
+import no.ntnu.mikaelr.delta.util.AchievementStore;
+import no.ntnu.mikaelr.delta.util.BadgeIdConverter;
 import no.ntnu.mikaelr.delta.view.signature.SuggestionListView;
 
 import java.util.List;
@@ -47,6 +52,14 @@ public class SuggestionListActivity extends AppCompatActivity implements Suggest
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(this);
 
+        Achievement achievement = (Achievement) getIntent().getSerializableExtra("achievement");
+        if (achievement != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(CustomDialog.newInstance(achievement.getName(), achievement.getDescription(), "OK", null,
+                            BadgeIdConverter.getInstance().convertBadgeNameToResourceId(achievement.getBadgeName())), null)
+                    .commitAllowingStateLoss();
+        }
         presenter.loadSuggestions();
     }
 
