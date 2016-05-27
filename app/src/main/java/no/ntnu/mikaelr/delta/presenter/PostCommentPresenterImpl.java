@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 
-public class PostCommentPresenterImpl implements PostCommentPresenter, ProjectInteractorImpl.OnPostCommentListener, ProjectInteractorImpl.OnGetCommentAhievementListener {
+public class PostCommentPresenterImpl implements PostCommentPresenter, ProjectInteractorImpl.OnPostCommentListener, ProjectInteractorImpl.OnGetCommentAchievementListener {
 
     private PostCommentView view;
     private AppCompatActivity context;
@@ -72,7 +72,7 @@ public class PostCommentPresenterImpl implements PostCommentPresenter, ProjectIn
     @Override
     public void onGetCommentAchievementSuccess(String result) {
         Intent intent = new Intent();
-        if (!result.equals("false")) {
+        if (result != null) {
             Achievement achievement = JsonFormatter.formatAchievement(result);
             intent.putExtra("achievement", achievement);
         }

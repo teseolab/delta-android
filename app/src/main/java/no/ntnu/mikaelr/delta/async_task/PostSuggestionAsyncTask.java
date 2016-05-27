@@ -67,7 +67,7 @@ public class PostSuggestionAsyncTask extends AsyncTask<Void, Void, Pair<Integer,
                 JSONObject response = new JSONObject(result.second.getBody());
                 listener.onPostSuggestionSuccess(response);
             } catch (JSONException e) {
-                listener.onPostSuggestionError(StatusCode.JSON_PARSE_EXCEPTION);
+                listener.onPostSuggestionSuccess(null);
             }
         }
         else {

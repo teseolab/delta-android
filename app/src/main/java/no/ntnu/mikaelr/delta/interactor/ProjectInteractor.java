@@ -10,7 +10,7 @@ public interface ProjectInteractor {
     void getSuggestions(int projectId, ProjectInteractorImpl.OnFinishedLoadingSuggestionsListener listener);
     void getSuggestionAchievement(ProjectInteractorImpl.OnGetSuggestionAchievementListener listener);
     void getComments(int suggestionId, ProjectInteractorImpl.OnFinishedLoadingCommentsListener listener);
-    void getCommentAchievement(ProjectInteractorImpl.OnGetCommentAhievementListener listener);
+    void getCommentAchievement(ProjectInteractorImpl.OnGetCommentAchievementListener listener);
     void getTopList(ProjectInteractorImpl.OnFinishedLoadingTopList listener);
     void getMe(ProjectInteractorImpl.OnGetUserListener listener);
     void getLogRecords(ProjectInteractorImpl.OnGetLogRecordsListener listener);

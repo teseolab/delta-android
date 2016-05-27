@@ -96,13 +96,13 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         new GetSuggestionAchievementAsyncTask(apiCall, listener).execute();
     }
 
-    public interface OnGetCommentAhievementListener {
+    public interface OnGetCommentAchievementListener {
         void onGetCommentAchievementSuccess(String result);
         void onGetCommentAchievementError(int errorCode);
     }
 
     @Override
-    public void getCommentAchievement(OnGetCommentAhievementListener listener) {
+    public void getCommentAchievement(OnGetCommentAchievementListener listener) {
         String apiCall = "http://" + Constants.SERVER_URL + "users/me/comments/achievement";
         new GetCommentAchievementAsyncTask(apiCall, listener).execute();
     }

@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
             ToolbarUtil.showSpinner(toggleMapButton, mapIsLoading);
             Drawable icon = showsMap ?
-                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_cards_white_24dp, null)
-                    : ResourcesCompat.getDrawable(getResources(), R.drawable.ic_map_white_24dp, null);
+                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_list_white_24dp, null)
+                    : ResourcesCompat.getDrawable(getResources(), R.drawable.ic_room_white_24dp, null);
             toggleMapButton.setIcon(icon);
             toggleMapButton.setVisible(true);
 

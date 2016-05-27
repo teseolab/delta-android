@@ -2,8 +2,8 @@ package no.ntnu.mikaelr.delta.util;
 
 public class Constants {
 
-//    public static final String SERVER_URL = "129.241.113.73:8080";
-    public static final String SERVER_URL = "129.241.102.204:8080";
+    public static final String SERVER_URL = "129.241.113.73:8080";
+//    public static final String SERVER_URL = "129.241.102.204:8080";
 //    public static final String SERVER_URL = "10.0.0.8:8080";
 
     public static final String IMAGES_PATH = SERVER_URL + "/images/";
@@ -17,6 +17,5 @@ public class Constants {
 
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
     public static final int CHOOSE_IMAGE_ACTIVITY_REQUEST_CODE = 2;
-    public static final int GOTO_SUGGESTION_LIST_WITH_SUGGESTIONCOUNT = 3;
 
 }
