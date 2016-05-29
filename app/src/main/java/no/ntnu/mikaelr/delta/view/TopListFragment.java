@@ -76,6 +76,8 @@ public class TopListFragment extends Fragment implements TopListView, AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        presenter.onItemClick(position);
+        if (id != -1) {
+            presenter.onItemClick(position);
+        }
     }
 }

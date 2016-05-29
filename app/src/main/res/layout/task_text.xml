@@ -39,6 +39,12 @@
             android:layout_height="wrap_content"
             android:padding="15dp"/>
 
+        <TextView
+            android:id="@+id/question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"/>
+
         <EditText
             android:id="@+id/text_task_response"
             android:layout_width="match_parent"

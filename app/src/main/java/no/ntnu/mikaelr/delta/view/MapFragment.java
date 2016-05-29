@@ -122,6 +122,11 @@ public class MapFragment extends Fragment implements MapFragView, OnMapReadyCall
                 return false;
             }
         });
+        map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+            }
+        });
         map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {

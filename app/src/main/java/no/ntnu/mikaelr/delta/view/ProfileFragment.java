@@ -38,7 +38,10 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        presenter = new ProfilePresenterImpl(this);
+        presenter = new ProfilePresenterImpl(this, this);
+
+        View toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.GONE);
 
         LinearLayout header = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.profile_header, null);
 
@@ -55,8 +58,8 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
         achievementList.addHeaderView(header);
         achievementList.setAdapter(adapter);
 
-        presenter.loadProfile();
-        presenter.loadAchievements();
+        presenter.loadProfile(null);
+        presenter.loadMyAchievements();
 
         return view;
     }
@@ -96,7 +99,7 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.avatar) {
+        if (v.getId() == R.id.avatar && presenter.userIsLoaded()) {
             AddImageDialog.newInstance().show(getFragmentManager(), "tag");
         }
     }

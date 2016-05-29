@@ -60,12 +60,8 @@ public class GetTasks2AsyncTask extends AsyncTask<Void, Void, Pair<Integer, Resp
     protected void onPostExecute(Pair<Integer, ResponseEntity<String>> result) {
 
         if (result.first == StatusCode.HTTP_OK) {
-            try {
-                JSONArray response = new JSONArray(result.second.getBody());
-                listener.onGetTasksSuccess(response);
-            } catch (JSONException e) {
-                listener.onGetTasksError(StatusCode.JSON_PARSE_EXCEPTION);
-            }
+//                JSONArray response = new JSONArray(result.second.getBody());
+            listener.onGetTasksSuccess(result.second.getBody());
         }
         else {
             listener.onGetTasksError(result.first);

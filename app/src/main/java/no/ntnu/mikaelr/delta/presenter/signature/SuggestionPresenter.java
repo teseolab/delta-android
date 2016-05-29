@@ -4,22 +4,14 @@ import android.content.Intent;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 
 public interface SuggestionPresenter {
-
     void loadComments();
-
     Suggestion getSuggestion();
     boolean userAgrees();
-
     boolean userDisagrees();
-    boolean hasImage();
-
     void postAgreement();
-
     void postDisagreement();
-
     void onFinished();
-
     void goToPostComment();
-
     void onActivityResult(int requestCode, Intent data);
+    void onCommentClick(int position);
 }

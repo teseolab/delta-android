@@ -3,6 +3,8 @@ package no.ntnu.mikaelr.delta.interactor;
 import no.ntnu.mikaelr.delta.model.TaskResponse;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 
+import java.util.List;
+
 public interface ProjectInteractor {
 
     void getProjects(ProjectInteractorImpl.OnGetProjectsListener listener);
@@ -13,9 +15,10 @@ public interface ProjectInteractor {
     void getCommentAchievement(ProjectInteractorImpl.OnGetCommentAchievementListener listener);
     void getTopList(ProjectInteractorImpl.OnFinishedLoadingTopList listener);
     void getMe(ProjectInteractorImpl.OnGetUserListener listener);
+    void getUser(int userId, ProjectInteractorImpl.OnGetUserListener listener);
     void getLogRecords(ProjectInteractorImpl.OnGetLogRecordsListener listener);
 
-    void postResponse(TaskResponse response, ProjectInteractorImpl.OnPostProjectResponseListener listener);
+    void postResponse(List<TaskResponse> response, ProjectInteractorImpl.OnPostProjectResponseListener listener);
     void postFinishedMission(int projectId, ProjectInteractorImpl.OnPostFinishedMission listener);
     void postAgreement(int suggestionId, ProjectInteractorImpl.OnPostAgreementListener listener);
     void postDisagreement(int suggestionId, ProjectInteractorImpl.OnPostDisagreementListener listener);
@@ -30,4 +33,9 @@ public interface ProjectInteractor {
 
     void putAvatar(String avatarUri, ProjectInteractorImpl.OnPutAvatarListener listener);
     void getMyAchievements(ProjectInteractorImpl.OnGetAchievementsListener listener);
+
+    void postMissionLocations(String locations, ProjectInteractorImpl.OnPostMissionLocationsListener listener);
+
+    void getUserAchievements(int userId, ProjectInteractorImpl.OnGetAchievementsListener listener);
+
 }

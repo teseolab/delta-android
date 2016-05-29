@@ -252,21 +252,27 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     @Override
     public void onBackPressed() {
         // TODO: Refactoring
-        if (previousDrawerMenuPosition == 0) {
-            if (showsMap) {
-                fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
-            } else {
-                super.onBackPressed();
-            }
+
+        if (drawerView.isDrawerOpen(drawerList)) {
+            drawerView.closeDrawer(drawerList);
         } else {
-            fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
-            drawerList.setItemChecked(0, true);
-            ToolbarUtil.setTitle(this, menuItemMap.get(0));
-            previousDrawerMenuPosition = 0;
-            clickedDrawerMenuPosition = 0;
+
+            if (previousDrawerMenuPosition == 0) {
+                if (showsMap) {
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
+                } else {
+                    super.onBackPressed();
+                }
+            } else {
+                fragmentManager.beginTransaction().replace(R.id.content_frame, projectListFragment, MENU_ITEM_MAIN).commit();
+                drawerList.setItemChecked(0, true);
+                ToolbarUtil.setTitle(this, menuItemMap.get(0));
+                previousDrawerMenuPosition = 0;
+                clickedDrawerMenuPosition = 0;
+            }
+            showsMap = false;
+            supportInvalidateOptionsMenu();
         }
-        showsMap = false;
-        supportInvalidateOptionsMenu();
     }
 
     @Override

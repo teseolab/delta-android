@@ -5,63 +5,62 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import no.ntnu.mikaelr.delta.R;
-import no.ntnu.mikaelr.delta.view.MainActivity;
 import no.ntnu.mikaelr.delta.view.MissionActivity;
 
-public class LocationService extends Service {
+public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks {
+
+    private GoogleApiClient googleApiClient;
+
     private static final int TWO_MINUTES = 1000 * 60 * 2;
-    public LocationManager locationManager;
     public MyLocationListener listener;
     public Location previousBestLocation = null;
 
-    private Intent intent;
+    private SQLiteDatabase database;
+
+    private float goalLatitude;
+    private float goalLongitude;
+    private int currentTaskIndex;
+    private int projectId;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        intent = new Intent();
+        database = new DbHelper(LocationService.this).getWritableDatabase();
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+        googleApiClient.connect();
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
+    public int onStartCommand(final Intent intent, int flags, int startId) {
+        projectId = intent.getIntExtra("projectId", -1);
+        goalLatitude = intent.getFloatExtra("currentTaskLatitude", -1);
+        goalLongitude = intent.getFloatExtra("currentTaskLongitude", -1);
+        currentTaskIndex = intent.getIntExtra("currentTaskIndex", -1);
+        listener = new MyLocationListener(this, goalLatitude, goalLongitude);
         Log.v("START_SERVICE", "DONE");
-
-        float goalLatitude = intent.getFloatExtra("currentTaskLatitude", -1);
-        float goalLongitude = intent.getFloatExtra("currentTaskLongitude", -1);
-
-        if (goalLatitude == -1 || goalLongitude == -1) {
-            System.out.println("Could not retrieve goal location from task");
-        }
-
-        else {
-
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            listener = new MyLocationListener(this, goalLatitude, goalLongitude);
-
-            // TODO: Note about permission
-            // On Marshmallow, if permission is not granted, this service will not do anything
-            int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 0, listener);
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0, listener);
-            }
-        }
-
         return START_NOT_STICKY;
     }
 
@@ -69,6 +68,19 @@ public class LocationService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.v("STOP_SERVICE", "DONE");
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, listener);
+        }
+        googleApiClient.disconnect();
+    }
+
+
 
     protected boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
@@ -122,18 +134,6 @@ public class LocationService extends Service {
         return provider1.equals(provider2);
     }
 
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.v("STOP_SERVICE", "DONE");
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            locationManager.removeUpdates(listener);
-        }
-    }
-
     public static Thread performOnBackgroundThread(final Runnable runnable) {
         final Thread t = new Thread() {
             @Override
@@ -149,6 +149,33 @@ public class LocationService extends Service {
         return t;
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+        if (goalLatitude == -1 || goalLongitude == -1) {
+            Log.w("LocationService", "Could not retrieve goal location from task");
+        }
+
+        else {
+
+            // TODO: Note about permission
+            // On Marshmallow, if permission is not granted, this service will not do anything
+            int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                LocationRequest locationRequest = new LocationRequest();
+                locationRequest.setInterval(3000);
+                locationRequest.setSmallestDisplacement(5);
+                locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, listener);
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
     public class MyLocationListener implements LocationListener {
 
         private LocationService context;
@@ -162,6 +189,25 @@ public class LocationService extends Service {
         }
 
         public void onLocationChanged(final Location loc) {
+
+            if (currentTaskIndex > 0) {
+                ContentValues positionRow = new ContentValues();
+                positionRow.put("project_id", projectId);
+                positionRow.put("latitude", loc.getLatitude());
+                positionRow.put("longitude", loc.getLongitude());
+                database.insert("positions", null, positionRow);
+                Log.i("Saved position: ", loc.getLatitude() + ", " + loc.getLongitude());
+            }
+
+//            String[] projection = {"latitude, longitude"};
+//            Cursor cursor = database.query("positions", projection, null, null, null, null, null);
+//            while (cursor.moveToNext()) {
+//                double latitude = cursor.getDouble(0);
+//                double longitude = cursor.getDouble(1);
+//                Log.i("Position (service): ", latitude + ", " + longitude);
+//            }
+//            cursor.close();
+
             if (isBetterLocation(loc, previousBestLocation)) {
 
                 float distanceToTaskLocation = loc.distanceTo(goalLocation);
@@ -190,17 +236,6 @@ public class LocationService extends Service {
                 }
             }
         }
-
-        public void onProviderDisabled(String provider) {
-            Toast.makeText(getApplicationContext(), "GPS aktivert", Toast.LENGTH_SHORT ).show();
-        }
-
-
-        public void onProviderEnabled(String provider) {
-            Toast.makeText(getApplicationContext(), "GPS deaktivert", Toast.LENGTH_SHORT).show();
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
 
     }
 }

@@ -109,7 +109,9 @@ public class SuggestionListActivity extends AppCompatActivity implements Suggest
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        presenter.onItemClick(position);
+        if (id != -1) {
+            presenter.onItemClick(position);
+        }
     }
 
     @Override

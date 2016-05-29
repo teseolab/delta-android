@@ -1,5 +1,6 @@
 package no.ntnu.mikaelr.delta.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import no.ntnu.mikaelr.delta.util.TaskType;
 
 import java.io.InputStream;
@@ -18,7 +19,8 @@ public class Task implements Serializable {
     private float longitude;
     private String hint;
     private String description;
-    private List<String> taskElements;
+    @JsonProperty("taskQuestions")
+    private List<TaskQuestion> questions;
 
     public Integer getId() {
         return id;
@@ -92,11 +94,11 @@ public class Task implements Serializable {
         this.description = description;
     }
 
-    public List<String> getTaskElements() {
-        return taskElements;
+    public List<TaskQuestion> getQuestions() {
+        return questions;
     }
 
-    public void setTaskElements(List<String> taskElements) {
-        this.taskElements = taskElements;
+    public void setQuestions(List<TaskQuestion> questions) {
+        this.questions = questions;
     }
 }

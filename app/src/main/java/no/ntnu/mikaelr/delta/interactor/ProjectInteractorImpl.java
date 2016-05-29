@@ -1,12 +1,17 @@
 package no.ntnu.mikaelr.delta.interactor;
 
 import android.graphics.Bitmap;
+import android.util.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ntnu.mikaelr.delta.async_task.*;
 import no.ntnu.mikaelr.delta.model.TaskResponse;
 import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.util.Constants;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
 
 public class ProjectInteractorImpl implements ProjectInteractor {
 
@@ -22,7 +27,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     }
 
     public interface OnGetTasksListener {
-        void onGetTasksSuccess(JSONArray jsonArray);
+        void onGetTasksSuccess(String response);
         void onGetTasksError(int errorCode);
     }
 
@@ -33,13 +38,18 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     }
 
     public interface OnPostProjectResponseListener {
-        void onPostProjectResponseSuccess(JSONObject jsonObject);
+        void onPostProjectResponseSuccess();
         void onPostProjectResponseError(Integer errorCode);
     }
     @Override
-    public void postResponse(TaskResponse taskResponse, OnPostProjectResponseListener listener) {
-        String apiCall = "http://" + Constants.SERVER_URL + "/projects/" + taskResponse.getProjectId() + "/responses";
-        new PostResponseAsyncTask(apiCall, taskResponse.toJson(), listener).execute();
+    public void postResponse(List<TaskResponse> taskResponse, OnPostProjectResponseListener listener) {
+        String apiCall = "http://" + Constants.SERVER_URL + "/projects/taskResponses";
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            new PostResponseAsyncTask(apiCall, mapper.writeValueAsString(taskResponse), listener).execute();
+        } catch (IOException e) {
+            Log.w("ProjectInteractorImpl", e.getMessage());
+        }
     }
 
     public interface OnPostFinishedMission {
@@ -129,6 +139,12 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         new GetUserAsyncTask(apiCall, listener).execute();
     }
 
+    @Override
+    public void getUser(int userId, OnGetUserListener listener) {
+        String apiCall = "http://" + Constants.SERVER_URL + "/users/" + userId;
+        new GetUserAsyncTask(apiCall, listener).execute();
+    }
+
     public interface OnGetLogRecordsListener {
         void onGetLogRecordsSuccess(JSONArray jsonArray);
         void onGetLogRecordsError(int errorCode);
@@ -169,9 +185,7 @@ public class ProjectInteractorImpl implements ProjectInteractor {
     }
     public interface OnPostCommentListener {
         void onPostCommentSuccess(JSONArray jsonArray);
-
         void onPostCommentError(int errorCode);
-
     }
 
     @Override
@@ -222,4 +236,23 @@ public class ProjectInteractorImpl implements ProjectInteractor {
         String apiCall = "http://" + Constants.SERVER_URL + "/users/me/achievements";
         new GetAchievementsAsyncTask(apiCall, listener).execute();
     }
+
+    @Override
+    public void getUserAchievements(int userId, OnGetAchievementsListener listener) {
+        String apiCall = "http://" + Constants.SERVER_URL + "/users/" + userId + "/achievements";
+        new GetAchievementsAsyncTask(apiCall, listener).execute();
+    }
+
+    public interface OnPostMissionLocationsListener {
+        void onPostMissionLocationsSuccess();
+        void onPostMissionLocationsError(int errorCode);
+    }
+
+    @Override
+    public void postMissionLocations(String locations, OnPostMissionLocationsListener listener) {
+        String apiCall = "http://" + Constants.SERVER_URL + "/admin/postMissionLocations";
+        new PostMissionLocationsAsyncTask(apiCall, locations, listener).execute();
+    }
+
+
 }

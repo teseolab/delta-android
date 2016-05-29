@@ -22,7 +22,7 @@ import no.ntnu.mikaelr.delta.view.signature.SuggestionView;
 
 import java.util.List;
 
-public class SuggestionActivity extends AppCompatActivity implements SuggestionView, View.OnClickListener {
+public class SuggestionActivity extends AppCompatActivity implements SuggestionView, View.OnClickListener, AdapterView.OnItemClickListener {
 
     private SuggestionPresenter presenter;
 
@@ -59,9 +59,7 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
     public void onContentChanged() {
         super.onContentChanged();
         listView = (ListView) findViewById(R.id.comment_list);
-//        TextView emptyView = (TextView) findViewById(R.id.empty_view);
-//        emptyView.setText("Det er ingen kommentarer enda.");
-//        listView.setEmptyView(emptyView);
+        listView.setOnItemClickListener(this);
     }
 
     // PRIVATE METHODS -------------------------------------------------------------------------------------------------
@@ -234,4 +232,10 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (id != -1) {
+            presenter.onCommentClick(position);
+        }
+    }
 }

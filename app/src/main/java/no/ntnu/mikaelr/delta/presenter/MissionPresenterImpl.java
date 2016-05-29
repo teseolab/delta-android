@@ -2,9 +2,12 @@ package no.ntnu.mikaelr.delta.presenter;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -13,7 +16,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.*;
@@ -28,13 +33,17 @@ import no.ntnu.mikaelr.delta.util.*;
 import no.ntnu.mikaelr.delta.view.signature.MissionView;
 import no.ntnu.mikaelr.delta.view.TaskActivity;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class MissionPresenterImpl implements MissionPresenter, ProjectInteractorImpl.OnGetTasksListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener,
-        ProjectInteractorImpl.OnPostFinishedMission {
+        ProjectInteractorImpl.OnPostFinishedMission, ProjectInteractorImpl.OnPostMissionLocationsListener {
 
     private MissionView view;
     private AppCompatActivity context;
@@ -43,6 +52,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     private GoogleApiClient googleApiClient;
     private PhraseGenerator phraseGenerator;
     private Intent serviceIntent;
+    private SQLiteDatabase database;
 
     private List<Task> loadedTasks;
     private int currentTaskIndex = 0;
@@ -73,6 +83,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         interactor = new ProjectInteractorImpl();
         project = getProjectFromIntent();
         phraseGenerator = new PhraseGenerator();
+        database = new DbHelper(context).getWritableDatabase();
 
         initializeGoogleApiClient();
     }
@@ -123,7 +134,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 
     @Override
     public Task getCurrentTask() {
-        if (currentTaskIndex == -1) {
+        if (currentTaskIndex == -1 || loadedTasks == null || missionIsCompleted) {
             return null;
         }
         return loadedTasks.get(currentTaskIndex);
@@ -149,8 +160,10 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         // Could also have been "fixed" by setting default value of locationServiceShouldStart to false.
         if (getCurrentTask() != null) {
             if (locationServiceShouldStart) {
+                serviceIntent.putExtra("projectId", project.getId());
                 serviceIntent.putExtra("currentTaskLatitude", getCurrentTask().getLatitude());
                 serviceIntent.putExtra("currentTaskLongitude", getCurrentTask().getLongitude());
+                serviceIntent.putExtra("currentTaskIndex", currentTaskIndex);
                 context.startService(serviceIntent);
             }
 //            else {
@@ -208,9 +221,11 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             } else  {
                 view.getMap().setMyLocationEnabled(true);
                 LocationRequest locationRequest = new LocationRequest();
-                locationRequest.setInterval(1000);
+                locationRequest.setInterval(3000);
+                locationRequest.setSmallestDisplacement(5);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+                Log.i("MissionPresenterImpl", "Location updates started");
             }
         }
     }
@@ -298,11 +313,36 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         }
 
         if (missionIsCompleted) {
+
             currentTaskIndex = -1;
+
             interactor.postFinishedMission(project.getId(), this);
             String username = SharedPrefsUtil.getInstance().getUsername();
             SharedPrefsUtil.getInstance().setMissionCompletionStatus(project.getId(), username, Constants.YES);
 
+            String[] projection = {"project_id", "latitude, longitude"};
+            String[] where = {project.getId().toString()};
+            Cursor cursor = database.query("positions", projection, "project_id=?", where, null, null, null);
+
+            JSONArray jsonArray = new JSONArray();
+            while (cursor.moveToNext()) {
+                int projectId = cursor.getInt(0);
+                double latitude = cursor.getDouble(1);
+                double longitude = cursor.getDouble(2);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("project_id", projectId);
+                    jsonObject.put("latitude", latitude);
+                    jsonObject.put("longitude", longitude);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                jsonArray.put(jsonObject);
+            }
+
+            cursor.close();
+
+            interactor.postMissionLocations(jsonArray.toString(), this);
             context.setResult(Activity.RESULT_OK);
             context.finish();
 
@@ -372,6 +412,15 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     @Override
     public void onLocationChanged(Location location) {
 
+        if (currentTaskIndex > 0) {
+            ContentValues positionRow = new ContentValues();
+            positionRow.put("project_id", project.getId());
+            positionRow.put("latitude", location.getLatitude());
+            positionRow.put("longitude", location.getLongitude());
+            database.insert("positions", null, positionRow);
+            Log.i("Saved position: ", location.getLatitude() + ", " + location.getLongitude());
+        }
+
         float distanceToTaskLocation = location.distanceTo(getCurrentTaskLocation());
         view.setDistance("Neste punkt: " + String.format("%.0f", distanceToTaskLocation) + " m");
 
@@ -406,33 +455,51 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     // ASYNC TASK LISTENERS --------------------------------------------------------------------------------------------
 
     @Override
-    public void onGetTasksSuccess(JSONArray jsonArray) {
+    public void onGetTasksSuccess(String response) {
 
-        List<Task> tasks = JsonFormatter.formatTasks(jsonArray);
-        tasks.add(0, getDefaultFirstTask());
-        loadedTasks = tasks;
-
-        // Check SharedPreferences if the start location has already been completed as this is not stored on the server
-        startLocationIsFound = SharedPrefsUtil.getInstance().getFirstTaskFinishedStatus(project.getId()).equals(Constants.YES);
-        if (startLocationIsFound) {
-            currentTaskIndex = 1;
+        ObjectMapper mapper = new ObjectMapper();
+        List<Task> tasks = null;
+        try {
+            tasks = Arrays.asList(mapper.readValue(response, Task[].class));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+//        List<Task> tasks = JsonFormatter.formatTasks(jsonArray);
+//        tasks.add(0, getDefaultFirstTask());
 
-        initializeCurrentTaskIndex(tasks);
-        addFinishedMarkers();
-        view.zoomMapToMarkers();
-        view.setHint(tasks.get(currentTaskIndex).getHint());
+        if (tasks != null && tasks.size() > 0) {
+            loadedTasks = tasks;
 
-        if (googleApiClient.isConnected()) {
-            startLocationUpdates();
+            // Check SharedPreferences if the start location has already been completed as this is not stored on the server
+//            startLocationIsFound = SharedPrefsUtil.getInstance().getFirstTaskFinishedStatus(project.getId()).equals(Constants.YES);
+//            if (startLocationIsFound) {
+//                currentTaskIndex = 1;
+//            }
+
+            initializeCurrentTaskIndex(tasks);
+            addFinishedMarkers();
+            view.zoomMapToMarkers();
+
+            missionIsCompleted = currentTaskIndex == loadedTasks.size();
+            if (!missionIsCompleted) {
+                view.setHint(tasks.get(currentTaskIndex).getHint());
+            }
+
+            if (googleApiClient.isConnected()) {
+                startLocationUpdates();
+            }
         }
     }
 
     private void initializeCurrentTaskIndex(List<Task> tasks) {
-        int i = 1;
-        while (tasks.get(i).isFinished()) {
-            i = i + 1;
-            currentTaskIndex = i;
+        try {
+            int i = 0;
+            while (tasks.get(i).isFinished()) {
+                i = i + 1;
+                currentTaskIndex = i;
+            }
+        } catch (IndexOutOfBoundsException e) {
+            Log.w("MissionPresenterImpl", e.getMessage());
         }
     }
 
@@ -455,4 +522,15 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         // TODO: ?
     }
 
+    @Override
+    public void onPostMissionLocationsSuccess() {
+        String selection = "project_id LIKE ?";
+        String[] selectionArgs = {project.getId().toString()};
+        database.delete("positions", selection, selectionArgs);
+    }
+
+    @Override
+    public void onPostMissionLocationsError(int errorCode) {
+
+    }
 }

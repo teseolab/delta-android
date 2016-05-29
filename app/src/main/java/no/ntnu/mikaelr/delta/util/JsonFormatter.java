@@ -1,5 +1,6 @@
 package no.ntnu.mikaelr.delta.util;
 
+import android.util.Log;
 import no.ntnu.mikaelr.delta.model.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,18 +68,30 @@ public class JsonFormatter {
                 task.setLongitude((float) jsonTask.getDouble("longitude"));
                 task.setHint(jsonTask.getString("hint"));
                 task.setDescription(jsonTask.getString("description"));
-                JSONArray jsonTaskElements = jsonTask.getJSONArray("taskElements");
-                List<String> taskElements = new ArrayList<String>();
-                for (int j = 0; j < jsonTaskElements.length(); j++) {
-                    taskElements.add(jsonTaskElements.getString(j));
+
+                JSONArray jsonTaskQuestions = jsonTask.getJSONArray("taskQuestions");
+                List<TaskQuestion> taskQuestions = new ArrayList<TaskQuestion>();
+                for (int j = 0; j < jsonTaskQuestions.length(); j++) {
+                    JSONObject jsonTaskQuestion = jsonTaskQuestions.getJSONObject(j);
+                    TaskQuestion taskQuestion = new TaskQuestion();
+                    taskQuestion.setId(jsonTaskQuestion.getInt("id"));
+                    taskQuestion.setQuestion(jsonTaskQuestion.getString("question"));
+                    JSONArray jsonTaskAlternatives = jsonTaskQuestion.getJSONArray("alternatives");
+                    List<String> alternatives = new ArrayList<String>();
+                    for (int k = 0; k < jsonTaskAlternatives.length(); k++) {
+                        alternatives.add(jsonTaskAlternatives.getString(k));
+                    }
+                    taskQuestion.setAlternatives(alternatives);
+                    taskQuestions.add(taskQuestion);
                 }
-                task.setTaskElements(taskElements);
+                task.setQuestions(taskQuestions);
                 tasks.add(task);
             }
         }
 
         catch (JSONException e) {
-            e.printStackTrace();
+            Log.w("JsonFormatter", e.getMessage());
+            return null;
         }
 
         return tasks;
@@ -183,5 +196,6 @@ public class JsonFormatter {
         }
         return achievement;
     }
+
 
 }

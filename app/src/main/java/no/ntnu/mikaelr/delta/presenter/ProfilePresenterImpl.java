@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.Toast;
-import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractor;
 import no.ntnu.mikaelr.delta.interactor.ProjectInteractorImpl;
@@ -16,6 +15,8 @@ import no.ntnu.mikaelr.delta.model.HighscoreUser;
 import no.ntnu.mikaelr.delta.presenter.signature.ProfilePresenter;
 import no.ntnu.mikaelr.delta.util.*;
 import no.ntnu.mikaelr.delta.view.ImageCropperActivity;
+import no.ntnu.mikaelr.delta.view.ProfileActivity;
+import no.ntnu.mikaelr.delta.view.ProfileFragment;
 import no.ntnu.mikaelr.delta.view.signature.ProfileView;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,45 +25,55 @@ import org.springframework.http.HttpStatus;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractorImpl.OnGetUserListener, ProjectInteractorImpl.OnPostImageListener, ProjectInteractorImpl.OnPutAvatarListener, ProjectInteractorImpl.OnGetAchievementsListener {
+public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractorImpl.OnGetUserListener,
+        ProjectInteractorImpl.OnPostImageListener, ProjectInteractorImpl.OnPutAvatarListener,
+        ProjectInteractorImpl.OnGetAchievementsListener {
 
+    private Fragment fragment = null;
     private ProfileView view;
-    private Fragment context;
+    private Activity activity;
     private ProjectInteractor interactor;
-
-    private Uri avatarUri;
-    private Bitmap avatar;
-
     private HighscoreUser user;
-    private List<Achievement> achievements;
-    private int REQUEST_OPEN_CAMERA = 0;
-    private int REQUEST_OPEN_GALLERY = 1;
 
-    public ProfilePresenterImpl(ProfileView view) {
+    public ProfilePresenterImpl(ProfileView view, Object context) {
         this.view = view;
-        this.context = (Fragment) view;
         this.interactor = new ProjectInteractorImpl();
+
+        if (context instanceof ProfileActivity) {
+            activity = (Activity) context;
+        } else if (context instanceof ProfileFragment) {
+            activity = ((Fragment) context).getActivity();
+            fragment = (Fragment) context;
+        }
     }
 
     // INTERFACE METHODS -----------------------------------------------------------------------------------------------
 
     @Override
-    public void loadProfile() {
-        interactor.getMe(this);
+    public void loadProfile(Integer userId) {
+        if (userId == null) {
+            interactor.getMe(this);
+        } else {
+            interactor.getUser(userId, this);
+        }
     }
 
     @Override
-    public void loadAchievements() {
+    public void loadMyAchievements() {
         interactor.getMyAchievements(this);
     }
 
     @Override
-    public void openImageCropper(int requestCode) {
-        Intent intent = new Intent(context.getActivity(), ImageCropperActivity.class);
-        intent.putExtra("requestCode", requestCode);
-        context.startActivityForResult(intent, requestCode);
+    public void loadUserAchievements(int userId) {
+        interactor.getUserAchievements(userId, this);
     }
 
+    @Override
+    public void openImageCropper(int requestCode) {
+        Intent intent = new Intent(activity, ImageCropperActivity.class);
+        intent.putExtra("requestCode", requestCode);
+        activity.startActivityForResult(intent, requestCode);
+    }
 
     @Override
     public void onCropResult(int resultCode, Intent data) {
@@ -70,7 +81,7 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
             Uri avatarUri = data.getParcelableExtra("avatarUri");
             if (avatarUri != null) {
                 try {
-                    avatar = ImageHandler.decodeImageFromFilePath(avatarUri, 350);
+                    Bitmap avatar = ImageHandler.decodeImageFromFilePath(avatarUri, 350);
                     interactor.uploadImage(ImageHandler.byteArrayFromBitmap(avatar), this);
                     view.setAvatar(avatarUri);
                 } catch (FileNotFoundException e) {
@@ -79,6 +90,11 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
                 }
             }
         }
+    }
+
+    @Override
+    public boolean userIsLoaded() {
+        return user != null;
     }
 
     // ASYNC TASK LISTENER ---------------------------------------------------------------------------------------------
@@ -92,7 +108,7 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
     @Override
     public void onGetUserError(int errorCode) {
         if (errorCode == HttpStatus.UNAUTHORIZED.value()) {
-            SessionInvalidator.invalidateSession(context.getActivity());
+            SessionInvalidator.invalidateSession(activity);
         } else {
             view.showMessage(ErrorMessage.COULD_NOT_LOAD_PROFILE, Toast.LENGTH_LONG);
         }
@@ -111,14 +127,16 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
     @Override
     public void onPutAvatarSuccess(String result) {
         if (result != null) {
-            loadProfile();
-            loadAchievements();
+            loadProfile(null);
+            loadMyAchievements();
             Achievement achievement = JsonFormatter.formatAchievement(result);
-            context.getFragmentManager()
-                    .beginTransaction()
-                    .add(CustomDialog.newInstance(achievement.getName(), achievement.getDescription(), "OK", null,
-                            BadgeIdConverter.getInstance().convertBadgeNameToResourceId(achievement.getBadgeName())), null)
-                    .commitAllowingStateLoss();
+            if (fragment != null) {
+                fragment.getFragmentManager()
+                        .beginTransaction()
+                        .add(CustomDialog.newInstance(achievement.getName(), achievement.getDescription(), "OK", null,
+                                BadgeIdConverter.getInstance().convertBadgeNameToResourceId(achievement.getBadgeName())), null)
+                        .commitAllowingStateLoss();
+            }
         }
     }
 
@@ -129,7 +147,7 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
 
     @Override
     public void onGetAchievementsSuccess(JSONArray jsonArray) {
-        achievements = JsonFormatter.formatAchievements(jsonArray);
+        List<Achievement> achievements = JsonFormatter.formatAchievements(jsonArray);
         view.updateAchievements(achievements);
     }
 

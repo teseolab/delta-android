@@ -2,18 +2,24 @@ package no.ntnu.mikaelr.delta.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.*;
 import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.fragment.ImageViewerDialog;
 import no.ntnu.mikaelr.delta.model.Task;
-import no.ntnu.mikaelr.delta.presenter.signature.TaskPresenter;
+import no.ntnu.mikaelr.delta.model.TaskQuestion;
+import no.ntnu.mikaelr.delta.model.TaskResponse;
 import no.ntnu.mikaelr.delta.presenter.TaskPresenterImpl;
+import no.ntnu.mikaelr.delta.presenter.signature.TaskPresenter;
 import no.ntnu.mikaelr.delta.view.signature.TaskView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar.OnSeekBarChangeListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
@@ -21,6 +27,7 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
 
     private ArrayList<View> scaleTaskViews = new ArrayList<View>();
     private RadioGroup radioGroup;
+    private List<RadioGroup> radioGroups = new ArrayList<RadioGroup>();
 
     private boolean responseIsBeingPosted = false;
 
@@ -112,21 +119,23 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         TextView descriptionView = (TextView) parentLayout.findViewById(R.id.description);
         descriptionView.setText(task.getDescription());
 
-        for (String taskElement : task.getTaskElements()) {
+        for (TaskQuestion taskQuestion : task.getQuestions()) {
 
             View scaleTaskView = inflater.inflate(R.layout.task_scale_item, null);
             TextView scaleTaskTextView = (TextView) scaleTaskView.findViewById(R.id.task_scale_text);
-            scaleTaskTextView.setText(taskElement);
+            scaleTaskTextView.setText(taskQuestion.getQuestion());
 
             parentLayout.addView(scaleTaskView);
+            scaleTaskView.setId(taskQuestion.getId());
             scaleTaskViews.add(scaleTaskView);
 
             SeekBar seekBar = (SeekBar) scaleTaskView.findViewById(R.id.seekbar);
             seekBar.setOnSeekBarChangeListener(this);
 
             TextView textView = (TextView) scaleTaskView.findViewById(R.id.seekbar_text);
-            String scaleValue = presenter.getScaleValue(seekBar.getProgress());
+            String scaleValue = taskQuestion.getAlternatives().get(seekBar.getProgress());
             textView.setText(scaleValue);
+
         }
 
         setContentView(taskView);
@@ -135,10 +144,11 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
 
     private void initializeAlternativeTaskView(int taskIndex, Task task) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        View taskView = inflater.inflate(R.layout.task_alternative, null);
+        LinearLayout view = (LinearLayout) inflater.inflate(R.layout.task_alternative, null);
+        LinearLayout parentLayout = (LinearLayout) view.findViewById(R.id.parent_layout_task_alternative);
 
-        View imageWrapper = taskView.findViewById(R.id.imageWrapper);
-        ImageView image = (ImageView) taskView.findViewById(R.id.image);
+        View imageWrapper = parentLayout.findViewById(R.id.imageWrapper);
+        ImageView image = (ImageView) parentLayout.findViewById(R.id.image);
         image.setOnClickListener(this);
         String imageUri = task.getImageUri();
         if (imageUri != null) {
@@ -147,24 +157,32 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
             imageWrapper.setVisibility(View.GONE);
         }
 
-        TextView descriptionView = (TextView) taskView.findViewById(R.id.description);
-        descriptionView.setText(task.getDescription());
+        for (TaskQuestion taskQuestion : task.getQuestions()) {
+            LinearLayout taskItemView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.task_alternative_item, null);
+            TextView descriptionView = (TextView) taskItemView.findViewById(R.id.description);
+            descriptionView.setText(taskQuestion.getQuestion());
 
-        radioGroup = (RadioGroup) taskView.findViewById(R.id.radio_group);
-        radioGroup.setOnCheckedChangeListener(this);
+            radioGroup = (RadioGroup) taskItemView.findViewById(R.id.radio_group);
+            radioGroup.setId(taskQuestion.getId());
+            radioGroup.setOnCheckedChangeListener(this);
 
-        for (int i = 0; i < task.getTaskElements().size(); i++) {
-            String taskElement = task.getTaskElements().get(i);
             LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
                     RadioGroup.LayoutParams.WRAP_CONTENT,
                     RadioGroup.LayoutParams.WRAP_CONTENT);
-            RadioButton radioButton = new RadioButton(this);
-            radioButton.setId(i);
-            radioButton.setText(taskElement);
-            radioGroup.addView(radioButton, layoutParams);
+
+            for (int i = 0; i < taskQuestion.getAlternatives().size(); i++) {
+                String alternative = taskQuestion.getAlternatives().get(i);
+                RadioButton radioButton = new RadioButton(this);
+                radioButton.setId(taskQuestion.getId()*10 + i);
+                radioButton.setText(alternative);
+                radioGroup.addView(radioButton, layoutParams);
+            }
+            radioGroups.add(radioGroup);
+
+            parentLayout.addView(taskItemView);
         }
 
-        setContentView(taskView);
+        setContentView(view);
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex);
     }
 
@@ -182,8 +200,12 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
             imageWrapper.setVisibility(View.GONE);
         }
 
-        TextView textTaskTextView = (TextView) taskView.findViewById(R.id.description);
-        textTaskTextView.setText(task.getDescription());
+        TextView descriptionTextView = (TextView) taskView.findViewById(R.id.description);
+        descriptionTextView.setText(task.getDescription());
+
+        TextView questionTextView = (TextView) taskView.findViewById(R.id.question);
+        // TODO: 30.05.2016 Only supports one question
+        questionTextView.setText(task.getQuestions().get(0).getQuestion());
 
         setContentView(taskView);
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex);
@@ -198,26 +220,45 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
     }
 
     @Override
-    public String getTextTaskResponse() {
+    public List<TaskResponse> getTextTaskResponse() {
         EditText editText = (EditText) findViewById(R.id.text_task_response);
-        return editText.getText().toString();
+        String response = editText.getText().toString();
+        TaskResponse taskResponse = new TaskResponse();
+        taskResponse.setQuestionId(presenter.getTask().getQuestions().get(0).getId());
+        taskResponse.setResponse(Collections.singletonList(response));
+        return Collections.singletonList(taskResponse);
     }
 
     @Override
-    public ArrayList<String> getScaleTaskResponse() {
-        ArrayList<String> response = new ArrayList<String>();
+    public List<TaskResponse> getScaleTaskResponses() {
+        List<TaskResponse> taskResponses = new ArrayList<TaskResponse>();
         for (View scaleTaskView : scaleTaskViews) {
             TextView seekBarTextView = (TextView) scaleTaskView.findViewById(R.id.seekbar_text);
-            response.add(seekBarTextView.getText().toString());
+            String response = seekBarTextView.getText().toString();
+            TaskResponse taskResponse = new TaskResponse();
+            taskResponse.setQuestionId(scaleTaskView.getId());
+            taskResponse.setResponse(Collections.singletonList(response));
+            taskResponses.add(taskResponse);
         }
-        return response;
+        return taskResponses;
     }
 
     @Override
-    public String getAlternativeTaskResponse() {
-        int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-        RadioButton checkedRadioButton = (RadioButton) findViewById(checkedRadioButtonId);
-        return checkedRadioButton.getText().toString();
+    public List<TaskResponse> getAlternativeTaskResponses() {
+        List<TaskResponse> taskResponses = new ArrayList<TaskResponse>();
+
+        for (RadioGroup radioGroup : radioGroups) {
+            int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+            RadioButton checkedRadioButton = (RadioButton) findViewById(checkedRadioButtonId);
+            if (checkedRadioButton != null) {
+                String response = checkedRadioButton.getText().toString();
+                TaskResponse taskResponse = new TaskResponse();
+                taskResponse.setQuestionId(radioGroup.getId());
+                taskResponse.setResponse(Collections.singletonList(response));
+                taskResponses.add(taskResponse);
+            }
+        }
+        return taskResponses;
     }
 
     @Override

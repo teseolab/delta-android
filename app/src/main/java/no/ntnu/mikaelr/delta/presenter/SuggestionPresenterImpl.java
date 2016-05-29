@@ -16,6 +16,7 @@ import no.ntnu.mikaelr.delta.model.Suggestion;
 import no.ntnu.mikaelr.delta.presenter.signature.SuggestionPresenter;
 import no.ntnu.mikaelr.delta.util.*;
 import no.ntnu.mikaelr.delta.view.PostCommentActivity;
+import no.ntnu.mikaelr.delta.view.ProfileActivity;
 import no.ntnu.mikaelr.delta.view.signature.SuggestionView;
 import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
     private ProjectInteractor projectInteractor;
 
     private Suggestion suggestion;
+    private ArrayList<Comment> comments;
 
     private final int COMMENT_REQUEST = 1;
 
@@ -72,11 +74,6 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
     @Override
     public boolean userDisagrees() {
         return suggestion.getAgrees().equals(Constants.NO);
-    }
-
-    @Override
-    public boolean hasImage() {
-        return !suggestion.getImageUri().equals("");
     }
 
     @Override
@@ -126,11 +123,18 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
         }
     }
 
+    @Override
+    public void onCommentClick(int position) {
+        Intent intent = new Intent(context, ProfileActivity.class);
+        intent.putExtra("userId", comments.get(position-1).getUser().getId());
+        context.startActivity(intent);
+    }
+
     // ASYNC TASK LISTENERS --------------------------------------------------------------------------------------------
 
     @Override
     public void onFinishedLoadingCommentsSuccess(JSONArray jsonArray) {
-        List<Comment> comments = JsonFormatter.formatComments(jsonArray);
+        comments = JsonFormatter.formatComments(jsonArray);
         view.updateComments(comments);
         if (comments.size() == 0) {
             view.setEmptyListMessage("Det er ingen kommentarer enda. Bli den første til å skrive noe!");

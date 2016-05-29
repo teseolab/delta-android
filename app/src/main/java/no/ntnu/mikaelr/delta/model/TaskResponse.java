@@ -11,6 +11,7 @@ public class TaskResponse {
     private List<String> response;
     private int projectId;
     private int taskId;
+    private int questionId;
 
     public String toJson() {
 
@@ -48,5 +49,13 @@ public class TaskResponse {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    public int getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(int questionId) {
+        this.questionId = questionId;
     }
 }

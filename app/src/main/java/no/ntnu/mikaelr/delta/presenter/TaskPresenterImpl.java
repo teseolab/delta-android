@@ -14,7 +14,6 @@ import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.ErrorMessage;
 import no.ntnu.mikaelr.delta.util.SessionInvalidator;
 import no.ntnu.mikaelr.delta.view.signature.TaskView;
-import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -69,13 +68,13 @@ public class TaskPresenterImpl implements TaskPresenter, ProjectInteractorImpl.O
     private void postResponse() {
         switch (task.getTaskType()) {
             case TEXT_TASK:
-                projectInteractor.postResponse(getTextTaskResponse(), this);
+                projectInteractor.postResponse(view.getTextTaskResponse(), this);
                 break;
             case SCALE_TASK:
-                projectInteractor.postResponse(getScaleTaskResponses(), this);
+                projectInteractor.postResponse(view.getScaleTaskResponses(), this);
                 break;
             case ALTERNATIVE_TASK:
-                projectInteractor.postResponse(getAlternativeResponses(), this);
+                projectInteractor.postResponse(view.getAlternativeTaskResponses(), this);
                 break;
             case FIRST_TASK:
                 goBackToMissionView();
@@ -83,32 +82,32 @@ public class TaskPresenterImpl implements TaskPresenter, ProjectInteractorImpl.O
         }
     }
 
-    private TaskResponse getTextTaskResponse() {
-        ArrayList<String> responses = new ArrayList<String>();
-        String response = view.getTextTaskResponse();
-        responses.add(response);
-        return createProjectResponse(responses);
-    }
+//    private TaskResponse getTextTaskResponse() {
+//        ArrayList<String> responses = new ArrayList<String>();
+//        String response = view.getTextTaskResponse();
+//        responses.add(response);
+//        return createProjectResponse(responses);
+//    }
 
-    private TaskResponse getScaleTaskResponses() {
-        ArrayList<String> response = view.getScaleTaskResponse();
-        return createProjectResponse(response);
-    }
+//    private TaskResponse getScaleTaskResponses() {
+//        ArrayList<String> response = view.getScaleTaskResponses();
+//        return createProjectResponse(response);
+//    }
 
-    private TaskResponse getAlternativeResponses() {
-        String response = view.getAlternativeTaskResponse();
-        ArrayList<String> responses = new ArrayList<String>();
-        responses.add(response);
-        return createProjectResponse(responses);
-    }
+//    private TaskResponse getAlternativeResponses() {
+//        List<String> responses = view.getAlternativeTaskResponses();
+//        ArrayList<String> responses = new ArrayList<String>();
+//        responses.add(response);
+//        return createProjectResponse(responses);
+//    }
 
-    private TaskResponse createProjectResponse(ArrayList<String> response) {
-        TaskResponse taskResponse = new TaskResponse();
-        taskResponse.setResponse(response);
-        taskResponse.setProjectId(projectId);
-        taskResponse.setTaskId(task.getId());
-        return taskResponse;
-    }
+//    private TaskResponse createProjectResponse(ArrayList<String> response) {
+//        TaskResponse taskResponse = new TaskResponse();
+//        taskResponse.setResponse(response);
+//        taskResponse.setProjectId(projectId);
+//        taskResponse.setTaskId(task.getId());
+//        return taskResponse;
+//    }
 
     @Override
     public void onTaskCancelClick() {
@@ -142,7 +141,7 @@ public class TaskPresenterImpl implements TaskPresenter, ProjectInteractorImpl.O
     // OnPostProjectResponseListener -----------------------------------------------------------------------------------
 
     @Override
-    public void onPostProjectResponseSuccess(JSONObject jsonObject) {
+    public void onPostProjectResponseSuccess() {
         goBackToMissionView();
     }
 
