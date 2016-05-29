@@ -7,13 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
 import no.ntnu.mikaelr.delta.model.Achievement;
-import no.ntnu.mikaelr.delta.model.Comment;
 import no.ntnu.mikaelr.delta.util.BadgeIdConverter;
-import no.ntnu.mikaelr.delta.util.CircleTransform;
-import no.ntnu.mikaelr.delta.util.DateFormatter;
 
 import java.util.Collections;
 import java.util.List;

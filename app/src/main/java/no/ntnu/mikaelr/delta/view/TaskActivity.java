@@ -21,13 +21,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar.OnSeekBarChangeListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
     private TaskPresenter presenter;
 
     private ArrayList<View> scaleTaskViews = new ArrayList<View>();
     private RadioGroup radioGroup;
     private List<RadioGroup> radioGroups = new ArrayList<RadioGroup>();
+    private List<List<CheckBox>> checkBoxList = new ArrayList<List<CheckBox>>();
 
     private boolean responseIsBeingPosted = false;
 
@@ -84,6 +85,9 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
             case ALTERNATIVE_TASK:
                 initializeAlternativeTaskView(taskIndex, task);
                 break;
+            case ALTERNATIVE_TASK_MULTI:
+                initializeAlternativeMultiTaskView(taskIndex, task);
+                break;
             case SCALE_TASK:
                 initializeScaleTaskView(taskIndex, task);
                 break;
@@ -139,7 +143,7 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         }
 
         setContentView(taskView);
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex);
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex + 1);
     }
 
     private void initializeAlternativeTaskView(int taskIndex, Task task) {
@@ -159,12 +163,11 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
 
         for (TaskQuestion taskQuestion : task.getQuestions()) {
             LinearLayout taskItemView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.task_alternative_item, null);
-            TextView descriptionView = (TextView) taskItemView.findViewById(R.id.description);
+            TextView descriptionView = (TextView) taskItemView.findViewById(R.id.question);
             descriptionView.setText(taskQuestion.getQuestion());
 
             radioGroup = (RadioGroup) taskItemView.findViewById(R.id.radio_group);
             radioGroup.setId(taskQuestion.getId());
-            radioGroup.setOnCheckedChangeListener(this);
 
             LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
                     RadioGroup.LayoutParams.WRAP_CONTENT,
@@ -183,7 +186,51 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         }
 
         setContentView(view);
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex);
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex + 1);
+    }
+
+    private void initializeAlternativeMultiTaskView(int taskIndex, Task task) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        LinearLayout view = (LinearLayout) inflater.inflate(R.layout.task_alternative, null);
+        LinearLayout parentLayout = (LinearLayout) view.findViewById(R.id.parent_layout_task_alternative);
+
+        View imageWrapper = parentLayout.findViewById(R.id.imageWrapper);
+        ImageView image = (ImageView) parentLayout.findViewById(R.id.image);
+        image.setOnClickListener(this);
+        String imageUri = task.getImageUri();
+        if (imageUri != null) {
+            Picasso.with(this).load(imageUri).into(image);
+        } else {
+            imageWrapper.setVisibility(View.GONE);
+        }
+
+        for (TaskQuestion taskQuestion : task.getQuestions()) {
+            LinearLayout taskItemView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.task_alternative_multi_item, null);
+            TextView descriptionView = (TextView) taskItemView.findViewById(R.id.question);
+            descriptionView.setText(taskQuestion.getQuestion());
+
+            LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.WRAP_CONTENT,
+                    RadioGroup.LayoutParams.WRAP_CONTENT);
+
+            List<CheckBox> checkBoxes = new ArrayList<CheckBox>();
+
+            for (int i = 0; i < taskQuestion.getAlternatives().size(); i++) {
+                String alternative = taskQuestion.getAlternatives().get(i);
+
+                CheckBox checkBox = new CheckBox(this);
+                checkBox.setId(taskQuestion.getId());
+                checkBox.setText(alternative);
+                checkBoxes.add(checkBox);
+                taskItemView.addView(checkBox, layoutParams);
+                taskItemView.setId(taskQuestion.getId());
+            }
+            checkBoxList.add(checkBoxes);
+            parentLayout.addView(taskItemView);
+        }
+
+        setContentView(view);
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex + 1);
     }
 
     private void initializeTextTaskView(int taskIndex, Task task) {
@@ -203,12 +250,12 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         TextView descriptionTextView = (TextView) taskView.findViewById(R.id.description);
         descriptionTextView.setText(task.getDescription());
 
-        TextView questionTextView = (TextView) taskView.findViewById(R.id.question);
+        TextView questionTextView = (TextView) taskView.findViewById(R.id.description);
         // TODO: 30.05.2016 Only supports one question
         questionTextView.setText(task.getQuestions().get(0).getQuestion());
 
         setContentView(taskView);
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex);
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex + 1);
     }
 
     // VIEW INTERFACE --------------------------------------------------------------------------------------------------
@@ -262,6 +309,23 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
     }
 
     @Override
+    public List<TaskResponse> getAlternativeMultiTaskResponses() {
+        List<TaskResponse> taskResponses = new ArrayList<TaskResponse>();
+        for (List<CheckBox> checkBoxes : checkBoxList) {
+            for (CheckBox checkBox : checkBoxes) {
+                if (checkBox.isChecked()) {
+                    String response = checkBox.getText().toString();
+                    TaskResponse taskResponse = new TaskResponse();
+                    taskResponse.setQuestionId(checkBox.getId());
+                    taskResponse.setResponse(Collections.singletonList(response));
+                    taskResponses.add(taskResponse);
+                }
+            }
+        }
+        return taskResponses;
+    }
+
+    @Override
     public void showMessage(String message, int length) {
         Toast.makeText(this, message, length).show();
     }
@@ -292,15 +356,15 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
 
     // RADIO BUTTON LISTENER -------------------------------------------------------------------------------------------
 
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        RadioButton checkedRadioButton = (RadioButton) findViewById(checkedId);
-        String checkedRadioButtonText = checkedRadioButton.getText().toString();
-        TextView otherTextView = (TextView) findViewById(R.id.other_text);
-        if (checkedRadioButtonText.toLowerCase().equals("annet")) {
-            otherTextView.setVisibility(View.VISIBLE);
-        } else {
-            otherTextView.setVisibility(View.GONE);
-        }
-    }
+//    @Override
+//    public void onCheckedChanged(RadioGroup group, int checkedId) {
+//        RadioButton checkedRadioButton = (RadioButton) findViewById(checkedId);
+//        String checkedRadioButtonText = checkedRadioButton.getText().toString();
+//        TextView otherTextView = (TextView) findViewById(R.id.other_text);
+//        if (checkedRadioButtonText.toLowerCase().equals("annet")) {
+//            otherTextView.setVisibility(View.VISIBLE);
+//        } else {
+//            otherTextView.setVisibility(View.GONE);
+//        }
+//    }
 }

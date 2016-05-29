@@ -76,6 +76,8 @@ public class TaskPresenterImpl implements TaskPresenter, ProjectInteractorImpl.O
             case ALTERNATIVE_TASK:
                 projectInteractor.postResponse(view.getAlternativeTaskResponses(), this);
                 break;
+            case ALTERNATIVE_TASK_MULTI:
+                projectInteractor.postResponse(view.getAlternativeMultiTaskResponses(), this);
             case FIRST_TASK:
                 goBackToMissionView();
                 break;

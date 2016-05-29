@@ -8,15 +8,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import no.ntnu.mikaelr.delta.R;
-import no.ntnu.mikaelr.delta.model.HighscoreUser;
 import no.ntnu.mikaelr.delta.model.LogRecord;
 import no.ntnu.mikaelr.delta.util.BadgeIdConverter;
 import no.ntnu.mikaelr.delta.util.DateFormatter;
 import no.ntnu.mikaelr.delta.util.LogRecordType;
 
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class ActivityLogAdapter extends BaseAdapter {

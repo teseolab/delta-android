@@ -9,6 +9,7 @@ public interface TaskView {
     List<TaskResponse> getTextTaskResponse();
     List<TaskResponse> getScaleTaskResponses();
     List<TaskResponse> getAlternativeTaskResponses();
+    List<TaskResponse> getAlternativeMultiTaskResponses();
 
     void showMessage(String message, int length);
 }
