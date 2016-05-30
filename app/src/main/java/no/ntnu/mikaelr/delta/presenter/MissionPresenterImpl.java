@@ -70,6 +70,8 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     private boolean startLocationIsFound = false;
     private boolean currentLocationIsFound = false;
 
+
+
     @Override
     public void setStartLocationIsFound(boolean startLocationIsFound) {
         this.startLocationIsFound = startLocationIsFound;
@@ -187,6 +189,11 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     @Override
     public void setCurrentLocationIsFound(boolean isFound) {
         currentLocationIsFound = isFound;
+    }
+
+    @Override
+    public boolean startLocationIsFound() {
+        return startLocationIsFound;
     }
 
     @Override
@@ -308,9 +315,9 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         taskWasCancelled = false;
         missionIsCompleted = currentTaskIndex == loadedTasks.size() - 1;
 
-        if (currentTaskIndex == 0) {
-            SharedPrefsUtil.getInstance().setFirstTaskFinishedStatus(project.getId(), Constants.YES);
-        }
+//        if (currentTaskIndex == 0) {
+//            SharedPrefsUtil.getInstance().setFirstTaskFinishedStatus(project.getId(), Constants.YES);
+//        }
 
         if (missionIsCompleted) {
 
@@ -350,7 +357,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             currentTaskIndex++;
             currentLocationIsFound = false;
 
-            String title = currentTaskIndex == 1 ? "Første oppgave" : phraseGenerator.encouragement()+"!";
+            String title = currentTaskIndex == 0 ? "Første oppgave" : phraseGenerator.encouragement()+"!";
             String hint = loadedTasks.get(currentTaskIndex).getHint();
 
             view.showDialog(CustomDialog.newInstance(title, hint, "Ok", null, 0), null);
@@ -364,13 +371,18 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
     // Listeners -------------------------------------------------------------------------------------------------------
 
     private void addFinishedMarkers() {
-        if (startLocationIsFound) {
-            view.addMarkerForTask(0, loadedTasks.get(0), R.drawable.ic_location_start_48dp);
+//        if (startLocationIsFound) {
+//            view.addMarkerForTask(0, loadedTasks.get(0), R.drawable.ic_location_start_48dp);
+//        } else {
+//            view.addMarkerForTask(0, loadedTasks.get(0), R.drawable.ic_location_48dp);
+//        }
+        if (currentTaskIndex == 0) {
+            view.addMarkerForTask(0, loadedTasks.get(0), R.drawable.ic_location_48dp, false);
         } else {
-            view.addMarkerForTask(0, loadedTasks.get(0), R.drawable.ic_location_48dp);
+            view.addMarkerForTask(0, loadedTasks.get(0), R.drawable.ic_location_48dp, true);
         }
         for (int i = 1; i < currentTaskIndex; i++) {
-            view.addMarkerForTask(i, loadedTasks.get(i), R.drawable.ic_location_48dp);
+            view.addMarkerForTask(i, loadedTasks.get(i), R.drawable.ic_location_48dp, true);
         }
     }
 
@@ -429,7 +441,7 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             currentLocationIsFound = true;
             stopLocationUpdates();
             int iconResourceId = currentTaskIndex == 0 ? R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
-            view.addMarkerForTask(currentTaskIndex, getCurrentTask(), iconResourceId);
+            view.addMarkerForTask(currentTaskIndex, getCurrentTask(), iconResourceId, true);
             view.setDistance(null);
             view.setHint(null);
             Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);

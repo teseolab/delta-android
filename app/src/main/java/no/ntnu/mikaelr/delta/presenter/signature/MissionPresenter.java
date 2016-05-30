@@ -36,4 +36,6 @@ public interface MissionPresenter {
     void setLocationServiceShouldStart(boolean shouldStart);
 
     void setCurrentLocationIsFound(boolean isFound);
+
+    boolean startLocationIsFound();
 }

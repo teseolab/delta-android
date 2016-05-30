@@ -28,9 +28,7 @@ import no.ntnu.mikaelr.delta.fragment.CustomDialog;
 import no.ntnu.mikaelr.delta.model.Task;
 import no.ntnu.mikaelr.delta.presenter.signature.MissionPresenter;
 import no.ntnu.mikaelr.delta.presenter.MissionPresenterImpl;
-import no.ntnu.mikaelr.delta.util.Constants;
 import no.ntnu.mikaelr.delta.util.LocationService;
-import no.ntnu.mikaelr.delta.util.SharedPrefsUtil;
 import no.ntnu.mikaelr.delta.view.signature.MissionView;
 
 import java.util.ArrayList;
@@ -64,7 +62,7 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         presenter.connectApiClient();
         initializeMap();
         String title = "For å starte oppdraget";
-        String message = "Velkommen til " + missionName + ". Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget. Det vises et kompass i markøren når du er fremme.";
+        String message = "Velkommen til " + missionName + ". Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget. Det vises et tall i markøren når du er fremme.";
         CustomDialog welcomeDialog = CustomDialog.newInstance(title, message, "Ok", null, R.drawable.explore);
         showDialog(welcomeDialog, "");
     }
@@ -180,18 +178,23 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
     }
 
     @Override
-    public void addMarkerForTask(int taskIndex, Task task, int iconResourceId) {
+    public void addMarkerForTask(int taskIndex, Task task, int iconResourceId, boolean showText) {
         if (map != null) {
 
             View mapMarkerView = getLayoutInflater().inflate(R.layout.map_marker, null);
             ImageView iconView = (ImageView) mapMarkerView.findViewById(R.id.icon);
             iconView.setImageResource(iconResourceId);
-            String iconText = taskIndex == 0 ? "" : Integer.toString(taskIndex);
 
             IconGenerator iconGenerator = new IconGenerator(this);
             iconGenerator.setBackground(null);
             iconGenerator.setContentView(mapMarkerView);
-            Bitmap mapMarkerBitmap = iconGenerator.makeIcon(iconText);
+            Bitmap mapMarkerBitmap;
+            if (showText) {
+                String iconText = Integer.toString(taskIndex+1);
+                mapMarkerBitmap = iconGenerator.makeIcon(iconText);
+            } else {
+                mapMarkerBitmap = iconGenerator.makeIcon();
+            }
 
             LatLng position = new LatLng(task.getLatitude(), task.getLongitude());
             MarkerOptions options = new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(mapMarkerBitmap));
@@ -237,11 +240,12 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         if (item.getItemId() == R.id.action_cheat) {
             Task currentTask = presenter.getCurrentTask();
             if (currentTask != null) {
-                int resourceId = presenter.getCurrentTaskIndex() == 0 ?
-                        R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
-                addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask, resourceId);
+//                int resourceId = presenter.getCurrentTaskIndex() == 0 ?
+//                        R.drawable.ic_location_start_48dp : R.drawable.ic_location_48dp;
+                int resourceId = R.drawable.ic_location_48dp;
                 presenter.setStartLocationIsFound(true);
                 presenter.setCurrentLocationIsFound(true);
+                addMarkerForTask(presenter.getCurrentTaskIndex(), currentTask, resourceId, true);
                 Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(600);
                 presenter.stopLocationUpdates();

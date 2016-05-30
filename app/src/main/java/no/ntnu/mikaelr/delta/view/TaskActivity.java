@@ -143,7 +143,8 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         }
 
         setContentView(taskView);
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex + 1);
+        int taskNumber = taskIndex + 1;
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskNumber);
     }
 
     private void initializeAlternativeTaskView(int taskIndex, Task task) {
@@ -186,7 +187,8 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         }
 
         setContentView(view);
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex + 1);
+        int taskNumber = taskIndex + 1;
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskNumber);
     }
 
     private void initializeAlternativeMultiTaskView(int taskIndex, Task task) {
@@ -230,7 +232,8 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         }
 
         setContentView(view);
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex + 1);
+        int taskNumber = taskIndex + 1;
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskNumber);
     }
 
     private void initializeTextTaskView(int taskIndex, Task task) {
@@ -255,7 +258,8 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         questionTextView.setText(task.getQuestions().get(0).getQuestion());
 
         setContentView(taskView);
-        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskIndex + 1);
+        int taskNumber = taskIndex + 1;
+        ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, "Oppgave " + taskNumber);
     }
 
     // VIEW INTERFACE --------------------------------------------------------------------------------------------------

@@ -49,15 +49,15 @@ public class SharedPrefsUtil {
         return sharedPreferences.getString("PROJECT_" + projectId + "_MISSION_COMPLETED_BY_USER_" + username, Constants.NA);
     }
 
-    public void setFirstTaskFinishedStatus(Integer projectId, String value) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("PROJECT_" + projectId + "_START_LOCATION_FOUND_BY_USER_" + getUsername(), value);
-        editor.apply();
-    }
+//    public void setFirstTaskFinishedStatus(Integer projectId, String value) {
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString("PROJECT_" + projectId + "_START_LOCATION_FOUND_BY_USER_" + getUsername(), value);
+//        editor.apply();
+//    }
 
-    public String getFirstTaskFinishedStatus(int projectId) {
-        return sharedPreferences.getString("PROJECT_" + projectId + "_START_LOCATION_FOUND_BY_USER_" + getUsername(), Constants.NO);
-    }
+//    public String getFirstTaskFinishedStatus(int projectId) {
+//        return sharedPreferences.getString("PROJECT_" + projectId + "_START_LOCATION_FOUND_BY_USER_" + getUsername(), Constants.NO);
+//    }
 
 //    public void setLocationFoundStatus(int projectId, int taskIndex, String value) {
 //        SharedPreferences.Editor editor = sharedPreferences.edit();
