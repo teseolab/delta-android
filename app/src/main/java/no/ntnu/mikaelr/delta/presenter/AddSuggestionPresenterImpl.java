@@ -193,7 +193,7 @@ public class AddSuggestionPresenterImpl implements AddSuggestionPresenter,
     @Override
     public void onGetSuggestionAchievementSuccess(String result) {
         Intent intent = new Intent(context, SuggestionListActivity.class);
-        if (!result.equals("false")) {
+        if (result != null && !result.equals("false")) {
             Achievement achievement = JsonFormatter.formatAchievement(result);
             intent.putExtra("achievement", achievement);
         }

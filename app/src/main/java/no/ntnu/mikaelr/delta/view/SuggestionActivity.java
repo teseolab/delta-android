@@ -226,6 +226,11 @@ public class SuggestionActivity extends AppCompatActivity implements SuggestionV
     }
 
     @Override
+    public void onBackPressed() {
+        presenter.onFinished();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             presenter.onActivityResult(requestCode, data);
