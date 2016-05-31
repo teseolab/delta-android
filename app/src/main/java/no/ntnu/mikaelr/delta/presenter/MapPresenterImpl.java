@@ -53,6 +53,7 @@ public class MapPresenterImpl implements MapPresenter {
         intent.putExtra("imageUri", project.getImageUri());
         intent.putExtra("latitude", project.getLatitude());
         intent.putExtra("longitude", project.getLongitude());
+        intent.putExtra("missionEnabled", project.isMissionEnabled());
         context.getActivity().startActivity(intent);
     }
 

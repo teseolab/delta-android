@@ -27,6 +27,7 @@ public class JsonFormatter {
                 project.setName(jsonProject.getString("name"));
                 project.setLatitude((float)jsonProject.getDouble("latitude"));
                 project.setLongitude((float)jsonProject.getDouble("longitude"));
+                project.setMissionEnabled(jsonProject.getBoolean("missionEnabled"));
                 project.setDescription(jsonProject.getString("description"));
                 String imageUri = jsonProject.getString("imageUri");
                 if (imageUri.equals("null") || imageUri.equals("")){

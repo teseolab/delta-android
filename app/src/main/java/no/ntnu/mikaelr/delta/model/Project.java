@@ -10,6 +10,7 @@ public class Project implements Serializable {
     private String imageUri;
     private float latitude;
     private float longitude;
+    private boolean missionEnabled;
 
     public Project() {}
 
@@ -61,4 +62,11 @@ public class Project implements Serializable {
         this.longitude = longitude;
     }
 
+    public boolean isMissionEnabled() {
+        return missionEnabled;
+    }
+
+    public void setMissionEnabled(boolean missionEnabled) {
+        this.missionEnabled = missionEnabled;
+    }
 }

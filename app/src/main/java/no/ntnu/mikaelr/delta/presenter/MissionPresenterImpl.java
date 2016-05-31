@@ -291,17 +291,17 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         boolean missionIsNotComplete = currentTaskIndex != -1;
 
         if (missionIsNotComplete) {
-            if (startLocationIsFound) {
+            if (currentTaskIndex == 0 && !startLocationIsFound) {
+                String title = "For å starte oppdraget";
+                String message = "Du må dra til dette punktet før du kan starte. Det vises et tall i punktet når du er fremme.";
+                CustomDialog dialog = CustomDialog.newInstance(title, message, "Ok", null, R.drawable.explore);
+                view.showDialog(dialog, null);
+            } else {
                 boolean userClickedCurrentTaskMarker = clickedTaskId == getCurrentTask().getId();
                 if (userClickedCurrentTaskMarker) {
                     setLocationServiceShouldStart(false);
                     goToTask();
                 }
-            } else {
-                String title = "For å starte oppdraget";
-                String message = "Du må dra til dette punktet før du kan starte. Det vises et kompass i markøren når du er fremme.";
-                CustomDialog dialog = CustomDialog.newInstance(title, message, "Ok", null, R.drawable.explore);
-                view.showDialog(dialog, null);
             }
         }
     }
@@ -368,8 +368,6 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         }
     }
 
-    // Listeners -------------------------------------------------------------------------------------------------------
-
     private void addFinishedMarkers() {
 //        if (startLocationIsFound) {
 //            view.addMarkerForTask(0, loadedTasks.get(0), R.drawable.ic_location_start_48dp);
@@ -385,6 +383,8 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
             view.addMarkerForTask(i, loadedTasks.get(i), R.drawable.ic_location_48dp, true);
         }
     }
+
+    // Listeners -------------------------------------------------------------------------------------------------------
 
     private Task getDefaultFirstTask() {
         Task defaultFirstTask = new Task();
@@ -489,6 +489,9 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
 //            }
 
             initializeCurrentTaskIndex(tasks);
+            if (currentTaskIndex == 0) {
+                showWelcomeDialog();
+            }
             addFinishedMarkers();
             view.zoomMapToMarkers();
 
@@ -513,6 +516,13 @@ public class MissionPresenterImpl implements MissionPresenter, ProjectInteractor
         } catch (IndexOutOfBoundsException e) {
             Log.w("MissionPresenterImpl", e.getMessage());
         }
+    }
+
+    private void showWelcomeDialog() {
+        String title = "For å starte oppdraget";
+        String message = "Velkommen til " + project.getName() + " oppdrag. Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget. Det dukker opp et tall i punktet når du er fremme.";
+        CustomDialog welcomeDialog = CustomDialog.newInstance(title, message, "Ok", null, R.drawable.explore);
+        view.showDialog(welcomeDialog, "");
     }
 
     @Override

@@ -46,6 +46,7 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
         project.setImageUri(intent.getStringExtra("imageUri"));
         project.setLatitude(intent.getFloatExtra("latitude", -1));
         project.setLongitude(intent.getFloatExtra("longitude", -1));
+        project.setMissionEnabled(intent.getBooleanExtra("missionEnabled", false));
         return project;
     }
 
@@ -73,7 +74,12 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
     @Override
     public void goToMission() {
         if (missionIsCompleted != null) {
-            if (missionIsCompleted) {
+            if (!project.isMissionEnabled()) {
+                String title = "Ikke noe her...";
+                String message = "Det er ikke laget et oppdrag for dette prosjektet.";
+                SimpleDialog.newInstance(title, message).show(context.getSupportFragmentManager(), null);
+            }
+            else if (missionIsCompleted) {
                 String title = "Heisann!";
                 String message = "Du har allerede fullført dette oppdraget. Hva med å heller poste et forslag?";
                 SimpleDialog.newInstance(title, message).show(context.getSupportFragmentManager(), null);

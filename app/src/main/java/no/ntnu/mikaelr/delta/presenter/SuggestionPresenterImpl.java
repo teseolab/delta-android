@@ -116,8 +116,7 @@ public class SuggestionPresenterImpl implements SuggestionPresenter, ProjectInte
                                 BadgeIdConverter.getInstance().convertBadgeNameToResourceId(achievement.getBadgeName())),null)
                         .commitAllowingStateLoss();
             }
-            @SuppressWarnings("unchecked")
-            ArrayList<Comment> comments = (ArrayList<Comment>) data.getSerializableExtra("comments");
+            comments = (ArrayList<Comment>) data.getSerializableExtra("comments");
             view.updateComments(comments);
             view.hideEmptyListMessage();
         }

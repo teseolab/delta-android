@@ -44,6 +44,9 @@ public class ProjectActivity extends AppCompatActivity implements ProjectView, V
         ImageView image = (ImageView) findViewById(R.id.project_image);
         TextView description = (TextView) findViewById(R.id.project_description);
         TextView startMissionButton = (TextView) findViewById(R.id.start_mission_button);
+        if (!presenter.getProject().isMissionEnabled()) {
+            startMissionButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.explore_gray, 0, 0);
+        }
         TextView postSuggestionButton = (TextView) findViewById(R.id.post_suggestion_button);
         TextView browseSuggestionsButton = (TextView) findViewById(R.id.browse_suggestions_button);
 

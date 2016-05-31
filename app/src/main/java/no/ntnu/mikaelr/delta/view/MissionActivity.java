@@ -61,10 +61,6 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
         ToolbarUtil.initializeToolbar(this, R.drawable.ic_close_white_24dp, missionName);
         presenter.connectApiClient();
         initializeMap();
-        String title = "For å starte oppdraget";
-        String message = "Velkommen til " + missionName + ". Gå til det markerte punktet på kartet og trykk på det for å starte oppdraget. Det vises et tall i markøren når du er fremme.";
-        CustomDialog welcomeDialog = CustomDialog.newInstance(title, message, "Ok", null, R.drawable.explore);
-        showDialog(welcomeDialog, "");
     }
 
     @Override
