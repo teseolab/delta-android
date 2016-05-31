@@ -2,10 +2,8 @@ package no.ntnu.mikaelr.delta.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.util.TypedValue;
+import android.view.*;
 import android.widget.*;
 import com.squareup.picasso.Picasso;
 import no.ntnu.mikaelr.delta.R;
@@ -26,6 +24,7 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
     private TaskPresenter presenter;
 
     private ArrayList<View> scaleTaskViews = new ArrayList<View>();
+    private List<String> scale;
     private RadioGroup radioGroup;
     private List<RadioGroup> radioGroups = new ArrayList<RadioGroup>();
     private List<List<CheckBox>> checkBoxList = new ArrayList<List<CheckBox>>();
@@ -123,6 +122,8 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         TextView descriptionView = (TextView) parentLayout.findViewById(R.id.description);
         descriptionView.setText(task.getDescription());
 
+        scale = task.getQuestions().get(0).getAlternatives();
+
         for (TaskQuestion taskQuestion : task.getQuestions()) {
 
             View scaleTaskView = inflater.inflate(R.layout.task_scale_item, null);
@@ -137,7 +138,7 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
             seekBar.setOnSeekBarChangeListener(this);
 
             TextView textView = (TextView) scaleTaskView.findViewById(R.id.seekbar_text);
-            String scaleValue = taskQuestion.getAlternatives().get(seekBar.getProgress());
+            String scaleValue = scale.get(seekBar.getProgress());
             textView.setText(scaleValue);
 
         }
@@ -206,14 +207,18 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
             imageWrapper.setVisibility(View.GONE);
         }
 
+        TextView description = (TextView) parentLayout.findViewById(R.id.description);
+        description.setText(task.getDescription());
+
         for (TaskQuestion taskQuestion : task.getQuestions()) {
             LinearLayout taskItemView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.task_alternative_multi_item, null);
             TextView descriptionView = (TextView) taskItemView.findViewById(R.id.question);
             descriptionView.setText(taskQuestion.getQuestion());
 
-            LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
-                    RadioGroup.LayoutParams.WRAP_CONTENT,
-                    RadioGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics()));
 
             List<CheckBox> checkBoxes = new ArrayList<CheckBox>();
 
@@ -340,7 +345,7 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         View parent = (View) seekBar.getParent();
         TextView textView = (TextView) parent.findViewById(R.id.seekbar_text);
-        textView.setText(presenter.getScaleValue(progress));
+        textView.setText(scale.get(progress));
     }
 
     @Override
