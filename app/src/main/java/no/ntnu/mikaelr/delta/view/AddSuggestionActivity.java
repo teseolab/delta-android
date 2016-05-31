@@ -1,13 +1,18 @@
 package no.ntnu.mikaelr.delta.view;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.Menu;
@@ -37,6 +42,8 @@ public class AddSuggestionActivity extends AppCompatActivity implements AddSugge
     private AppCompatButton addImageButton;
 
     private boolean suggestionIsPosting = false;
+
+    private final int REQUEST_OPEN_CAMERA = 0;
 
     // LIFECYCLE -------------------------------------------------------------------------------------------------------
 
@@ -108,7 +115,18 @@ public class AddSuggestionActivity extends AppCompatActivity implements AddSugge
         presenter.onActivityResult(requestCode, resultCode, data);
     }
 
-    // LISTENERS -------------------------------------------------------------------------------------------------------
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_OPEN_CAMERA) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                presenter.openCamera(Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+            } else {
+                Toast.makeText(this, "Delta trenger tilgang til å lagre filer for å ta bilde", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+// LISTENERS -------------------------------------------------------------------------------------------------------
 
     @Override
     public void onClick(View v) {
@@ -123,8 +141,11 @@ public class AddSuggestionActivity extends AppCompatActivity implements AddSugge
     @Override
     public void onTakePhotoClicked(Dialog dialog) {
         dialog.dismiss();
-        presenter.openCamera(Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_OPEN_CAMERA);
+        } else {
+            presenter.openCamera(Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        }
     }
 
     @Override
