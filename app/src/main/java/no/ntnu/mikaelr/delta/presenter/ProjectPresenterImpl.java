@@ -73,11 +73,11 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
     @Override
     public void goToMission() {
         if (missionIsCompleted != null) {
-//            if (missionIsCompleted) {
-//                String title = "Heisann!";
-//                String message = "Du har allerede fullført dette oppdraget. Hva med å heller poste et forslag?";
-//                SimpleDialog.newInstance(title, message).show(context.getSupportFragmentManager(), null);
-//            } else {
+            if (missionIsCompleted) {
+                String title = "Heisann!";
+                String message = "Du har allerede fullført dette oppdraget. Hva med å heller poste et forslag?";
+                SimpleDialog.newInstance(title, message).show(context.getSupportFragmentManager(), null);
+            } else {
                 Intent intent = new Intent(context, MissionActivity.class);
                 intent.putExtra("projectId", project.getId());
                 intent.putExtra("projectName", project.getName());
@@ -85,7 +85,7 @@ public class ProjectPresenterImpl implements ProjectPresenter, ProjectInteractor
                 intent.putExtra("longitude", project.getLongitude());
                 context.startActivityForResult(intent, MISSION_REQUEST);
             }
-//        }
+        }
     }
 
     @Override

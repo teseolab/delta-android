@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="no.ntnu.mikaelr.delta"
-          android:versionCode="3"
-          android:versionName="0.1.2">
+          android:versionCode="5"
+          android:versionName="0.1.3">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

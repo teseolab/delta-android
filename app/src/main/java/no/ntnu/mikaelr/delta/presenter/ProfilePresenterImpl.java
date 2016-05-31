@@ -72,7 +72,9 @@ public class ProfilePresenterImpl implements ProfilePresenter, ProjectInteractor
     public void openImageCropper(int requestCode) {
         Intent intent = new Intent(activity, ImageCropperActivity.class);
         intent.putExtra("requestCode", requestCode);
-        activity.startActivityForResult(intent, requestCode);
+        if (fragment != null) {
+            fragment.startActivityForResult(intent, requestCode);
+        }
     }
 
     @Override

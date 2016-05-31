@@ -258,7 +258,7 @@ public class TaskActivity extends AppCompatActivity implements TaskView, SeekBar
         TextView descriptionTextView = (TextView) taskView.findViewById(R.id.description);
         descriptionTextView.setText(task.getDescription());
 
-        TextView questionTextView = (TextView) taskView.findViewById(R.id.description);
+        TextView questionTextView = (TextView) taskView.findViewById(R.id.question);
         // TODO: 30.05.2016 Only supports one question
         questionTextView.setText(task.getQuestions().get(0).getQuestion());
 
