@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -207,7 +208,8 @@ public class MissionActivity extends AppCompatActivity implements MissionView, O
             if (markers.size() == 1) {
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), 15.5f));
             } else if (markers.size() > 1) {
-                map.moveCamera(newLatLngBounds(boundsBuilder.build(), 550));
+                int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
+                map.moveCamera(newLatLngBounds(boundsBuilder.build(), padding));
             } else {
                 Log.w(TAG, "Could not zoom the map since no markers have been added");
             }
